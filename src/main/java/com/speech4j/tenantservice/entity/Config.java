@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "configs")
@@ -64,5 +65,33 @@ public class Config implements Serializable {
 
     public void setTenant(Tenant tenant) {
         this.tenant = tenant;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Config config = (Config) o;
+        return Objects.equals(id, config.id) &&
+                Objects.equals(apiName, config.apiName) &&
+                Objects.equals(username, config.username) &&
+                Objects.equals(password, config.password) &&
+                Objects.equals(tenant, config.tenant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, apiName, username, password, tenant);
+    }
+
+    @Override
+    public String toString() {
+        return "Config{" +
+                "id=" + id +
+                ", apiName='" + apiName + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", tenant=" + tenant +
+                '}';
     }
 }

@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -117,5 +118,43 @@ public class User  implements Serializable {
 
     public void setTenant(Tenant tenant) {
         this.tenant = tenant;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return active == user.active &&
+                Objects.equals(id, user.id) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(password, user.password) &&
+                role == user.role &&
+                Objects.equals(createdDate, user.createdDate) &&
+                Objects.equals(updatedDate, user.updatedDate) &&
+                Objects.equals(tenant, user.tenant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, password, role, createdDate, updatedDate, active, tenant);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                ", active=" + active +
+                ", tenant=" + tenant +
+                '}';
     }
 }

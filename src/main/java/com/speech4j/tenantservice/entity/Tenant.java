@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -77,6 +78,24 @@ public class Tenant  implements Serializable {
 
     public void setConfigs(Set<Config> configs) {
         this.configs = configs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tenant tenant = (Tenant) o;
+        return active == tenant.active &&
+                Objects.equals(id, tenant.id) &&
+                Objects.equals(name, tenant.name) &&
+                Objects.equals(createdDate, tenant.createdDate) &&
+                Objects.equals(users, tenant.users) &&
+                Objects.equals(configs, tenant.configs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, createdDate, active, users, configs);
     }
 
     @Override

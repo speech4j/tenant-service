@@ -2,21 +2,15 @@ package com.speech4j.tenantservice.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "configs")
-public class Config implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Config extends AbstractEntity {
+
     private String apiName;
     private String username;
     private String password;
@@ -25,14 +19,6 @@ public class Config implements Serializable {
     private Tenant tenant;
 
     public Config() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getApiName() {
@@ -72,8 +58,7 @@ public class Config implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Config config = (Config) o;
-        return Objects.equals(id, config.id) &&
-                Objects.equals(apiName, config.apiName) &&
+        return Objects.equals(apiName, config.apiName) &&
                 Objects.equals(username, config.username) &&
                 Objects.equals(password, config.password) &&
                 Objects.equals(tenant, config.tenant);
@@ -81,14 +66,13 @@ public class Config implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, apiName, username, password, tenant);
+        return Objects.hash(apiName, username, password, tenant);
     }
 
     @Override
     public String toString() {
         return "Config{" +
-                "id=" + id +
-                ", apiName='" + apiName + '\'' +
+                "apiName='" + apiName + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", tenant=" + tenant +

@@ -15,10 +15,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tenants")
-public class Tenant  implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Tenant  extends AbstractEntity {
     private String name;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private ZonedDateTime createdDate;
@@ -30,14 +27,6 @@ public class Tenant  implements Serializable {
 
 
     public Tenant() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -86,7 +75,6 @@ public class Tenant  implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Tenant tenant = (Tenant) o;
         return active == tenant.active &&
-                Objects.equals(id, tenant.id) &&
                 Objects.equals(name, tenant.name) &&
                 Objects.equals(createdDate, tenant.createdDate) &&
                 Objects.equals(users, tenant.users) &&
@@ -95,14 +83,13 @@ public class Tenant  implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, createdDate, active, users, configs);
+        return Objects.hash(name, createdDate, active, users, configs);
     }
 
     @Override
     public String toString() {
         return "Tenant{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", createdDate=" + createdDate +
                 ", active=" + active +
                 ", users=" + users +

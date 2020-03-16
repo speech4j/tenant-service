@@ -6,22 +6,15 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-public class User  implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class User extends AbstractEntity {
     private String firstName;
     private String lastName;
     private String email;
@@ -38,14 +31,6 @@ public class User  implements Serializable {
     private Tenant tenant;
 
     public User() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -126,7 +111,6 @@ public class User  implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return active == user.active &&
-                Objects.equals(id, user.id) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(email, user.email) &&
@@ -139,14 +123,13 @@ public class User  implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, password, role, createdDate, updatedDate, active, tenant);
+        return Objects.hash(firstName, lastName, email, password, role, createdDate, updatedDate, active, tenant);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
+                "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

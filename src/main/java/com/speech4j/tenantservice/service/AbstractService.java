@@ -8,7 +8,6 @@ import java.util.List;
 
 public abstract class AbstractService<E extends AbstractEntity, R extends CommonRepository<E>>
         implements CommonService<E> {
-
     protected final R repository;
 
     @Autowired

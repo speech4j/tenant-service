@@ -4,6 +4,7 @@ import com.speech4j.tenantservice.entity.AbstractEntity;
 
 import java.util.List;
 
+
 public interface CommonService<E extends AbstractEntity> {
     E create(E entity);
 

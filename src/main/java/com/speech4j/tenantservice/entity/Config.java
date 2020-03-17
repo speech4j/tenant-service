@@ -1,5 +1,7 @@
 package com.speech4j.tenantservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ public class Config{
     private String password;
     @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
     @JoinColumn
+    @JsonBackReference
     private Tenant tenant;
 
     public Config() {

@@ -1,11 +1,15 @@
 package com.speech4j.tenantservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -14,7 +18,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-public class User extends AbstractEntity {
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -28,9 +35,18 @@ public class User extends AbstractEntity {
     private boolean active;
     @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
     @JoinColumn
+    @JsonBackReference
     private Tenant tenant;
 
     public User() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -111,6 +127,7 @@ public class User extends AbstractEntity {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return active == user.active &&
+                Objects.equals(id, user.id) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(email, user.email) &&
@@ -122,14 +139,10 @@ public class User extends AbstractEntity {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName, email, password, role, createdDate, updatedDate, active, tenant);
-    }
-
-    @Override
     public String toString() {
         return "User{" +
-                "firstName='" + firstName + '\'' +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

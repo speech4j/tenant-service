@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,21 +9,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "tenants")
-public class Tenant  extends AbstractEntity {
+public class Tenant {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private ZonedDateTime createdDate;
     private boolean active;
     @OneToMany(mappedBy = "tenant")
+    @JsonManagedReference
     private Set<User> users;
+
     @OneToMany(mappedBy = "tenant")
+    @JsonManagedReference
     private Set<Config> configs;
 
 
@@ -75,6 +81,7 @@ public class Tenant  extends AbstractEntity {
         if (o == null || getClass() != o.getClass()) return false;
         Tenant tenant = (Tenant) o;
         return active == tenant.active &&
+                Objects.equals(id, tenant.id) &&
                 Objects.equals(name, tenant.name) &&
                 Objects.equals(createdDate, tenant.createdDate) &&
                 Objects.equals(users, tenant.users) &&
@@ -82,14 +89,10 @@ public class Tenant  extends AbstractEntity {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(name, createdDate, active, users, configs);
-    }
-
-    @Override
     public String toString() {
         return "Tenant{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", createdDate=" + createdDate +
                 ", active=" + active +
                 ", users=" + users +

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
 import com.speech4j.tenantservice.entity.Role;
+import com.speech4j.tenantservice.entity.User;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -18,6 +20,7 @@ import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_EMPTY;
 import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMPTY;
 
 @Data
+@Builder
 public class UserDto {
     private Long id;
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)

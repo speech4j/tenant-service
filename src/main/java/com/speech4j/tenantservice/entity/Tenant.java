@@ -2,19 +2,24 @@ package com.speech4j.tenantservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "tenants")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tenant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,81 +35,4 @@ public class Tenant {
     @OneToMany(mappedBy = "tenant")
     @JsonManagedReference
     private Set<Config> configs;
-
-
-    public Tenant() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ZonedDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(ZonedDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public Set<Config> getConfigs() {
-        return configs;
-    }
-
-    public void setConfigs(Set<Config> configs) {
-        this.configs = configs;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tenant tenant = (Tenant) o;
-        return active == tenant.active &&
-                Objects.equals(id, tenant.id) &&
-                Objects.equals(name, tenant.name) &&
-                Objects.equals(createdDate, tenant.createdDate) &&
-                Objects.equals(users, tenant.users) &&
-                Objects.equals(configs, tenant.configs);
-    }
-
-    @Override
-    public String toString() {
-        return "Tenant{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", createdDate=" + createdDate +
-                ", active=" + active +
-                ", users=" + users +
-                ", configs=" + configs +
-                '}';
-    }
 }

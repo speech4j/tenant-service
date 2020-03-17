@@ -1,7 +1,7 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.entity.Tenant;
-import com.speech4j.tenantservice.service.TenantService;
+import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tenants")
 public class TenantController {
 
-    private TenantService tenantService;
+    private EntityService<Tenant> service;
 
     @Autowired
-    public TenantController(TenantService tenantService) {
-        this.tenantService = tenantService;
+    public TenantController(EntityService<Tenant> service) {
+        this.service = service;
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     Tenant findById(@PathVariable("id") Long id) {
-        return tenantService.findById(id);
+        return service.findById(id);
     }
 }

@@ -1,7 +1,7 @@
 package com.speech4j.tenantservice.service.impl;
 
-import com.speech4j.tenantservice.entity.Tenant;
-import com.speech4j.tenantservice.repository.TenantRepository;
+import com.speech4j.tenantservice.entity.Config;
+import com.speech4j.tenantservice.repository.ConfigRepository;
 import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,26 +9,26 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TenantServiceImpl implements EntityService<Tenant> {
-    private TenantRepository repository;
+public class ConfigServiceImpl implements EntityService<Config> {
+    private ConfigRepository repository;
 
     @Autowired
-    public TenantServiceImpl(TenantRepository repository) {
+    public ConfigServiceImpl(ConfigRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Tenant create(Tenant entity) {
+    public Config create(Config entity) {
         return repository.save(entity);
     }
 
     @Override
-    public Tenant findById(Long id) {
+    public Config findById(Long id) {
         return findByIdOrThrowException(id);
     }
 
     @Override
-    public Tenant update(Tenant entity) {
+    public Config update(Config entity) {
         findByIdOrThrowException(entity.getId());
         return repository.save(entity);
     }
@@ -40,12 +40,12 @@ public class TenantServiceImpl implements EntityService<Tenant> {
     }
 
     @Override
-    public List<Tenant> findAll() {
-        return (List<Tenant>) repository.findAll();
+    public List<Config> findAll() {
+        return (List<Config>) repository.findAll();
     }
 
-    private Tenant findByIdOrThrowException(Long id) {
+    private Config findByIdOrThrowException(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Tenant not found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Config not found!"));
     }
 }

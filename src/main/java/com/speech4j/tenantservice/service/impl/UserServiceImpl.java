@@ -4,22 +4,31 @@ import com.speech4j.tenantservice.entity.User;
 import com.speech4j.tenantservice.repository.UserRepository;
 import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements EntityService<User> {
     private UserRepository repository;
+    private PasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, PasswordEncoder encoder) {
         this.repository = repository;
+        this.encoder = encoder;
     }
 
     @Override
     public User create(User entity) {
+        ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.systemDefault());
+        entity.setCreatedDate(currentTime);
+        entity.setUpdatedDate(currentTime);
+        entity.setPassword(encoder.encode(entity.getPassword()));
         return repository.save(entity);
     }
 
@@ -30,7 +39,13 @@ public class UserServiceImpl implements EntityService<User> {
 
     @Override
     public User update(User entity) {
-        return findByIdOrThrowException(entity.getId());
+        User user = findByIdOrThrowException(entity.getId());
+        user.setFirstName(entity.getFirstName());
+        user.setLastName(entity.getLastName());
+        user.setPassword(encoder.encode(entity.getPassword()));
+        user.setUpdatedDate(ZonedDateTime.now(ZoneId.systemDefault()));
+
+        return repository.save(user);
     }
 
     @Override

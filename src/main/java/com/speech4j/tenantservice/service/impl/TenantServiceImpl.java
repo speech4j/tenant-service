@@ -6,6 +6,8 @@ import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +21,7 @@ public class TenantServiceImpl implements EntityService<Tenant> {
 
     @Override
     public Tenant create(Tenant entity) {
+        entity.setCreatedDate(ZonedDateTime.now(ZoneId.systemDefault()));
         return repository.save(entity);
     }
 
@@ -29,8 +32,9 @@ public class TenantServiceImpl implements EntityService<Tenant> {
 
     @Override
     public Tenant update(Tenant entity) {
-        findByIdOrThrowException(entity.getId());
-        return repository.save(entity);
+        Tenant tenant = findByIdOrThrowException(entity.getId());
+        tenant.setName(entity.getName());
+        return repository.save(tenant);
     }
 
     @Override

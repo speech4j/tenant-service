@@ -7,7 +7,6 @@ import com.speech4j.tenantservice.dto.validation.NewData;
 import com.speech4j.tenantservice.entity.Role;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -22,6 +21,7 @@ import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMP
 @Data
 @Builder
 public class UserDto {
+    @Null(groups = {NewData.class}, message = REQUIRED_EMPTY)
     private Long id;
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
     private String firstName;

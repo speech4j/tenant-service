@@ -1,7 +1,9 @@
 package com.speech4j.tenantservice.controller;
 
-import com.speech4j.tenantservice.dto.TenantDto;
+import com.speech4j.tenantservice.dto.validation.ExistData;
+import com.speech4j.tenantservice.dto.validation.NewData;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +17,7 @@ import java.util.List;
 public interface EntityController<D> {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    D save(@RequestBody D dto);
+    D save(@Validated({NewData.class}) @RequestBody D dto);
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -23,7 +25,7 @@ public interface EntityController<D> {
 
     @PutMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    D update(@RequestBody D dto);
+    D update(@Validated({ExistData.class}) @RequestBody D dto);
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

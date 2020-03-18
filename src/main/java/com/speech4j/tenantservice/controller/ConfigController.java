@@ -1,6 +1,9 @@
 package com.speech4j.tenantservice.controller;
 
+import com.speech4j.tenantservice.dto.ConfigDto;
+import com.speech4j.tenantservice.dto.TenantDto;
 import com.speech4j.tenantservice.entity.Config;
+import com.speech4j.tenantservice.mapper.ConfigDtoMapper;
 import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,27 +13,29 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/configs")
-public class ConfigController implements EntityController<Config> {
+public class ConfigController implements EntityController<ConfigDto> {
     private EntityService<Config> service;
+    private ConfigDtoMapper mapper;
 
     @Autowired
-    public ConfigController(EntityService<Config> service) {
+    public ConfigController(EntityService<Config> service, ConfigDtoMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @Override
-    public Config save(Config entity) {
-        return service.create(entity);
+    public ConfigDto save(ConfigDto dto) {
+        return mapper.toDto(service.create(mapper.toEntity(dto)));
     }
 
     @Override
-    public Config findById(Long id) {
-        return service.findById(id);
+    public ConfigDto findById(Long id) {
+        return mapper.toDto(service.findById(id));
     }
 
     @Override
-    public Config update(Config entity) {
-        return service.update(entity);
+    public ConfigDto update(ConfigDto dto) {
+        return mapper.toDto(service.update(mapper.toEntity(dto)));
     }
 
     @Override
@@ -39,7 +44,7 @@ public class ConfigController implements EntityController<Config> {
     }
 
     @Override
-    public List<Config> findAll() {
-        return service.findAll();
+    public List<ConfigDto> findAll() {
+        return mapper.toDtoList(service.findAll());
     }
 }

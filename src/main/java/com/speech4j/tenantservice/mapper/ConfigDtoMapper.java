@@ -2,7 +2,9 @@ package com.speech4j.tenantservice.mapper;
 
 import com.speech4j.tenantservice.dto.ConfigDto;
 import com.speech4j.tenantservice.entity.Config;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ConfigDtoMapper extends AbstractEntityDtoMapper<Config, ConfigDto> {
     @Override
     public Config toEntity(ConfigDto dto) {

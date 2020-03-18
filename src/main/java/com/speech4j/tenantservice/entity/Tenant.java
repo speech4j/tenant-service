@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "tenants")
 public class Tenant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

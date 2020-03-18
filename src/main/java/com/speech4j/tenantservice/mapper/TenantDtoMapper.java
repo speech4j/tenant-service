@@ -2,7 +2,9 @@ package com.speech4j.tenantservice.mapper;
 
 import com.speech4j.tenantservice.dto.TenantDto;
 import com.speech4j.tenantservice.entity.Tenant;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TenantDtoMapper extends AbstractEntityDtoMapper<Tenant, TenantDto> {
     @Override
     public Tenant toEntity(TenantDto dto) {

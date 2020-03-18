@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
 import com.speech4j.tenantservice.entity.Role;
-import com.speech4j.tenantservice.entity.User;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;

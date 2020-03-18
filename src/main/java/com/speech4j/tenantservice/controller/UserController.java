@@ -1,6 +1,8 @@
 package com.speech4j.tenantservice.controller;
 
+import com.speech4j.tenantservice.dto.UserDto;
 import com.speech4j.tenantservice.entity.User;
+import com.speech4j.tenantservice.mapper.UserDtoMapper;
 import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,27 +12,29 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-public class UserController implements EntityController<User> {
+public class UserController implements EntityController<UserDto> {
     private EntityService<User> service;
+    private UserDtoMapper mapper;
 
     @Autowired
-    public UserController(EntityService<User> service) {
+    public UserController(EntityService<User> service, UserDtoMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @Override
-    public User save(User entity) {
-        return service.create(entity);
+    public UserDto save(UserDto dto) {
+        return mapper.toDto(service.create(mapper.toEntity(dto)));
     }
 
     @Override
-    public User findById(Long id) {
-        return service.findById(id);
+    public UserDto findById(Long id) {
+        return mapper.toDto(service.findById(id));
     }
 
     @Override
-    public User update(User entity) {
-        return service.update(entity);
+    public UserDto update(UserDto dto) {
+        return mapper.toDto(service.update(mapper.toEntity(dto)));
     }
 
     @Override
@@ -39,7 +43,7 @@ public class UserController implements EntityController<User> {
     }
 
     @Override
-    public List<User> findAll() {
-        return service.findAll();
+    public List<UserDto> findAll() {
+        return mapper.toDtoList(service.findAll());
     }
 }

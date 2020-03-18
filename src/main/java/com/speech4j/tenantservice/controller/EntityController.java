@@ -1,5 +1,6 @@
 package com.speech4j.tenantservice.controller;
 
+import com.speech4j.tenantservice.dto.TenantDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,18 +12,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
-public interface EntityController<E> {
+public interface EntityController<D> {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    E save(@RequestBody E entity);
+    D save(@RequestBody D dto);
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    E findById(@PathVariable("id") Long id);
+    D findById(@PathVariable("id") Long id);
 
     @PutMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    E update(@RequestBody E entity);
+    D update(@RequestBody D dto);
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -30,5 +31,5 @@ public interface EntityController<E> {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    List<E> findAll();
+    List<D> findAll();
 }

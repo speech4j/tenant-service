@@ -24,6 +24,7 @@ dependencies {
 	implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
 	annotationProcessor "org.projectlombok:lombok:1.18.12"
 	implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: '3.1.0.RELEASE'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.2.33'
 }
 
 test {

@@ -16,7 +16,6 @@ import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMP
 @Data
 @Builder
 public class ConfigDto {
-    @Null(groups = {NewData.class}, message = REQUIRED_EMPTY)
     private Long id;
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
     private String apiName;

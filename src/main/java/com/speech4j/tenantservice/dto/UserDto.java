@@ -29,13 +29,12 @@ public class UserDto {
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
     @Email(groups = {NewData.class, ExistData.class}, message = "Please, enter a valid email")
     private String email;
-    @NotNull(groups = {NewData.class}, message = REQUIRED_NOT_EMPTY)
-    @Size(groups = {NewData.class}, min = 6, message = "Password must be at least 6 symbols long")
-    @Pattern(groups = {NewData.class}, regexp = ".*[A-Za-z]+.*",
+    @NotNull(groups = {NewData.class,ExistData.class}, message = REQUIRED_NOT_EMPTY)
+    @Size(groups = {NewData.class, ExistData.class}, min = 6, message = "Password must be at least 6 symbols long")
+    @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[A-Za-z]+.*",
             message = "Pattern must contain at least 1 alphabetical character")
-    @Pattern(groups = {NewData.class}, regexp = ".*[0-9]+.*",
+    @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[0-9]+.*",
             message = "Pattern must contain at least 1 numeric character")
-    @Null(groups = {ExistData.class}, message = REQUIRED_EMPTY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @Null(groups = {NewData.class, ExistData.class}, message = REQUIRED_EMPTY)

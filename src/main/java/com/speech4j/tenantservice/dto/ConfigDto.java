@@ -2,8 +2,10 @@ package com.speech4j.tenantservice.dto;
 
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -13,6 +15,8 @@ import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMP
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ConfigDto {
     private Long id;
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)

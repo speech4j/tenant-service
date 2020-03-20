@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface EntityController<D> {
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     D save(@Validated({NewData.class}) @RequestBody D dto);
 
     @GetMapping("/{id}")

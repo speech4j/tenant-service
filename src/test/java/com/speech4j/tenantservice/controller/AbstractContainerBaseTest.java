@@ -1,5 +1,6 @@
-package com.speech4j.tenantservice;
+package com.speech4j.tenantservice.controller;
 
+import com.speech4j.tenantservice.TenantServiceApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;

@@ -1,6 +1,5 @@
 package com.speech4j.tenantservice.controller;
 
-import com.speech4j.tenantservice.controller.AbstractContainerBaseTest;
 import com.speech4j.tenantservice.dto.ConfigDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,9 +47,6 @@ class FirstTest extends AbstractContainerBaseTest {
         testConfig.setPassword("qwerty123");
 
         request = new HttpEntity<>(testConfig, headers);
-
-        //Populating of db
-        populateDB();
     }
 
     @Test
@@ -59,13 +55,19 @@ class FirstTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findByIdTest(){
-        ConfigDto response = this.template.getForObject(baseUrl + "/configs/2", ConfigDto.class);
+    public void findByIdTest() throws URISyntaxException {
+        //Populating of db
+        populateDB();
+
+        ConfigDto response = this.template.getForObject(baseUrl + "/configs/1", ConfigDto.class);
         assertNotNull(response.getId());
     }
 
     @Test
-    public void findAllTest(){
+    public void findAllTest() throws URISyntaxException {
+        //Populating of db
+        populateDB();
+
         List<ConfigDto> response = this.template.getForObject(baseUrl + "/configs", List.class);
         System.out.println("Get All users: " + response);
         assertEquals(4, response.size());
@@ -87,7 +89,7 @@ class FirstTest extends AbstractContainerBaseTest {
     public void updateEntityTest() {
         final String url = baseUrl + "/configs/me";
 
-        testConfig.setId(2l);
+        testConfig.setId(1l);
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
 
@@ -101,7 +103,10 @@ class FirstTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteEntity(){
+    public void deleteEntity() throws URISyntaxException {
+        //Populating of db
+        populateDB();
+
         Long id = 2l;
         final String url = baseUrl + "configs/" + id;
 

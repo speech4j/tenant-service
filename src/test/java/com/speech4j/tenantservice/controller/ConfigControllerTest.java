@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.dto.ConfigDto;
+import com.speech4j.tenantservice.dto.TenantDto;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-class FirstTest extends AbstractContainerBaseTest {
+class ConfigControllerTest extends AbstractContainerBaseTest {
     @LocalServerPort
     private int port;
     private TestRestTemplate template;
@@ -31,6 +31,7 @@ class FirstTest extends AbstractContainerBaseTest {
     private HttpEntity<ConfigDto> request;
     private ConfigDto testConfig;
 
+    private final String exceptionMessage = "Config not found!";
 
     @BeforeEach
     void setUp() {
@@ -59,16 +60,23 @@ class FirstTest extends AbstractContainerBaseTest {
 
     @Test
     public void findByIdTest_successFlow() {
-        ConfigDto response =
-                this.template.getForObject(baseUrl + "/tenants/users/configs/1", ConfigDto.class);
-        assertNotNull(response);
+        request = new HttpEntity<>(headers);
+        ResponseEntity<TenantDto> response
+                = template.exchange(baseUrl + "/tenants/users/configs/1", HttpMethod.GET, request, TenantDto.class);
+
+        //Verify request succeed
+        assertEquals(200, response.getStatusCodeValue());
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test
     public void findByIdTest__unsuccessFlow() {
-        ResponseMessageDto response =
-                this.template.getForObject(baseUrl + "/tenants/users/configs/100", ResponseMessageDto.class);
-        assertEquals("Config not found!", response.getMessage());
+        request = new HttpEntity<>(headers);
+        ResponseEntity<ResponseMessageDto> response
+                = template.exchange(baseUrl + "/tenants/users/configs/100", HttpMethod.GET, request, ResponseMessageDto.class);
+
+        //Verify request not succeed
+        checkEntityNotFoundException(response);
     }
 
     @Test
@@ -126,8 +134,7 @@ class FirstTest extends AbstractContainerBaseTest {
                 this.template.exchange(url, HttpMethod.PUT, request, ResponseMessageDto.class);
 
         //Verify request not succeed
-        assertEquals(404, response.getStatusCodeValue());
-        assertEquals("Config not found!", response.getBody().getMessage());
+        checkEntityNotFoundException(response);
     }
 
     @Test
@@ -154,8 +161,7 @@ class FirstTest extends AbstractContainerBaseTest {
                 = template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
 
         //Verify request not succeed
-        assertEquals(404, response.getStatusCodeValue());
-        assertEquals("Config not found!", response.getBody().getMessage());
+        checkEntityNotFoundException(response);
     }
 
     @Test
@@ -164,6 +170,10 @@ class FirstTest extends AbstractContainerBaseTest {
         assertEquals(1, response.size());
     }
 
+    private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response){
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(exceptionMessage, response.getBody().getMessage());
+    }
 
     private void populateDB() throws URISyntaxException {
         final String url = baseUrl + "/tenants/users/configs";

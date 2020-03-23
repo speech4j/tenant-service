@@ -1,6 +1,5 @@
 package com.speech4j.tenantservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
 
 import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_EMPTY;
 import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMPTY;
@@ -39,9 +38,7 @@ public class UserDto {
     private String password;
     @Null(groups = {NewData.class, ExistData.class}, message = REQUIRED_EMPTY)
     private Role role;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private ZonedDateTime createdDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private ZonedDateTime updatedDate;
+    private Timestamp createdDate;
+    private Timestamp updatedDate;
     private boolean active;
 }

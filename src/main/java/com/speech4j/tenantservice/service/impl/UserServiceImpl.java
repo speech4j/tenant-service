@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,9 +25,8 @@ public class UserServiceImpl implements EntityService<User> {
 
     @Override
     public User create(User entity) {
-        ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.systemDefault());
-        entity.setCreatedDate(currentTime);
-        entity.setUpdatedDate(currentTime);
+        entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        entity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         entity.setPassword(encoder.encode(entity.getPassword()));
         return repository.save(entity);
     }
@@ -44,7 +42,7 @@ public class UserServiceImpl implements EntityService<User> {
         user.setFirstName(entity.getFirstName());
         user.setLastName(entity.getLastName());
         user.setPassword(encoder.encode(entity.getPassword()));
-        user.setUpdatedDate(ZonedDateTime.now(ZoneId.systemDefault()));
+        user.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
 
         return repository.save(user);
     }

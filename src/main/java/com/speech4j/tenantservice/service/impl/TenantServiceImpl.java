@@ -7,8 +7,7 @@ import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -22,7 +21,7 @@ public class TenantServiceImpl implements EntityService<Tenant> {
 
     @Override
     public Tenant create(Tenant entity) {
-        entity.setCreatedDate(ZonedDateTime.now(ZoneId.systemDefault()));
+        entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
         return repository.save(entity);
     }
 

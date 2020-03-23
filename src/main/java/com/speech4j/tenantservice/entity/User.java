@@ -1,7 +1,6 @@
 package com.speech4j.tenantservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -35,10 +34,8 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private ZonedDateTime createdDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private ZonedDateTime updatedDate;
+    private Timestamp createdDate;
+    private Timestamp updatedDate;
     private boolean active;
     @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
     @JoinColumn

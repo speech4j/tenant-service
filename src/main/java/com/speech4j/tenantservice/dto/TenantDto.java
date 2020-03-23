@@ -1,6 +1,5 @@
 package com.speech4j.tenantservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
 
 import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMPTY;
 
@@ -21,7 +20,6 @@ public class TenantDto {
     private Long id;
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
     private String name;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private ZonedDateTime createdDate;
+    private Timestamp createdDate;
     private boolean active;
 }

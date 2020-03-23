@@ -59,7 +59,7 @@ class FirstTest extends AbstractContainerBaseTest {
         //Populating of db
         populateDB();
 
-        ConfigDto response = this.template.getForObject(baseUrl + "/configs/1", ConfigDto.class);
+        ConfigDto response = this.template.getForObject(baseUrl + "/tenants/users/configs/1", ConfigDto.class);
         assertNotNull(response.getId());
     }
 
@@ -68,14 +68,14 @@ class FirstTest extends AbstractContainerBaseTest {
         //Populating of db
         populateDB();
 
-        List<ConfigDto> response = this.template.getForObject(baseUrl + "/configs", List.class);
+        List<ConfigDto> response = this.template.getForObject(baseUrl + "/tenants/users/configs", List.class);
         System.out.println("Get All users: " + response);
         assertEquals(4, response.size());
     }
 
     @Test
     public void addEntityTest() {
-        final String url = baseUrl + "/configs";
+        final String url = baseUrl + "/tenants/users/configs";
 
         ResponseEntity<ConfigDto> response =
                 this.template.exchange(url, HttpMethod.POST, request, ConfigDto.class);
@@ -87,7 +87,7 @@ class FirstTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest() {
-        final String url = baseUrl + "/configs/me";
+        final String url = baseUrl + "/tenants/users/configs/me";
 
         testConfig.setId(1l);
         testConfig.setApiName("newName");
@@ -108,19 +108,19 @@ class FirstTest extends AbstractContainerBaseTest {
         populateDB();
 
         Long id = 2l;
-        final String url = baseUrl + "configs/" + id;
+        final String url = baseUrl + "/tenants/users/configs/" + id;
 
         template.delete(url);
 
         //checking if entity was deleted
-        ConfigDto response = this.template.getForObject(baseUrl + "/configs/" + id, ConfigDto.class);
+        ConfigDto response = this.template.getForObject(url, ConfigDto.class);
         assertNull(response.getId());
         //TODO: check if throw IllegalArgumentException
     }
 
 
     private void populateDB() throws URISyntaxException {
-        final String url = baseUrl + "/configs";
+        final String url = baseUrl + "/tenants/users/configs";
         URI uri = new URI(url);
 
         //entity1

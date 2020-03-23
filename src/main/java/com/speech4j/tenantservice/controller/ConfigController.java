@@ -1,7 +1,6 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.dto.ConfigDto;
-import com.speech4j.tenantservice.dto.TenantDto;
 import com.speech4j.tenantservice.entity.Config;
 import com.speech4j.tenantservice.mapper.ConfigDtoMapper;
 import com.speech4j.tenantservice.service.EntityService;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/configs")
+@RequestMapping("tenants/users/configs")
 public class ConfigController implements EntityController<ConfigDto> {
     private EntityService<Config> service;
     private ConfigDtoMapper mapper;

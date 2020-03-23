@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("tenants/users")
 public class UserController implements EntityController<UserDto> {
     private EntityService<User> service;
     private UserDtoMapper mapper;

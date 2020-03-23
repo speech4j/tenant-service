@@ -8,3 +8,9 @@ The tenant-service for getting a config file to APIs.
 
 ## Building Instructions
  * `gradle package` -- create executable jar
+ * `gradle clean build` -- build the project
+
+## Testing Instructions
+ * `./gradlew clean test` -- build and run the tests
+ 
+ 

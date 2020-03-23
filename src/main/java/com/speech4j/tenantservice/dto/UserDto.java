@@ -1,6 +1,5 @@
 package com.speech4j.tenantservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
 import com.speech4j.tenantservice.entity.Role;
@@ -38,7 +37,6 @@ public class UserDto {
             message = "Pattern must contain at least 1 alphabetical character")
     @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[0-9]+.*",
             message = "Pattern must contain at least 1 numeric character")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @Null(groups = {NewData.class, ExistData.class}, message = REQUIRED_EMPTY)
     private Role role;

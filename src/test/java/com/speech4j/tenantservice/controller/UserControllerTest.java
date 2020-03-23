@@ -5,7 +5,6 @@ import com.speech4j.tenantservice.dto.UserDto;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,12 +19,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class UserControllerTest extends AbstractContainerBaseTest {
-    @Autowired
-    private PasswordEncoder encoder;
-
     @LocalServerPort
     private int port;
     private TestRestTemplate template;
@@ -46,20 +40,20 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        //Initializing of test config
+        //Initializing of test user
         testUser = new UserDto();
         testUser.setFirstName("Mar");
         testUser.setLastName("Slob");
-        testUser.setEmail("mslob@gmail.com");
+        testUser.setEmail("email@gmail.com");
+        testUser.setPassword("string123");
         testUser.setActive(true);
-        testUser.setPassword(encoder.encode("qwerty123"));
 
         request = new HttpEntity<>(testUser, headers);
     }
 
     @Test
     void isRunningContainer() throws URISyntaxException {
-        assertTrue(postgreSQLContainer.isRunning());
+       // assertTrue(postgreSQLContainer.isRunning());
 
         //Populating of db
         populateDB();
@@ -125,7 +119,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(testUser, response.getBody());
+        assertThat(testUser).isEqualToIgnoringGivenFields(response.getBody(), "createdDate", "updatedDate", "password" );
         assertThat(response.getBody()).isNotNull();
     }
 
@@ -133,7 +127,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     public void updateEntityTest_unsuccessFlow() {
         final String url = baseUrl + "/tenants/users/me";
 
-        testUser.setId(1l);
+        testUser.setId(100l);
         testUser.setFirstName("NewName");
         request = new HttpEntity<>(testUser, headers);
 
@@ -174,8 +168,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findAllTest() {
         List<ConfigDto> response = this.template.getForObject(baseUrl + "/tenants/users", List.class);
-        System.out.println(response);
-        //assertEquals(1, response.size());
+        assertEquals(1, response.size());
     }
 
     private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response){
@@ -191,17 +184,17 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         UserDto user1 = new UserDto();
         user1.setFirstName("Name1");
         user1.setLastName("Surname1");
-        user1.setEmail("email1@gmail.com");
+        user1.setEmail("email@gmail.com");
+        user1.setPassword("qwerty123");
         user1.setActive(true);
-        user1.setPassword(encoder.encode("qwerty123"));
 
         //entity2
         UserDto user2 = new UserDto();
         user2.setFirstName("Name2");
-        user2.setLastName("Surname3");
-        user2.setEmail("email2@gmail.com");
+        user2.setLastName("Surname2");
+        user2.setEmail("email@gmail.com");
+        user2.setPassword("qwerty123");
         user2.setActive(true);
-        user2.setPassword(encoder.encode("qwerty123"));
 
         template.postForEntity(uri, new HttpEntity<>(user1, headers), UserDto.class);
         template.postForEntity(uri, new HttpEntity<>(user2, headers), UserDto.class);

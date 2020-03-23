@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.service.impl;
 
 import com.speech4j.tenantservice.entity.User;
+import com.speech4j.tenantservice.exception.UserNotFoundException;
 import com.speech4j.tenantservice.repository.UserRepository;
 import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,6 @@ public class UserServiceImpl implements EntityService<User> {
     private User findByIdOrThrowException(Long id) {
         Optional<User> user = repository.findById(id);
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found!"));
+                .orElseThrow(() -> new UserNotFoundException("User not found!"));
     }
 }

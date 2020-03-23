@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.service.impl;
 
 import com.speech4j.tenantservice.entity.Tenant;
+import com.speech4j.tenantservice.exception.TenantNotFoundException;
 import com.speech4j.tenantservice.repository.TenantRepository;
 import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,6 @@ public class TenantServiceImpl implements EntityService<Tenant> {
 
     private Tenant findByIdOrThrowException(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Tenant not found!"));
+                .orElseThrow(() -> new TenantNotFoundException("Tenant not found!"));
     }
 }

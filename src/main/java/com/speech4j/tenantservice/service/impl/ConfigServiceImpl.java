@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.service.impl;
 
 import com.speech4j.tenantservice.entity.Config;
+import com.speech4j.tenantservice.exception.ConfigNotFoundException;
 import com.speech4j.tenantservice.repository.ConfigRepository;
 import com.speech4j.tenantservice.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,6 @@ public class ConfigServiceImpl implements EntityService<Config> {
 
     private Config findByIdOrThrowException(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Config not found!"));
+                .orElseThrow(() -> new ConfigNotFoundException("Config not found!"));
     }
 }

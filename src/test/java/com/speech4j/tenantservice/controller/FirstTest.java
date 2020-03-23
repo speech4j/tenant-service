@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.dto.ConfigDto;
+import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,7 +19,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 class FirstTest extends AbstractContainerBaseTest {
@@ -33,7 +33,7 @@ class FirstTest extends AbstractContainerBaseTest {
 
 
     @BeforeEach
-    void setUp() throws URISyntaxException {
+    void setUp() {
         template = new TestRestTemplate();
         baseUrl = "http://localhost:" + port;
 
@@ -50,31 +50,29 @@ class FirstTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    void isRunningContainer() {
+    void isRunningContainer() throws URISyntaxException {
         assertTrue(postgreSQLContainer.isRunning());
-    }
 
-    @Test
-    public void findByIdTest() throws URISyntaxException {
         //Populating of db
         populateDB();
-
-        ConfigDto response = this.template.getForObject(baseUrl + "/tenants/users/configs/1", ConfigDto.class);
-        assertNotNull(response.getId());
     }
 
     @Test
-    public void findAllTest() throws URISyntaxException {
-        //Populating of db
-        populateDB();
-
-        List<ConfigDto> response = this.template.getForObject(baseUrl + "/tenants/users/configs", List.class);
-        System.out.println("Get All users: " + response);
-        assertEquals(4, response.size());
+    public void findByIdTest_successFlow() {
+        ConfigDto response =
+                this.template.getForObject(baseUrl + "/tenants/users/configs/1", ConfigDto.class);
+        assertNotNull(response);
     }
 
     @Test
-    public void addEntityTest() {
+    public void findByIdTest__unsuccessFlow() {
+        ResponseMessageDto response =
+                this.template.getForObject(baseUrl + "/tenants/users/configs/100", ResponseMessageDto.class);
+        assertEquals("Config not found!", response.getMessage());
+    }
+
+    @Test
+    public void addEntityTest_successFlow() {
         final String url = baseUrl + "/tenants/users/configs";
 
         ResponseEntity<ConfigDto> response =
@@ -86,7 +84,21 @@ class FirstTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateEntityTest() {
+    public void addEntityTest_unsuccessFlow() {
+        final String url = baseUrl + "/tenants/users/configs";
+
+        //Make entity null
+        request = new HttpEntity<>(null, headers);
+
+        ResponseEntity<ResponseMessageDto> response =
+                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
+
+        //Verify this exception because of validation null entity can't be accepted by controller
+        assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
+    public void updateEntityTest_successFlow() {
         final String url = baseUrl + "/tenants/users/configs/me";
 
         testConfig.setId(1l);
@@ -103,19 +115,53 @@ class FirstTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteEntity() throws URISyntaxException {
-        //Populating of db
-        populateDB();
+    public void updateEntityTest_unsuccessFlow() {
+        final String url = baseUrl + "/tenants/users/configs/me";
 
+        testConfig.setId(100l);
+        testConfig.setApiName("newName");
+        request = new HttpEntity<>(testConfig, headers);
+
+        ResponseEntity<ResponseMessageDto> response =
+                this.template.exchange(url, HttpMethod.PUT, request, ResponseMessageDto.class);
+
+        //Verify request not succeed
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals("Config not found!", response.getBody().getMessage());
+    }
+
+    @Test
+    public void deleteEntity_successFlow() {
         Long id = 2l;
         final String url = baseUrl + "/tenants/users/configs/" + id;
 
-        template.delete(url);
+        request = new HttpEntity<ConfigDto>(headers);
+        ResponseEntity<ResponseMessageDto> response
+                = template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
 
-        //checking if entity was deleted
-        ConfigDto response = this.template.getForObject(url, ConfigDto.class);
-        assertNull(response.getId());
-        //TODO: check if throw IllegalArgumentException
+        //Checking if entity was deleted
+        assertEquals(204, response.getStatusCodeValue());
+
+    }
+
+    @Test
+    public void deleteEntity_unsuccessFlow() {
+        Long id = 100l;
+        final String url = baseUrl + "/tenants/users/configs/" + id;
+
+        request = new HttpEntity<ConfigDto>(headers);
+        ResponseEntity<ResponseMessageDto> response
+                = template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
+
+        //Verify request not succeed
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals("Config not found!", response.getBody().getMessage());
+    }
+
+    @Test
+    public void findAllTest() {
+        List<ConfigDto> response = this.template.getForObject(baseUrl + "/tenants/users/configs", List.class);
+        assertEquals(1, response.size());
     }
 
 

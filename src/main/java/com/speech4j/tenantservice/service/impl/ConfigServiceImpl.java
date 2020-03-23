@@ -20,7 +20,11 @@ public class ConfigServiceImpl implements EntityService<Config> {
 
     @Override
     public Config create(Config entity) {
-        return repository.save(entity);
+        if (entity != null) {
+            return repository.save(entity);
+        } else {
+            throw new IllegalArgumentException("Config not saved because of a null entity!");
+        }
     }
 
     @Override

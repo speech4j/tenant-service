@@ -8,17 +8,19 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @SpringBootTest(classes = TenantServiceApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class AbstractContainerBaseTest {
+public class AbstractContainerBaseTest extends PostgreSQLContainer<AbstractContainerBaseTest> {
     static final PostgreSQLContainer postgreSQLContainer;
-
 
     static {
         postgreSQLContainer = new PostgreSQLContainer()
                 .withPassword("password")
                 .withUsername("postgres")
                 .withDatabaseName("tenant_db");
-        postgreSQLContainer.start();
+    }
 
+    @Override
+    public void start(){
+        postgreSQLContainer.start();
         System.setProperty("spring.datasource.url", postgreSQLContainer.getJdbcUrl());
         System.setProperty("spring.datasource.password", postgreSQLContainer.getPassword());
         System.setProperty("spring.datasource.username", postgreSQLContainer.getUsername());

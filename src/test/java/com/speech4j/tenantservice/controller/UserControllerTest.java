@@ -1,6 +1,5 @@
 package com.speech4j.tenantservice.controller;
 
-import com.speech4j.tenantservice.dto.ConfigDto;
 import com.speech4j.tenantservice.dto.UserDto;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserControllerTest extends AbstractContainerBaseTest {
     @LocalServerPort
@@ -31,9 +31,10 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     private UserDto testUser;
 
     private final String exceptionMessage = "User not found!";
+    private Long testId;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws URISyntaxException {
         template = new TestRestTemplate();
         baseUrl = "http://localhost:" + port;
 
@@ -49,21 +50,22 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         testUser.setActive(true);
 
         request = new HttpEntity<>(testUser, headers);
-    }
-
-    @Test
-    void isRunningContainer() throws URISyntaxException {
-       // assertTrue(postgreSQLContainer.isRunning());
 
         //Populating of db
         populateDB();
     }
 
     @Test
+    void isRunningContainer(){
+        postgreSQLContainer.start();
+        assertTrue(postgreSQLContainer.isRunning());
+    }
+
+    @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<UserDto> response
-                = template.exchange(baseUrl + "/tenants/users/1", HttpMethod.GET, request, UserDto.class);
+                = template.exchange(baseUrl + "/tenants/users/" + testId, HttpMethod.GET, request, UserDto.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -74,7 +76,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(baseUrl + "/tenants/users/100", HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange(baseUrl + "/tenants/users/0", HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
@@ -110,7 +112,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     public void updateEntityTest_successFlow() {
         final String url = baseUrl + "/tenants/users/me";
 
-        testUser.setId(1l);
+        testUser.setId(testId);
         testUser.setFirstName("NewName");
         request = new HttpEntity<>(testUser, headers);
 
@@ -127,7 +129,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     public void updateEntityTest_unsuccessFlow() {
         final String url = baseUrl + "/tenants/users/me";
 
-        testUser.setId(100l);
+        testUser.setId(0l);
         testUser.setFirstName("NewName");
         request = new HttpEntity<>(testUser, headers);
 
@@ -140,8 +142,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_successFlow() {
-        Long id = 2l;
-        final String url = baseUrl + "/tenants/users/" + id;
+        final String url = baseUrl + "/tenants/users/" + testId;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -154,8 +155,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_unsuccessFlow() {
-        Long id = 100l;
-        final String url = baseUrl + "/tenants/users/" + id;
+        final String url = baseUrl + "/tenants/users/" + 0;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -167,8 +167,11 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void findAllTest() {
-        List<ConfigDto> response = this.template.getForObject(baseUrl + "/tenants/users", List.class);
-        assertEquals(1, response.size());
+        request = new HttpEntity<>(headers);
+        ResponseEntity<List> response = template.exchange(baseUrl + "/tenants/users", HttpMethod.GET, request, List.class);
+
+        //Checking if status code is correct
+        assertEquals(200, response.getStatusCodeValue());
     }
 
     private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response){
@@ -196,7 +199,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         user2.setPassword("qwerty123");
         user2.setActive(true);
 
-        template.postForEntity(uri, new HttpEntity<>(user1, headers), UserDto.class);
-        template.postForEntity(uri, new HttpEntity<>(user2, headers), UserDto.class);
+        ResponseEntity<UserDto> response1 = template.postForEntity(uri, new HttpEntity<>(user1, headers), UserDto.class);
+        ResponseEntity<UserDto> response2 = template.postForEntity(uri, new HttpEntity<>(user2, headers), UserDto.class);
+        testId = response1.getBody().getId();
     }
 }

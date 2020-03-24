@@ -32,9 +32,10 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     private ConfigDto testConfig;
 
     private final String exceptionMessage = "Config not found!";
+    private Long testId;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws URISyntaxException {
         template = new TestRestTemplate();
         baseUrl = "http://localhost:" + port;
 
@@ -48,21 +49,22 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         testConfig.setPassword("qwerty123");
 
         request = new HttpEntity<>(testConfig, headers);
-    }
-
-    @Test
-    void isRunningContainer() throws URISyntaxException {
-        assertTrue(postgreSQLContainer.isRunning());
 
         //Populating of db
         populateDB();
     }
 
     @Test
+    void isRunningContainer(){
+        postgreSQLContainer.start();
+        assertTrue(postgreSQLContainer.isRunning());
+    }
+
+    @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<TenantDto> response
-                = template.exchange(baseUrl + "/tenants/users/configs/1", HttpMethod.GET, request, TenantDto.class);
+                = template.exchange(baseUrl + "/tenants/users/configs/" + testId, HttpMethod.GET, request, TenantDto.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -73,7 +75,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(baseUrl + "/tenants/users/configs/100", HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange(baseUrl + "/tenants/users/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
@@ -109,7 +111,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void updateEntityTest_successFlow() {
         final String url = baseUrl + "/tenants/users/configs/me";
 
-        testConfig.setId(1l);
+        testConfig.setId(testId);
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
 
@@ -126,7 +128,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void updateEntityTest_unsuccessFlow() {
         final String url = baseUrl + "/tenants/users/configs/me";
 
-        testConfig.setId(100l);
+        testConfig.setId(0l);
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
 
@@ -139,8 +141,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_successFlow() {
-        Long id = 2l;
-        final String url = baseUrl + "/tenants/users/configs/" + id;
+        final String url = baseUrl + "/tenants/users/configs/" + testId;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -153,8 +154,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_unsuccessFlow() {
-        Long id = 100l;
-        final String url = baseUrl + "/tenants/users/configs/" + id;
+        final String url = baseUrl + "/tenants/users/configs/" + 0l;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -166,8 +166,11 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void findAllTest() {
-        List<ConfigDto> response = this.template.getForObject(baseUrl + "/tenants/users/configs", List.class);
-        assertEquals(1, response.size());
+        request = new HttpEntity<>(headers);
+        ResponseEntity<List> response = template.exchange(baseUrl + "/tenants/users/configs", HttpMethod.GET, request, List.class);
+
+        //Checking if status code is correct
+        assertEquals(200, response.getStatusCodeValue());
     }
 
     private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response){
@@ -191,8 +194,11 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         config2.setUsername("speech4j");
         config2.setPassword("qwerty123");
 
-        template.postForEntity(uri, new HttpEntity<>(config1, headers), ConfigDto.class);
-        template.postForEntity(uri, new HttpEntity<>(config2, headers), ConfigDto.class);
+        ResponseEntity<ConfigDto> response1 = template.postForEntity(uri, new HttpEntity<>(config1, headers), ConfigDto.class);
+        ResponseEntity<ConfigDto> response2 = template.postForEntity(uri, new HttpEntity<>(config2, headers), ConfigDto.class);
+
+        testId = response1.getBody().getId();
+        System.out.println("ID:" + testId);
     }
 
 }

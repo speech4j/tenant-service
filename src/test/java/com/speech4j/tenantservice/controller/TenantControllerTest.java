@@ -1,6 +1,5 @@
 package com.speech4j.tenantservice.controller;
 
-import com.speech4j.tenantservice.dto.ConfigDto;
 import com.speech4j.tenantservice.dto.TenantDto;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,10 +31,11 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     private TenantDto testTenant;
 
     private final String exceptionMessage = "Tenant not found!";
+    private Long testId;
 
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws URISyntaxException {
         template = new TestRestTemplate();
         baseUrl = "http://localhost:" + port;
 
@@ -48,21 +48,22 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         testTenant.setActive(true);
 
         request = new HttpEntity<>(testTenant, headers);
-    }
-
-    @Test
-    void isRunningContainer() throws URISyntaxException {
-        assertTrue(postgreSQLContainer.isRunning());
 
         //Populating of db
         populateDB();
     }
 
     @Test
+    void isRunningContainer(){
+        postgreSQLContainer.start();
+        assertTrue(postgreSQLContainer.isRunning());
+    }
+
+    @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<TenantDto> response
-                = template.exchange(baseUrl + "/tenants/1", HttpMethod.GET, request, TenantDto.class);
+                = template.exchange(baseUrl + "/tenants/" + testId, HttpMethod.GET, request, TenantDto.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -73,7 +74,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(baseUrl + "/tenants/100", HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange(baseUrl + "/tenants/0", HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
@@ -109,7 +110,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     public void updateEntityTest_successFlow() {
         final String url = baseUrl + "/tenants/me";
 
-        testTenant.setId(1l);
+        testTenant.setId(testId);
         testTenant.setName("New Company");
         request = new HttpEntity<>(testTenant, headers);
 
@@ -126,7 +127,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     public void updateEntityTest_unsuccessFlow() {
         final String url = baseUrl + "/tenants/me";
 
-        testTenant.setId(100l);
+        testTenant.setId(0l);
         testTenant.setName("New Company");
         request = new HttpEntity<>(testTenant, headers);
 
@@ -139,8 +140,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_successFlow() {
-        Long id = 2l;
-        final String url = baseUrl + "/tenants/" + id;
+        final String url = baseUrl + "/tenants/" + testId;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -148,13 +148,11 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
         //Checking if entity was deleted
         assertEquals(204, response.getStatusCodeValue());
-
     }
 
     @Test
     public void deleteEntity_unsuccessFlow() {
-        Long id = 100l;
-        final String url = baseUrl + "/tenants/" + id;
+        final String url = baseUrl + "/tenants/" + 0;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -166,8 +164,11 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void findAllTest() {
-        List<ConfigDto> response = this.template.getForObject(baseUrl + "/tenants", List.class);
-        assertEquals(1, response.size());
+        request = new HttpEntity<>(headers);
+        ResponseEntity<List> response = template.exchange(baseUrl + "/tenants", HttpMethod.GET, request, List.class);
+
+        //Checking if status code is correct
+        assertEquals(200, response.getStatusCodeValue());
     }
 
     private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response){
@@ -189,7 +190,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         tenant2.setName("Company2");
         tenant2.setActive(true);
 
-        template.postForEntity(uri, new HttpEntity<>(tenant1, headers), TenantDto.class);
-        template.postForEntity(uri, new HttpEntity<>(tenant2, headers), TenantDto.class);
+        ResponseEntity<TenantDto> response1 = template.postForEntity(uri, new HttpEntity<>(tenant1, headers), TenantDto.class);
+        ResponseEntity<TenantDto> response2 = template.postForEntity(uri, new HttpEntity<>(tenant2, headers), TenantDto.class);
+        testId = response1.getBody().getId();
     }
 }

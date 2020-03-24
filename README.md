@@ -11,6 +11,8 @@ The tenant-service for getting a config file to APIs.
  * `gradle clean build` -- build the project
 
 ## Testing Instructions
- * `./gradlew clean test` -- build and run the tests
+(If running from windows - replace / to \ )
+ * `./gradlew clean test` -- build and run the tests.
+ 
  
  

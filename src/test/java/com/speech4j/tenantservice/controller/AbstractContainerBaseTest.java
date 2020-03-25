@@ -1,9 +1,12 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.handler.GlobalExceptionHandler;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
+
+import static org.junit.Assert.assertTrue;
 
 public class AbstractContainerBaseTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -22,5 +25,11 @@ public class AbstractContainerBaseTest {
         System.setProperty("spring.datasource.username", postgreSQLContainer.getUsername());
 
         LOGGER.info("URL:" + System.getProperty("spring.datasource.url"));
+    }
+
+    @Test
+    void isRunningContainer(){
+        assertTrue(postgreSQLContainer.isRunning());
+        LOGGER.info("CONTAINER IS RUNNING!");
     }
 }

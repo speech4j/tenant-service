@@ -6,9 +6,9 @@ import com.speech4j.tenantservice.dto.TenantDto;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,15 +21,12 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(classes = TenantServiceApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ConfigControllerTest extends AbstractContainerBaseTest {
-    @LocalServerPort
-    private int port;
+    @Autowired
     private TestRestTemplate template;
-    private String baseUrl;
 
     private HttpHeaders headers;
     private HttpEntity<ConfigDto> request;
@@ -40,9 +37,6 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @BeforeEach
     void setUp() throws URISyntaxException {
-        template = new TestRestTemplate();
-        baseUrl = "http://localhost:" + port;
-
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -59,16 +53,10 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    void isRunningContainer(){
-        postgreSQLContainer.start();
-        assertTrue(postgreSQLContainer.isRunning());
-    }
-
-    @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<TenantDto> response
-                = template.exchange(baseUrl + "/tenants/users/configs/" + testId, HttpMethod.GET, request, TenantDto.class);
+                = template.exchange("/tenants/users/configs/" + testId, HttpMethod.GET, request, TenantDto.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -79,7 +67,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(baseUrl + "/tenants/users/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange("/tenants/users/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
@@ -87,7 +75,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void addEntityTest_successFlow() {
-        final String url = baseUrl + "/tenants/users/configs";
+        final String url = "/tenants/users/configs";
 
         ResponseEntity<ConfigDto> response =
                 this.template.exchange(url, HttpMethod.POST, request, ConfigDto.class);
@@ -99,7 +87,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void addEntityTest_unsuccessFlow() {
-        final String url = baseUrl + "/tenants/users/configs";
+        final String url = "/tenants/users/configs";
 
         //Make entity null
         request = new HttpEntity<>(null, headers);
@@ -113,7 +101,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_successFlow() {
-        final String url = baseUrl + "/tenants/users/configs/me";
+        final String url = "/tenants/users/configs/me";
 
         testConfig.setId(testId);
         testConfig.setApiName("newName");
@@ -130,7 +118,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_unsuccessFlow() {
-        final String url = baseUrl + "/tenants/users/configs/me";
+        final String url = "/tenants/users/configs/me";
 
         testConfig.setId(0l);
         testConfig.setApiName("newName");
@@ -145,7 +133,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_successFlow() {
-        final String url = baseUrl + "/tenants/users/configs/" + testId;
+        final String url = "/tenants/users/configs/" + testId;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -158,7 +146,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_unsuccessFlow() {
-        final String url = baseUrl + "/tenants/users/configs/" + 0l;
+        final String url = "/tenants/users/configs/" + 0l;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -171,7 +159,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findAllTest() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<List> response = template.exchange(baseUrl + "/tenants/users/configs", HttpMethod.GET, request, List.class);
+        ResponseEntity<List> response = template.exchange("/tenants/users/configs", HttpMethod.GET, request, List.class);
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
@@ -183,7 +171,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     private void populateDB() throws URISyntaxException {
-        final String url = baseUrl + "/tenants/users/configs";
+        final String url = "/tenants/users/configs";
         URI uri = new URI(url);
 
         //entity1

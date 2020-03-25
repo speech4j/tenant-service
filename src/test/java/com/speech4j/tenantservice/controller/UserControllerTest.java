@@ -5,6 +5,7 @@ import com.speech4j.tenantservice.dto.UserDto;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -25,10 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = TenantServiceApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest extends AbstractContainerBaseTest {
-    @LocalServerPort
-    private int port;
+    @Autowired
     private TestRestTemplate template;
-    private String baseUrl;
 
     private HttpHeaders headers;
     private HttpEntity<UserDto> request;
@@ -39,9 +38,6 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @BeforeEach
     void setUp() throws URISyntaxException {
-        template = new TestRestTemplate();
-        baseUrl = "http://localhost:" + port;
-
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -61,7 +57,6 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     void isRunningContainer(){
-        postgreSQLContainer.start();
         assertTrue(postgreSQLContainer.isRunning());
     }
 
@@ -69,7 +64,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<UserDto> response
-                = template.exchange(baseUrl + "/tenants/users/" + testId, HttpMethod.GET, request, UserDto.class);
+                = template.exchange("/tenants/users/" + testId, HttpMethod.GET, request, UserDto.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -80,7 +75,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(baseUrl + "/tenants/users/0", HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange("/tenants/users/0", HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
@@ -88,7 +83,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void addEntityTest_successFlow() {
-        final String url = baseUrl + "/tenants/users";
+        final String url = "/tenants/users";
 
         ResponseEntity<UserDto> response =
                 this.template.exchange(url, HttpMethod.POST, request, UserDto.class);
@@ -100,7 +95,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void addEntityTest_unsuccessFlow() {
-        final String url = baseUrl + "/tenants/users";
+        final String url = "/tenants/users";
 
         //Make entity null
         request = new HttpEntity<>(null, headers);
@@ -114,7 +109,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_successFlow() {
-        final String url = baseUrl + "/tenants/users/me";
+        final String url = "/tenants/users/me";
 
         testUser.setId(testId);
         testUser.setFirstName("NewName");
@@ -131,7 +126,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_unsuccessFlow() {
-        final String url = baseUrl + "/tenants/users/me";
+        final String url = "/tenants/users/me";
 
         testUser.setId(0l);
         testUser.setFirstName("NewName");
@@ -146,7 +141,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_successFlow() {
-        final String url = baseUrl + "/tenants/users/" + testId;
+        final String url = "/tenants/users/" + testId;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -159,7 +154,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_unsuccessFlow() {
-        final String url = baseUrl + "/tenants/users/" + 0;
+        final String url = "/tenants/users/" + 0;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -172,7 +167,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findAllTest() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<List> response = template.exchange(baseUrl + "/tenants/users", HttpMethod.GET, request, List.class);
+        ResponseEntity<List> response = template.exchange("/tenants/users", HttpMethod.GET, request, List.class);
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
@@ -184,7 +179,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     private void populateDB() throws URISyntaxException {
-        final String url = baseUrl + "/tenants/users";
+        final String url = "/tenants/users";
         URI uri = new URI(url);
 
         //entity1

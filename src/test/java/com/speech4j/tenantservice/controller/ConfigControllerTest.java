@@ -1,10 +1,12 @@
 package com.speech4j.tenantservice.controller;
 
+import com.speech4j.tenantservice.TenantServiceApplication;
 import com.speech4j.tenantservice.dto.ConfigDto;
 import com.speech4j.tenantservice.dto.TenantDto;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
@@ -21,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@SpringBootTest(classes = TenantServiceApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ConfigControllerTest extends AbstractContainerBaseTest {
     @LocalServerPort
     private int port;
@@ -198,7 +202,6 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         ResponseEntity<ConfigDto> response2 = template.postForEntity(uri, new HttpEntity<>(config2, headers), ConfigDto.class);
 
         testId = response1.getBody().getId();
-        System.out.println("ID:" + testId);
     }
 
 }

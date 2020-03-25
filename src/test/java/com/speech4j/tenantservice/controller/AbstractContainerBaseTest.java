@@ -1,12 +1,13 @@
 package com.speech4j.tenantservice.controller;
 
-import com.speech4j.tenantservice.TenantServiceApplication;
-import org.springframework.boot.test.context.SpringBootTest;
+import com.speech4j.tenantservice.handler.GlobalExceptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-@SpringBootTest(classes = TenantServiceApplication.class,
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AbstractContainerBaseTest extends PostgreSQLContainer<AbstractContainerBaseTest> {
+public class AbstractContainerBaseTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     static final PostgreSQLContainer postgreSQLContainer;
 
     static {
@@ -14,13 +15,12 @@ public class AbstractContainerBaseTest extends PostgreSQLContainer<AbstractConta
                 .withPassword("password")
                 .withUsername("postgres")
                 .withDatabaseName("tenant_db");
-    }
+        postgreSQLContainer.start();
 
-    @Override
-    public void start(){
-        super.start();
         System.setProperty("spring.datasource.url", postgreSQLContainer.getJdbcUrl());
         System.setProperty("spring.datasource.password", postgreSQLContainer.getPassword());
         System.setProperty("spring.datasource.username", postgreSQLContainer.getUsername());
+
+        LOGGER.info("URL:" + System.getProperty("spring.datasource.url"));
     }
 }

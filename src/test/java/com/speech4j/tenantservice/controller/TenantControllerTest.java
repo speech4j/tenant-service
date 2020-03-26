@@ -1,8 +1,9 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.TenantServiceApplication;
-import com.speech4j.tenantservice.dto.request.TenantDtoReq;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
+import com.speech4j.tenantservice.dto.request.TenantDtoReq;
+import com.speech4j.tenantservice.dto.response.TenantDtoResp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,6 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         //Initializing of test tenant
         testTenant = new TenantDtoReq();
         testTenant.setName("SoftServe");
-        testTenant.setActive(true);
 
         request = new HttpEntity<>(testTenant, headers);
 
@@ -60,8 +60,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<TenantDtoReq> response
-                = template.exchange("/tenants/" + testId, HttpMethod.GET, request, TenantDtoReq.class);
+        ResponseEntity<TenantDtoResp> response
+                = template.exchange("/tenants/" + testId, HttpMethod.GET, request, TenantDtoResp.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -82,8 +82,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     public void addEntityTest_successFlow() {
         final String url = "/tenants";
 
-        ResponseEntity<TenantDtoReq> response =
-                this.template.exchange(url, HttpMethod.POST, request, TenantDtoReq.class);
+        ResponseEntity<TenantDtoResp> response =
+                this.template.exchange(url, HttpMethod.POST, request, TenantDtoResp.class);
 
         //Verify request succeed
         assertEquals(201, response.getStatusCodeValue());
@@ -106,14 +106,13 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_successFlow() {
-        final String url = "/tenants/me";
+        final String url = "/tenants/" + testId;
 
-        testTenant.setId(testId);
         testTenant.setName("New Company");
         request = new HttpEntity<>(testTenant, headers);
 
-        ResponseEntity<TenantDtoReq> response =
-                this.template.exchange(url, HttpMethod.PUT, request, TenantDtoReq.class);
+        ResponseEntity<TenantDtoResp> response =
+                this.template.exchange(url, HttpMethod.PUT, request, TenantDtoResp.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -123,9 +122,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_unsuccessFlow() {
-        final String url = "/tenants/me";
+        final String url = "/tenants/" + 0;
 
-        testTenant.setId(0l);
         testTenant.setName("New Company");
         request = new HttpEntity<>(testTenant, headers);
 
@@ -181,15 +179,13 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         //entity1
         TenantDtoReq tenant1 = new TenantDtoReq();
         tenant1.setName("Company1");
-        tenant1.setActive(true);
 
         //entity2
         TenantDtoReq tenant2 = new TenantDtoReq();
         tenant2.setName("Company2");
-        tenant2.setActive(true);
 
-        ResponseEntity<TenantDtoReq> response1 = template.postForEntity(uri, new HttpEntity<>(tenant1, headers), TenantDtoReq.class);
-        ResponseEntity<TenantDtoReq> response2 = template.postForEntity(uri, new HttpEntity<>(tenant2, headers), TenantDtoReq.class);
+        ResponseEntity<TenantDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(tenant1, headers), TenantDtoResp.class);
+        ResponseEntity<TenantDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(tenant2, headers), TenantDtoResp.class);
         testId = response1.getBody().getId();
     }
 }

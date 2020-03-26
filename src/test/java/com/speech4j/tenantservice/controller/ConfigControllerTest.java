@@ -1,9 +1,10 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.TenantServiceApplication;
-import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
-import com.speech4j.tenantservice.dto.request.TenantDtoReq;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
+import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
+import com.speech4j.tenantservice.dto.response.ConfigDtoResp;
+import com.speech4j.tenantservice.dto.response.TenantDtoResp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +56,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<TenantDtoReq> response
-                = template.exchange("/tenants/users/configs/" + testId, HttpMethod.GET, request, TenantDtoReq.class);
+        ResponseEntity<TenantDtoResp> response
+                = template.exchange("/tenants/users/configs/" + testId, HttpMethod.GET, request, TenantDtoResp.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -77,8 +78,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void addEntityTest_successFlow() {
         final String url = "/tenants/users/configs";
 
-        ResponseEntity<ConfigDtoReq> response =
-                this.template.exchange(url, HttpMethod.POST, request, ConfigDtoReq.class);
+        ResponseEntity<ConfigDtoResp> response =
+                this.template.exchange(url, HttpMethod.POST, request, ConfigDtoResp.class);
 
         //Verify request succeed
         assertEquals(201, response.getStatusCodeValue());
@@ -101,9 +102,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_successFlow() {
-        final String url = "/tenants/users/configs/me";
+        final String url = "/tenants/users/configs/" + testId;
 
-        testConfig.setId(testId);
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
 
@@ -118,9 +118,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_unsuccessFlow() {
-        final String url = "/tenants/users/configs/me";
+        final String url = "/tenants/users/configs/" + 0;
 
-        testConfig.setId(0l);
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
 
@@ -186,8 +185,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         config2.setUsername("speech4j");
         config2.setPassword("qwerty123");
 
-        ResponseEntity<ConfigDtoReq> response1 = template.postForEntity(uri, new HttpEntity<>(config1, headers), ConfigDtoReq.class);
-        ResponseEntity<ConfigDtoReq> response2 = template.postForEntity(uri, new HttpEntity<>(config2, headers), ConfigDtoReq.class);
+        ResponseEntity<ConfigDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(config1, headers), ConfigDtoResp.class);
+        ResponseEntity<ConfigDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(config2, headers), ConfigDtoResp.class);
 
         testId = response1.getBody().getId();
     }

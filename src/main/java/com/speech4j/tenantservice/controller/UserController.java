@@ -34,8 +34,8 @@ public class UserController implements EntityController<UserDtoReq, UserDtoResp>
     }
 
     @Override
-    public UserDtoResp update(UserDtoReq dto) {
-        return mapper.toDto(service.update(mapper.toEntity(dto)));
+    public UserDtoResp update(UserDtoReq dto, Long id) {
+        return mapper.toDto(service.update(mapper.toEntity(dto), id));
     }
 
     @Override

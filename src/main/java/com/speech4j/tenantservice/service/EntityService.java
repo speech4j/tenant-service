@@ -7,7 +7,7 @@ public interface EntityService<E> {
 
     E findById(Long id);
 
-    E update(E entity);
+    E update(E entity, Long id);
 
     void deleteById(Long id);
 

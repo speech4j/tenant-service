@@ -34,8 +34,8 @@ public class ConfigController implements EntityController<ConfigDtoReq, ConfigDt
     }
 
     @Override
-    public ConfigDtoResp update(ConfigDtoReq dto) {
-        return mapper.toDto(service.update(mapper.toEntity(dto)));
+    public ConfigDtoResp update(ConfigDtoReq dto, Long id) {
+        return mapper.toDto(service.update(mapper.toEntity(dto), id));
     }
 
     @Override

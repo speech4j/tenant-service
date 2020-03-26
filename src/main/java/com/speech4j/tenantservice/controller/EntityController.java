@@ -23,9 +23,9 @@ public interface EntityController<DtoRequest, DtoResponse> {
     @ResponseStatus(HttpStatus.OK)
     DtoResponse findById(@PathVariable("id") Long id);
 
-    @PutMapping("/me")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    DtoResponse update(@Validated({ExistData.class}) @RequestBody DtoRequest dto);
+    DtoResponse update(@Validated({ExistData.class}) @RequestBody DtoRequest dto, @PathVariable Long id);
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

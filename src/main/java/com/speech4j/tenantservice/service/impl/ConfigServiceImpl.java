@@ -29,8 +29,8 @@ public class ConfigServiceImpl implements EntityService<Config> {
     }
 
     @Override
-    public Config update(Config entity) {
-        findByIdOrThrowException(entity.getId());
+    public Config update(Config entity, Long id) {
+        findByIdOrThrowException(id);
         return repository.save(entity);
     }
 

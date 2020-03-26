@@ -34,8 +34,8 @@ public class TenantController implements EntityController<TenantDtoReq, TenantDt
     }
 
     @Override
-    public TenantDtoResp update(TenantDtoReq dto) {
-        return mapper.toDto(service.update(mapper.toEntity(dto)));
+    public TenantDtoResp update(TenantDtoReq dto, Long id) {
+        return mapper.toDto(service.update(mapper.toEntity(dto), id));
     }
 
     @Override

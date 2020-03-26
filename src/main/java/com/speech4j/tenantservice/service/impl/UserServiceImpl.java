@@ -43,8 +43,8 @@ public class UserServiceImpl implements EntityService<User> {
     }
 
     @Override
-    public User update(User entity) {
-        User user = findByIdOrThrowException(entity.getId());
+    public User update(User entity, Long id) {
+        User user = findByIdOrThrowException(id);
         user.setFirstName(entity.getFirstName());
         user.setLastName(entity.getLastName());
         user.setPassword(encoder.encode(entity.getPassword()));

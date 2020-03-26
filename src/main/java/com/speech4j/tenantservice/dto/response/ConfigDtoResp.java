@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConfigDtoResp {
-    private Long id;
+    private String id;
     private String apiName;
     private String username;
     private String password;

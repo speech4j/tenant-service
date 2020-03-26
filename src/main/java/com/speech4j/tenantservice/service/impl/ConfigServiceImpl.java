@@ -24,18 +24,18 @@ public class ConfigServiceImpl implements EntityService<Config> {
     }
 
     @Override
-    public Config findById(Long id) {
+    public Config findById(String id) {
         return findByIdOrThrowException(id);
     }
 
     @Override
-    public Config update(Config entity, Long id) {
+    public Config update(Config entity, String id) {
         findByIdOrThrowException(id);
         return repository.save(entity);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         findByIdOrThrowException(id);
         repository.deleteById(id);
     }
@@ -45,7 +45,7 @@ public class ConfigServiceImpl implements EntityService<Config> {
         return (List<Config>) repository.findAll();
     }
 
-    private Config findByIdOrThrowException(Long id) {
+    private Config findByIdOrThrowException(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ConfigNotFoundException("Config not found!"));
     }

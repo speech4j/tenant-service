@@ -34,7 +34,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     private ConfigDtoReq testConfig;
 
     private final String exceptionMessage = "Config not found!";
-    private Long testId;
+    private String testId;
 
     @BeforeEach
     void setUp() throws URISyntaxException {

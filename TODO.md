@@ -15,7 +15,7 @@ NOTE: look at [swagger annotations](https://github.com/swagger-api/swagger-core/
 
 ~~* createDate should be presented as timestamp~~
 
-* **id** should use **UUID** data type (not long or int) - String in DB
+~~* **id** should use **UUID** data type (not long or int) - String in DB~~
 
 ~~* remove these fields from create request~~
 

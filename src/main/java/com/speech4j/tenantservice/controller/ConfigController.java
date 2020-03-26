@@ -29,17 +29,17 @@ public class ConfigController implements EntityController<ConfigDtoReq, ConfigDt
     }
 
     @Override
-    public ConfigDtoResp findById(Long id) {
+    public ConfigDtoResp findById(String id) {
         return mapper.toDto(service.findById(id));
     }
 
     @Override
-    public ConfigDtoResp update(ConfigDtoReq dto, Long id) {
+    public ConfigDtoResp update(ConfigDtoReq dto, String id) {
         return mapper.toDto(service.update(mapper.toEntity(dto), id));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         service.deleteById(id);
     }
 

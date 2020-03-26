@@ -34,7 +34,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     private TenantDtoReq testTenant;
 
     private final String exceptionMessage = "Tenant not found!";
-    private Long testId;
+    private String testId;
 
 
     @BeforeEach

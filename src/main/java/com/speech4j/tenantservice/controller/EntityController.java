@@ -21,15 +21,15 @@ public interface EntityController<DtoRequest, DtoResponse> {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    DtoResponse findById(@PathVariable("id") Long id);
+    DtoResponse findById(@PathVariable("id") String id);
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    DtoResponse update(@Validated({ExistData.class}) @RequestBody DtoRequest dto, @PathVariable Long id);
+    DtoResponse update(@Validated({ExistData.class}) @RequestBody DtoRequest dto, @PathVariable String id);
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void delete(@PathVariable("id") Long id);
+    void delete(@PathVariable("id") String id);
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

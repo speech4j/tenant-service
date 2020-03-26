@@ -5,11 +5,11 @@ import java.util.List;
 public interface EntityService<E> {
     E create(E entity);
 
-    E findById(Long id);
+    E findById(String id);
 
-    E update(E entity, Long id);
+    E update(E entity, String id);
 
-    void deleteById(Long id);
+    void deleteById(String id);
 
     List<E> findAll();
 }

@@ -29,17 +29,17 @@ public class UserController implements EntityController<UserDtoReq, UserDtoResp>
     }
 
     @Override
-    public UserDtoResp findById(Long id) {
+    public UserDtoResp findById(String id) {
         return mapper.toDto(service.findById(id));
     }
 
     @Override
-    public UserDtoResp update(UserDtoReq dto, Long id) {
+    public UserDtoResp update(UserDtoReq dto, String id) {
         return mapper.toDto(service.update(mapper.toEntity(dto), id));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         service.deleteById(id);
     }
 

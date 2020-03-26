@@ -38,12 +38,12 @@ public class UserServiceImpl implements EntityService<User> {
     }
 
     @Override
-    public User findById(Long id) {
+    public User findById(String id) {
         return findByIdOrThrowException(id);
     }
 
     @Override
-    public User update(User entity, Long id) {
+    public User update(User entity, String id) {
         User user = findByIdOrThrowException(id);
         user.setFirstName(entity.getFirstName());
         user.setLastName(entity.getLastName());
@@ -54,7 +54,7 @@ public class UserServiceImpl implements EntityService<User> {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         findByIdOrThrowException(id);
         repository.deleteById(id);
     }
@@ -64,7 +64,7 @@ public class UserServiceImpl implements EntityService<User> {
         return (List<User>) repository.findAll();
     }
 
-    private User findByIdOrThrowException(Long id) {
+    private User findByIdOrThrowException(String id) {
         Optional<User> user = repository.findById(id);
         return repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));

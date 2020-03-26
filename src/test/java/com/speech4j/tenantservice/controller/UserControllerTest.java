@@ -34,7 +34,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     private UserDtoReq testUser;
 
     private final String exceptionMessage = "User not found!";
-    private Long testId;
+    private String  testId;
 
     @BeforeEach
     void setUp() throws URISyntaxException {

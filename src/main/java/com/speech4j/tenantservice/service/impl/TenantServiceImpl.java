@@ -27,19 +27,19 @@ public class TenantServiceImpl implements EntityService<Tenant> {
     }
 
     @Override
-    public Tenant findById(Long id) {
+    public Tenant findById(String id) {
         return findByIdOrThrowException(id);
     }
 
     @Override
-    public Tenant update(Tenant entity, Long id) {
+    public Tenant update(Tenant entity, String id) {
         Tenant tenant = findByIdOrThrowException(id);
         tenant.setName(entity.getName());
         return repository.save(tenant);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         findByIdOrThrowException(id);
         repository.deleteById(id);
     }
@@ -49,7 +49,7 @@ public class TenantServiceImpl implements EntityService<Tenant> {
         return (List<Tenant>) repository.findAll();
     }
 
-    private Tenant findByIdOrThrowException(Long id) {
+    private Tenant findByIdOrThrowException(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new TenantNotFoundException("Tenant not found!"));
     }

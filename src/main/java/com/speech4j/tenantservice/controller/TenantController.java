@@ -29,17 +29,17 @@ public class TenantController implements EntityController<TenantDtoReq, TenantDt
     }
 
     @Override
-    public TenantDtoResp findById(Long id) {
+    public TenantDtoResp findById(String id) {
         return mapper.toDto(service.findById(id));
     }
 
     @Override
-    public TenantDtoResp update(TenantDtoReq dto, Long id) {
+    public TenantDtoResp update(TenantDtoReq dto, String id) {
         return mapper.toDto(service.update(mapper.toEntity(dto), id));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         service.deleteById(id);
     }
 

@@ -9,7 +9,7 @@
 ```
 NOTE: look at [swagger annotations](https://github.com/swagger-api/swagger-core/wiki/Annotations#quick-annotation-overview)
 
-* using swagger annotations provide more responses for each endpoint (response codes and examples)
+~~* using swagger annotations provide more responses for each endpoint (response codes and examples)~~
 
 ~~* tenant should be active after creation and not active after removing~~
 

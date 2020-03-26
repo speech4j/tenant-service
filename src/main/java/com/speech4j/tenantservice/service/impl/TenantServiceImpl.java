@@ -21,8 +21,11 @@ public class TenantServiceImpl implements EntityService<Tenant> {
 
     @Override
     public Tenant create(Tenant entity) {
+        //Setting a current date
         entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        //Making status active
         entity.setActive(true);
+
         return repository.save(entity);
     }
 
@@ -50,6 +53,7 @@ public class TenantServiceImpl implements EntityService<Tenant> {
     }
 
     private Tenant findByIdOrThrowException(String id) {
+        //Checking if tenant is found
         return repository.findById(id)
                 .orElseThrow(() -> new TenantNotFoundException("Tenant not found!"));
     }

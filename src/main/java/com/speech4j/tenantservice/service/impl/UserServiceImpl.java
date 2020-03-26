@@ -26,10 +26,14 @@ public class UserServiceImpl implements EntityService<User> {
 
     @Override
     public User create(User entity) {
+        //Setting a current date
         entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
         entity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        //Encoding password before saving
         entity.setPassword(encoder.encode(entity.getPassword()));
+        //Making status active
         entity.setActive(true);
+        //Checking if role is missed
         if (entity.getRole() == null) {
             entity.setRole(Role.ADMIN);
         }
@@ -47,7 +51,9 @@ public class UserServiceImpl implements EntityService<User> {
         User user = findByIdOrThrowException(id);
         user.setFirstName(entity.getFirstName());
         user.setLastName(entity.getLastName());
+        //Encoding password before updating
         user.setPassword(encoder.encode(entity.getPassword()));
+        //Setting a current date
         user.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
 
         return repository.save(user);
@@ -65,7 +71,7 @@ public class UserServiceImpl implements EntityService<User> {
     }
 
     private User findByIdOrThrowException(String id) {
-        Optional<User> user = repository.findById(id);
+        //Checking if user is found
         return repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
     }

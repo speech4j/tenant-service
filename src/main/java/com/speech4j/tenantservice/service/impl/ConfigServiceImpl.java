@@ -46,6 +46,7 @@ public class ConfigServiceImpl implements EntityService<Config> {
     }
 
     private Config findByIdOrThrowException(String id) {
+        //Checking if config is found
         return repository.findById(id)
                 .orElseThrow(() -> new ConfigNotFoundException("Config not found!"));
     }

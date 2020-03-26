@@ -55,6 +55,6 @@ NOTE: look at [swagger annotations](https://github.com/swagger-api/swagger-core/
 ]
 ```
 
-* missed comments in source code
+~~* missed comments in source code~~
 
 

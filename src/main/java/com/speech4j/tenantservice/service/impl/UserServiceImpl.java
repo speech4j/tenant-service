@@ -1,5 +1,6 @@
 package com.speech4j.tenantservice.service.impl;
 
+import com.speech4j.tenantservice.entity.Role;
 import com.speech4j.tenantservice.entity.User;
 import com.speech4j.tenantservice.exception.UserNotFoundException;
 import com.speech4j.tenantservice.repository.UserRepository;
@@ -28,6 +29,11 @@ public class UserServiceImpl implements EntityService<User> {
         entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
         entity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         entity.setPassword(encoder.encode(entity.getPassword()));
+        entity.setActive(true);
+        if (entity.getRole() == null) {
+            entity.setRole(Role.ADMIN);
+        }
+
         return repository.save(entity);
     }
 

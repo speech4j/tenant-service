@@ -1,7 +1,7 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.TenantServiceApplication;
-import com.speech4j.tenantservice.dto.TenantDto;
+import com.speech4j.tenantservice.dto.request.TenantDtoReq;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +29,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     private TestRestTemplate template;
 
     private HttpHeaders headers;
-    private HttpEntity<TenantDto> request;
-    private TenantDto testTenant;
+    private HttpEntity<TenantDtoReq> request;
+    private TenantDtoReq testTenant;
 
     private final String exceptionMessage = "Tenant not found!";
     private Long testId;
@@ -42,7 +42,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //Initializing of test tenant
-        testTenant = new TenantDto();
+        testTenant = new TenantDtoReq();
         testTenant.setName("SoftServe");
         testTenant.setActive(true);
 
@@ -60,8 +60,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<TenantDto> response
-                = template.exchange("/tenants/" + testId, HttpMethod.GET, request, TenantDto.class);
+        ResponseEntity<TenantDtoReq> response
+                = template.exchange("/tenants/" + testId, HttpMethod.GET, request, TenantDtoReq.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -82,8 +82,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     public void addEntityTest_successFlow() {
         final String url = "/tenants";
 
-        ResponseEntity<TenantDto> response =
-                this.template.exchange(url, HttpMethod.POST, request, TenantDto.class);
+        ResponseEntity<TenantDtoReq> response =
+                this.template.exchange(url, HttpMethod.POST, request, TenantDtoReq.class);
 
         //Verify request succeed
         assertEquals(201, response.getStatusCodeValue());
@@ -112,8 +112,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         testTenant.setName("New Company");
         request = new HttpEntity<>(testTenant, headers);
 
-        ResponseEntity<TenantDto> response =
-                this.template.exchange(url, HttpMethod.PUT, request, TenantDto.class);
+        ResponseEntity<TenantDtoReq> response =
+                this.template.exchange(url, HttpMethod.PUT, request, TenantDtoReq.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -179,17 +179,17 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         URI uri = new URI(url);
 
         //entity1
-        TenantDto tenant1 = new TenantDto();
+        TenantDtoReq tenant1 = new TenantDtoReq();
         tenant1.setName("Company1");
         tenant1.setActive(true);
 
         //entity2
-        TenantDto tenant2 = new TenantDto();
+        TenantDtoReq tenant2 = new TenantDtoReq();
         tenant2.setName("Company2");
         tenant2.setActive(true);
 
-        ResponseEntity<TenantDto> response1 = template.postForEntity(uri, new HttpEntity<>(tenant1, headers), TenantDto.class);
-        ResponseEntity<TenantDto> response2 = template.postForEntity(uri, new HttpEntity<>(tenant2, headers), TenantDto.class);
+        ResponseEntity<TenantDtoReq> response1 = template.postForEntity(uri, new HttpEntity<>(tenant1, headers), TenantDtoReq.class);
+        ResponseEntity<TenantDtoReq> response2 = template.postForEntity(uri, new HttpEntity<>(tenant2, headers), TenantDtoReq.class);
         testId = response1.getBody().getId();
     }
 }

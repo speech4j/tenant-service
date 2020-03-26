@@ -1,29 +1,26 @@
 package com.speech4j.tenantservice.mapper;
 
-import com.speech4j.tenantservice.dto.UserDto;
+import com.speech4j.tenantservice.dto.request.UserDtoReq;
+import com.speech4j.tenantservice.dto.response.UserDtoResp;
 import com.speech4j.tenantservice.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDtoMapper extends AbstractEntityDtoMapper<User, UserDto> {
+public class UserDtoMapper extends AbstractEntityDtoMapper<UserDtoReq,User, UserDtoResp> {
     @Override
-    public User toEntity(UserDto dto) {
+    public User toEntity(UserDtoReq dto) {
         return User.builder()
-                .id(dto.getId())
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
                 .role(dto.getRole())
-                .createdDate(dto.getCreatedDate())
-                .updatedDate(dto.getUpdatedDate())
-                .active(dto.isActive())
                 .build();
     }
 
     @Override
-    public UserDto toDto(User entity) {
-        return UserDto.builder()
+    public UserDtoResp toDto(User entity) {
+        return UserDtoResp.builder()
                 .id(entity.getId())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())

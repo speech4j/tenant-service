@@ -1,15 +1,15 @@
 package com.speech4j.tenantservice.mapper;
 
-import com.speech4j.tenantservice.dto.ConfigDto;
+import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
+import com.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import com.speech4j.tenantservice.entity.Config;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConfigDtoMapper extends AbstractEntityDtoMapper<Config, ConfigDto> {
+public class ConfigDtoMapper extends AbstractEntityDtoMapper<ConfigDtoReq, Config, ConfigDtoResp> {
     @Override
-    public Config toEntity(ConfigDto dto) {
+    public Config toEntity(ConfigDtoReq dto) {
         return Config.builder()
-                .id(dto.getId())
                 .apiName(dto.getApiName())
                 .username(dto.getUsername())
                 .password(dto.getPassword())
@@ -17,8 +17,8 @@ public class ConfigDtoMapper extends AbstractEntityDtoMapper<Config, ConfigDto> 
     }
 
     @Override
-    public ConfigDto toDto(Config entity) {
-        return ConfigDto.builder()
+    public ConfigDtoResp toDto(Config entity) {
+        return ConfigDtoResp.builder()
                 .id(entity.getId())
                 .apiName(entity.getApiName())
                 .username(entity.getUsername())

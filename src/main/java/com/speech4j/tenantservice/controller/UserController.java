@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.controller;
 
-import com.speech4j.tenantservice.dto.UserDto;
+import com.speech4j.tenantservice.dto.request.UserDtoReq;
+import com.speech4j.tenantservice.dto.response.UserDtoResp;
 import com.speech4j.tenantservice.entity.User;
 import com.speech4j.tenantservice.mapper.UserDtoMapper;
 import com.speech4j.tenantservice.service.EntityService;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("tenants/users")
-public class UserController implements EntityController<UserDto> {
+public class UserController implements EntityController<UserDtoReq, UserDtoResp> {
     private EntityService<User> service;
     private UserDtoMapper mapper;
 
@@ -23,17 +24,17 @@ public class UserController implements EntityController<UserDto> {
     }
 
     @Override
-    public UserDto save(UserDto dto) {
+    public UserDtoResp save(UserDtoReq dto) {
         return mapper.toDto(service.create(mapper.toEntity(dto)));
     }
 
     @Override
-    public UserDto findById(Long id) {
+    public UserDtoResp findById(Long id) {
         return mapper.toDto(service.findById(id));
     }
 
     @Override
-    public UserDto update(UserDto dto) {
+    public UserDtoResp update(UserDtoReq dto) {
         return mapper.toDto(service.update(mapper.toEntity(dto)));
     }
 
@@ -43,7 +44,7 @@ public class UserController implements EntityController<UserDto> {
     }
 
     @Override
-    public List<UserDto> findAll() {
+    public List<UserDtoResp> findAll() {
         return mapper.toDtoList(service.findAll());
     }
 }

@@ -1,11 +1,13 @@
-package com.speech4j.tenantservice.dto;
+package com.speech4j.tenantservice.dto.request;
 
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -17,8 +19,8 @@ import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMP
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConfigDto {
-    private Long id;
+@ApiModel
+public class ConfigDtoReq {
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
     private String apiName;
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)

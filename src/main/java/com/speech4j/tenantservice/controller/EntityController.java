@@ -14,18 +14,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
-public interface EntityController<D> {
+public interface EntityController<DtoRequest, DtoResponse> {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    D save(@Validated({NewData.class}) @RequestBody D dto);
+    DtoResponse save(@Validated({NewData.class}) @RequestBody DtoRequest dto);
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    D findById(@PathVariable("id") Long id);
+    DtoResponse findById(@PathVariable("id") Long id);
 
     @PutMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    D update(@Validated({ExistData.class}) @RequestBody D dto);
+    DtoResponse update(@Validated({ExistData.class}) @RequestBody DtoRequest dto);
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -33,5 +33,5 @@ public interface EntityController<D> {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    List<D> findAll();
+    List<DtoResponse> findAll();
 }

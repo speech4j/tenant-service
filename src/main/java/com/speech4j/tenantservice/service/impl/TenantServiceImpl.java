@@ -22,6 +22,7 @@ public class TenantServiceImpl implements EntityService<Tenant> {
     @Override
     public Tenant create(Tenant entity) {
         entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        entity.setActive(true);
         return repository.save(entity);
     }
 

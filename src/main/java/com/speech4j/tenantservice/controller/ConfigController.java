@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.controller;
 
-import com.speech4j.tenantservice.dto.ConfigDto;
+import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
+import com.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import com.speech4j.tenantservice.entity.Config;
 import com.speech4j.tenantservice.mapper.ConfigDtoMapper;
 import com.speech4j.tenantservice.service.EntityService;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("tenants/users/configs")
-public class ConfigController implements EntityController<ConfigDto> {
+public class ConfigController implements EntityController<ConfigDtoReq, ConfigDtoResp> {
     private EntityService<Config> service;
     private ConfigDtoMapper mapper;
 
@@ -23,17 +24,17 @@ public class ConfigController implements EntityController<ConfigDto> {
     }
 
     @Override
-    public ConfigDto save(ConfigDto dto) {
+    public ConfigDtoResp save(ConfigDtoReq dto) {
         return mapper.toDto(service.create(mapper.toEntity(dto)));
     }
 
     @Override
-    public ConfigDto findById(Long id) {
+    public ConfigDtoResp findById(Long id) {
         return mapper.toDto(service.findById(id));
     }
 
     @Override
-    public ConfigDto update(ConfigDto dto) {
+    public ConfigDtoResp update(ConfigDtoReq dto) {
         return mapper.toDto(service.update(mapper.toEntity(dto)));
     }
 
@@ -43,7 +44,7 @@ public class ConfigController implements EntityController<ConfigDto> {
     }
 
     @Override
-    public List<ConfigDto> findAll() {
+    public List<ConfigDtoResp> findAll() {
         return mapper.toDtoList(service.findAll());
     }
 }

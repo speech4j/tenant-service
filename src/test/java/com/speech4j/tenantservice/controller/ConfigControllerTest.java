@@ -1,8 +1,8 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.TenantServiceApplication;
-import com.speech4j.tenantservice.dto.ConfigDto;
-import com.speech4j.tenantservice.dto.TenantDto;
+import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
+import com.speech4j.tenantservice.dto.request.TenantDtoReq;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +29,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     private TestRestTemplate template;
 
     private HttpHeaders headers;
-    private HttpEntity<ConfigDto> request;
-    private ConfigDto testConfig;
+    private HttpEntity<ConfigDtoReq> request;
+    private ConfigDtoReq testConfig;
 
     private final String exceptionMessage = "Config not found!";
     private Long testId;
@@ -41,7 +41,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //Initializing of test config
-        testConfig = new ConfigDto();
+        testConfig = new ConfigDtoReq();
         testConfig.setApiName("Azure Api");
         testConfig.setUsername("testName");
         testConfig.setPassword("qwerty123");
@@ -55,8 +55,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<TenantDto> response
-                = template.exchange("/tenants/users/configs/" + testId, HttpMethod.GET, request, TenantDto.class);
+        ResponseEntity<TenantDtoReq> response
+                = template.exchange("/tenants/users/configs/" + testId, HttpMethod.GET, request, TenantDtoReq.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -77,8 +77,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void addEntityTest_successFlow() {
         final String url = "/tenants/users/configs";
 
-        ResponseEntity<ConfigDto> response =
-                this.template.exchange(url, HttpMethod.POST, request, ConfigDto.class);
+        ResponseEntity<ConfigDtoReq> response =
+                this.template.exchange(url, HttpMethod.POST, request, ConfigDtoReq.class);
 
         //Verify request succeed
         assertEquals(201, response.getStatusCodeValue());
@@ -107,8 +107,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
 
-        ResponseEntity<ConfigDto> response =
-                this.template.exchange(url, HttpMethod.PUT, request, ConfigDto.class);
+        ResponseEntity<ConfigDtoReq> response =
+                this.template.exchange(url, HttpMethod.PUT, request, ConfigDtoReq.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -175,19 +175,19 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         URI uri = new URI(url);
 
         //entity1
-        ConfigDto config1 = new ConfigDto();
+        ConfigDtoReq config1 = new ConfigDtoReq();
         config1.setApiName("Google Api");
         config1.setUsername("mslob");
         config1.setPassword("qwerty123");
 
         //entity2
-        ConfigDto config2 = new ConfigDto();
+        ConfigDtoReq config2 = new ConfigDtoReq();
         config2.setApiName("AWS Api");
         config2.setUsername("speech4j");
         config2.setPassword("qwerty123");
 
-        ResponseEntity<ConfigDto> response1 = template.postForEntity(uri, new HttpEntity<>(config1, headers), ConfigDto.class);
-        ResponseEntity<ConfigDto> response2 = template.postForEntity(uri, new HttpEntity<>(config2, headers), ConfigDto.class);
+        ResponseEntity<ConfigDtoReq> response1 = template.postForEntity(uri, new HttpEntity<>(config1, headers), ConfigDtoReq.class);
+        ResponseEntity<ConfigDtoReq> response2 = template.postForEntity(uri, new HttpEntity<>(config2, headers), ConfigDtoReq.class);
 
         testId = response1.getBody().getId();
     }

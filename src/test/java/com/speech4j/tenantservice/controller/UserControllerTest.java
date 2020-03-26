@@ -1,14 +1,13 @@
 package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.TenantServiceApplication;
-import com.speech4j.tenantservice.dto.UserDto;
+import com.speech4j.tenantservice.dto.request.UserDtoReq;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,8 +29,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     private TestRestTemplate template;
 
     private HttpHeaders headers;
-    private HttpEntity<UserDto> request;
-    private UserDto testUser;
+    private HttpEntity<UserDtoReq> request;
+    private UserDtoReq testUser;
 
     private final String exceptionMessage = "User not found!";
     private Long testId;
@@ -42,7 +41,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //Initializing of test user
-        testUser = new UserDto();
+        testUser = new UserDtoReq();
         testUser.setFirstName("Mar");
         testUser.setLastName("Slob");
         testUser.setEmail("email@gmail.com");
@@ -63,8 +62,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<UserDto> response
-                = template.exchange("/tenants/users/" + testId, HttpMethod.GET, request, UserDto.class);
+        ResponseEntity<UserDtoReq> response
+                = template.exchange("/tenants/users/" + testId, HttpMethod.GET, request, UserDtoReq.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -85,8 +84,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     public void addEntityTest_successFlow() {
         final String url = "/tenants/users";
 
-        ResponseEntity<UserDto> response =
-                this.template.exchange(url, HttpMethod.POST, request, UserDto.class);
+        ResponseEntity<UserDtoReq> response =
+                this.template.exchange(url, HttpMethod.POST, request, UserDtoReq.class);
 
         //Verify request succeed
         assertEquals(201, response.getStatusCodeValue());
@@ -115,8 +114,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         testUser.setFirstName("NewName");
         request = new HttpEntity<>(testUser, headers);
 
-        ResponseEntity<UserDto> response =
-                this.template.exchange(url, HttpMethod.PUT, request, UserDto.class);
+        ResponseEntity<UserDtoReq> response =
+                this.template.exchange(url, HttpMethod.PUT, request, UserDtoReq.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -183,7 +182,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         URI uri = new URI(url);
 
         //entity1
-        UserDto user1 = new UserDto();
+        UserDtoReq user1 = new UserDtoReq();
         user1.setFirstName("Name1");
         user1.setLastName("Surname1");
         user1.setEmail("email@gmail.com");
@@ -191,15 +190,15 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         user1.setActive(true);
 
         //entity2
-        UserDto user2 = new UserDto();
+        UserDtoReq user2 = new UserDtoReq();
         user2.setFirstName("Name2");
         user2.setLastName("Surname2");
         user2.setEmail("email@gmail.com");
         user2.setPassword("qwerty123");
         user2.setActive(true);
 
-        ResponseEntity<UserDto> response1 = template.postForEntity(uri, new HttpEntity<>(user1, headers), UserDto.class);
-        ResponseEntity<UserDto> response2 = template.postForEntity(uri, new HttpEntity<>(user2, headers), UserDto.class);
+        ResponseEntity<UserDtoReq> response1 = template.postForEntity(uri, new HttpEntity<>(user1, headers), UserDtoReq.class);
+        ResponseEntity<UserDtoReq> response2 = template.postForEntity(uri, new HttpEntity<>(user2, headers), UserDtoReq.class);
         testId = response1.getBody().getId();
     }
 }

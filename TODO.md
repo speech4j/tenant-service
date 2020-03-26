@@ -1,4 +1,4 @@
-* POST: /tenants - remove id from incoming request 
+~~* POST: /tenants - remove id from incoming request~~ 
 ```
 {
     ~~"id": 0,~~
@@ -11,13 +11,13 @@ NOTE: look at [swagger annotations](https://github.com/swagger-api/swagger-core/
 
 * using swagger annotations provide more responses for each endpoint (response codes and examples)
 
-* tenant should be active after creation and not active after removing
+~~* tenant should be active after creation and not active after removing~~
 
-* createDate should be presented as timestamp
+~~* createDate should be presented as timestamp~~
 
 * **id** should use **UUID** data type (not long or int) - String in DB
 
-* remove these fields from create request
+~~* remove these fields from create request~~
 
 ```
 {
@@ -33,11 +33,11 @@ NOTE: look at [swagger annotations](https://github.com/swagger-api/swagger-core/
 }
 ```
 
-* missed default role when user created without role
+~~* missed default role when user created without role~~
 
-* DTOs: request and response
+~~* DTOs: request and response~~
 
-* should not return any value with **null**
+~~* should not return any value with **null**~~
 
 ```
 [

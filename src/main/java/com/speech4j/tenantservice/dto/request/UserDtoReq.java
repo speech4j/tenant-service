@@ -1,4 +1,4 @@
-package com.speech4j.tenantservice.dto;
+package com.speech4j.tenantservice.dto.request;
 
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
@@ -22,8 +22,7 @@ import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMP
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    private Long id;
+public class UserDtoReq {
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
     private String firstName;
     @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
@@ -38,9 +37,5 @@ public class UserDto {
     @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[0-9]+.*",
             message = "Pattern must contain at least 1 numeric character")
     private String password;
-    @Null(groups = {NewData.class, ExistData.class}, message = REQUIRED_EMPTY)
     private Role role;
-    private Timestamp createdDate;
-    private Timestamp updatedDate;
-    private boolean active;
 }

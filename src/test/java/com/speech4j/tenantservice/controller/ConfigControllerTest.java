@@ -35,6 +35,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     private final String exceptionMessage = "Config not found!";
     private String testId;
+    private final String testTenantId = "1966032e-c8d6-482f-ac95-28440d7a6406";
 
     @BeforeEach
     void setUp() throws URISyntaxException {
@@ -57,7 +58,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<TenantDtoResp> response
-                = template.exchange("/tenants/users/configs/" + testId, HttpMethod.GET, request, TenantDtoResp.class);
+                = template.exchange("/tenants/"+testTenantId +"/configs/" + testId, HttpMethod.GET, request, TenantDtoResp.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -68,7 +69,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange("/tenants/users/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange("/tenants/"+testTenantId +"/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
@@ -88,7 +89,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void addEntityTest_unsuccessFlow() {
-        final String url = "/tenants/users/configs";
+        final String url = "/tenants/"+testTenantId +"/configs/";
 
         //Make entity null
         request = new HttpEntity<>(null, headers);
@@ -102,7 +103,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_successFlow() {
-        final String url = "/tenants/users/configs/" + testId;
+        final String url = "/tenants/"+testTenantId +"/configs/" + testId;
 
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
@@ -118,7 +119,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void updateEntityTest_unsuccessFlow() {
-        final String url = "/tenants/users/configs/" + 0;
+        final String url = "/tenants/"+testTenantId +"/configs/" + 0;
 
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
@@ -132,7 +133,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_successFlow() {
-        final String url = "/tenants/users/configs/" + testId;
+        final String url = "/tenants/"+testTenantId +"/configs/" + testId;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -145,7 +146,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteEntity_unsuccessFlow() {
-        final String url = "/tenants/users/configs/" + 0l;
+        final String url = "/tenants/"+testTenantId +"/configs/" + 0l;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -158,7 +159,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findAllTest() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<List> response = template.exchange("/tenants/users/configs", HttpMethod.GET, request, List.class);
+        ResponseEntity<List> response = template.exchange("/tenants/"+testTenantId +"/configs/",
+                HttpMethod.GET, request, List.class);
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
@@ -170,7 +172,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     private void populateDB() throws URISyntaxException {
-        final String url = "/tenants/users/configs";
+        final String url = "/tenants/"+testTenantId +"/configs/";
         URI uri = new URI(url);
 
         //entity1

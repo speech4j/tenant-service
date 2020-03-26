@@ -2,49 +2,151 @@ package com.speech4j.tenantservice.controller;
 
 import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import com.speech4j.tenantservice.dto.response.ConfigDtoResp;
+import com.speech4j.tenantservice.dto.validation.NewData;
 import com.speech4j.tenantservice.entity.Config;
+import com.speech4j.tenantservice.entity.Tenant;
+import com.speech4j.tenantservice.entity.User;
+import com.speech4j.tenantservice.exception.EntityNotFoundException;
 import com.speech4j.tenantservice.mapper.ConfigDtoMapper;
 import com.speech4j.tenantservice.service.EntityService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("tenants/users/configs")
-public class ConfigController implements EntityController<ConfigDtoReq, ConfigDtoResp> {
-    private EntityService<Config> service;
+@RequestMapping("tenants/{id}/configs")
+public class ConfigController{
+    private EntityService<Config> configService;
+    private EntityService<User> userService;
+    private EntityService<Tenant> tenantService;
     private ConfigDtoMapper mapper;
 
     @Autowired
-    public ConfigController(EntityService<Config> service, ConfigDtoMapper mapper) {
-        this.service = service;
+    public ConfigController(EntityService<Config> configService,
+                            EntityService<User> userService,
+                            EntityService<Tenant> tenantService,
+                            ConfigDtoMapper mapper) {
+        this.configService = configService;
+        this.userService = userService;
+        this.tenantService = tenantService;
         this.mapper = mapper;
     }
 
-    @Override
-    public ConfigDtoResp save(ConfigDtoReq dto) {
-        return mapper.toDto(service.create(mapper.toEntity(dto)));
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "Create user",
+            responses = {
+                    @ApiResponse(responseCode = "400", description = "Validation exception")})
+    public ConfigDtoResp save(
+            @Parameter(description = "Config object that needs to be added to db", required = true)
+            @Validated({NewData.class}) @RequestBody ConfigDtoReq dto,
+            @Parameter(description = "Tenant id for saving", required = true)
+            @PathVariable String id
+    ) {
+        Tenant tenant = tenantService.findById(id);
+        Config config = mapper.toEntity(dto);
+        if (config.getTenant().getId().equals(id)){
+            config.setTenant(tenant);
+            return mapper.toDto(configService.create(config));
+        }else {
+            throw new EntityNotFoundException("User or Tenant with these data not found!");
+        }
+
     }
 
-    @Override
-    public ConfigDtoResp findById(String id) {
-        return mapper.toDto(service.findById(id));
+    @GetMapping("/{configId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(
+            summary = "Get config by ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Config is found"),
+                    @ApiResponse(responseCode = "404", description = "Config not found")})
+    public ConfigDtoResp findById(
+            @Parameter(description = "Tenant id for get", required = true)
+            @PathVariable String id,
+            @Parameter(description = "Config id for get", required = true)
+            @PathVariable String configId
+    ) {
+        Config config = configService.findById(configId);
+        if (config.getTenant().getId().equals(id)){
+            return mapper.toDto(config);
+        }else {
+            throw new EntityNotFoundException("Tenant with these data not found!");
+        }
     }
 
-    @Override
-    public ConfigDtoResp update(ConfigDtoReq dto, String id) {
-        return mapper.toDto(service.update(mapper.toEntity(dto), id));
+    @PutMapping("/{configId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(
+            summary = "Update entity by ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Config is updated"),
+                    @ApiResponse(responseCode = "404", description = "Config not found"),
+                    @ApiResponse(responseCode = "400", description = "Validation exception")})
+    public ConfigDtoResp update(
+            @Parameter(description = "Config object that needs to be added to db", required = true)
+            @Validated({NewData.class}) @RequestBody ConfigDtoReq dto,
+            @Parameter(description = "Tenant id for update", required = true)
+            @PathVariable String id,
+            @Parameter(description = "Config id for update", required = true)
+            @PathVariable String configId
+    ) {
+        Config config = configService.findById(configId);
+        if (config.getTenant().getId().equals(id)){
+            return mapper.toDto(configService.update(mapper.toEntity(dto), configId));
+        }else {
+            throw new EntityNotFoundException("Tenant with these data not found!");
+        }
+
     }
 
-    @Override
-    public void delete(String id) {
-        service.deleteById(id);
+    @DeleteMapping("/{configId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(
+            summary = "Delete config by ID",
+            responses = {
+                    @ApiResponse(responseCode = "404", description = "Config not found")})
+    public void delete(
+            @Parameter(description = "Tenant id for delete", required = true)
+            @PathVariable String id,
+            @Parameter(description = "Config id for delete", required = true)
+            @PathVariable String configId
+    ) {
+        Config config = configService.findById(configId);
+        if (config.getTenant().getId().equals(id)){
+            configService.deleteById(configId);
+        }else {
+            throw new EntityNotFoundException("Tenant with these data not found!");
+        }
     }
 
-    @Override
-    public List<ConfigDtoResp> findAll() {
-        return mapper.toDtoList(service.findAll());
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(
+            summary = "Get all configs by ID",
+            description = "Get list of entities",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK")})
+    public List<ConfigDtoResp> findAll(
+            @Parameter(description = "Tenant id for get", required = true)
+            @PathVariable String id
+    ) {
+        userService.findById(id);
+        return mapper.toDtoList(configService.findAll());
     }
 }

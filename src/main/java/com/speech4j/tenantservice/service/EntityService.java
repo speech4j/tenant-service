@@ -11,5 +11,7 @@ public interface EntityService<E> {
 
     void deleteById(String id);
 
+    List<E> findAllById(String id);
+
     List<E> findAll();
 }

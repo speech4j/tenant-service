@@ -48,6 +48,10 @@ public class TenantServiceImpl implements EntityService<Tenant> {
     }
 
     @Override
+    public List<Tenant> findAllById(String id) {
+        throw new RuntimeException("This method can't be called!");
+    }
+
     public List<Tenant> findAll() {
         return (List<Tenant>) repository.findAll();
     }

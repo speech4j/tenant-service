@@ -49,7 +49,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         request = new HttpEntity<>(testTenant, headers);
 
         //Populating of db
-        populateDB();
+        testId = populateDB(template, headers);
     }
 
     @Test
@@ -172,7 +172,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         assertEquals(exceptionMessage, response.getBody().getMessage());
     }
 
-    private void populateDB() throws URISyntaxException {
+    public String populateDB(TestRestTemplate template, HttpHeaders headers) throws URISyntaxException {
         final String url = "/tenants";
         URI uri = new URI(url);
 
@@ -186,6 +186,6 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
         ResponseEntity<TenantDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(tenant1, headers), TenantDtoResp.class);
         ResponseEntity<TenantDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(tenant2, headers), TenantDtoResp.class);
-        testId = response1.getBody().getId();
+        return response1.getBody().getId();
     }
 }

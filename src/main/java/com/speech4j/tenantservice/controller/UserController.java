@@ -57,7 +57,6 @@ public class UserController{
             @PathVariable String id
     ) {
         Tenant tenant = tenantService.findById(id);
-        System.out.println("I am here");
         User user = mapper.toEntity(dto);
         user.setTenant(tenant);
         return mapper.toDto(userService.create(user));
@@ -101,7 +100,8 @@ public class UserController{
             @Parameter(description = "User userId for update", required = true)
             @PathVariable String userId
     ) {
-        if (userService.findById(userId).getTenant().getId().equals(id)){
+        User user = userService.findById(userId);
+        if (user.getTenant().getId().equals(id)) {
             return mapper.toDto(userService.update(mapper.toEntity(dto), userId));
         }else {
             throw new UserNotFoundException("User not found!");
@@ -136,7 +136,6 @@ public class UserController{
             @Parameter(description = "Tenant id for get", required = true)
             @PathVariable String id
     ) {
-         tenantService.findById(id);
-         return mapper.toDtoList(userService.findAll());
+         return mapper.toDtoList(userService.findAllById(id));
     }
 }

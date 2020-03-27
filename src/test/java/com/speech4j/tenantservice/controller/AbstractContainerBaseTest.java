@@ -4,12 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import static org.junit.Assert.assertTrue;
 
-@TestPropertySource("classpath:application_test.yaml")
+@TestPropertySource("classpath:application-test.yaml")
+@ActiveProfiles("test")
 public class AbstractContainerBaseTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractContainerBaseTest.class);
     static final PostgreSQLContainer postgreSQLContainer;
@@ -34,6 +36,6 @@ public class AbstractContainerBaseTest {
     @Test
     void isRunningContainer(){
         assertTrue(postgreSQLContainer.isRunning());
-        LOGGER.info("CONTAINER IS RUNNING!");
+        LOGGER.info("CONTAINER IS RUNNING!" + database);
     }
 }

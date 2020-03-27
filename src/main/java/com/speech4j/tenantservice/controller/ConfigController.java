@@ -60,13 +60,8 @@ public class ConfigController{
     ) {
         Tenant tenant = tenantService.findById(id);
         Config config = mapper.toEntity(dto);
-        if (config.getTenant().getId().equals(id)){
-            config.setTenant(tenant);
-            return mapper.toDto(configService.create(config));
-        }else {
-            throw new EntityNotFoundException("User or Tenant with these data not found!");
-        }
-
+        config.setTenant(tenant);
+        return mapper.toDto(configService.create(config));
     }
 
     @GetMapping("/{configId}")
@@ -146,7 +141,6 @@ public class ConfigController{
             @Parameter(description = "Tenant id for get", required = true)
             @PathVariable String id
     ) {
-        userService.findById(id);
-        return mapper.toDtoList(configService.findAll());
+        return mapper.toDtoList(configService.findAllById(id));
     }
 }

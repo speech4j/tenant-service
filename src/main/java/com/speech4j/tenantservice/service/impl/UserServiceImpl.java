@@ -66,8 +66,13 @@ public class UserServiceImpl implements EntityService<User> {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAllById(String id) {
         return (List<User>) repository.findAll();
+    }
+
+    @Override
+    public List<User> findAll() {
+        throw new RuntimeException("This method can't be called!");
     }
 
     private User findByIdOrThrowException(String id) {

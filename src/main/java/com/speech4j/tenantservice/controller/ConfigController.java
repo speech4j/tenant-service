@@ -67,7 +67,7 @@ public class ConfigController{
     @GetMapping("/{configId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(
-            summary = "Get config by ID",
+            summary = "Get com.speech4j.tenantservice.config by ID",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Config is found"),
                     @ApiResponse(responseCode = "404", description = "Config not found")})
@@ -113,7 +113,7 @@ public class ConfigController{
     @DeleteMapping("/{configId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(
-            summary = "Delete config by ID",
+            summary = "Delete com.speech4j.tenantservice.config by ID",
             responses = {
                     @ApiResponse(responseCode = "404", description = "Config not found")})
     public void delete(

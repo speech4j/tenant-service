@@ -1,7 +1,10 @@
 # ===============================
 # DATABASE
 # ===============================
-TEST_POSTGRES_DB: tenant_db
-TEST_POSTGRES_USERNAME: postgres
-TEST_POSTGRES_PASSWORD: postgres
-TEST_POSTGRES_PORT: 5433
+spring:
+  profiles: test
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/${POSTGRES_DB:tenant_db}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}

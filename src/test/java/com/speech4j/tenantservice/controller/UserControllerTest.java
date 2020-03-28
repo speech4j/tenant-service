@@ -1,5 +1,6 @@
 package com.speech4j.tenantservice.controller;
 
+import com.speech4j.tenantservice.AbstractContainerBaseTest;
 import com.speech4j.tenantservice.TenantServiceApplication;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import com.speech4j.tenantservice.dto.request.UserDtoReq;
@@ -21,7 +22,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = TenantServiceApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,11 +54,6 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         //Populating of db
         testTenantId = new TenantControllerTest().populateDB(template, headers);
         populateDB();
-    }
-
-    @Test
-    void isRunningContainer(){
-        assertTrue(postgreSQLContainer.isRunning());
     }
 
     @Test

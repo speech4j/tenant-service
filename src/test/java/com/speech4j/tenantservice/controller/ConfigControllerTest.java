@@ -1,5 +1,6 @@
 package com.speech4j.tenantservice.controller;
 
+import com.speech4j.tenantservice.AbstractContainerBaseTest;
 import com.speech4j.tenantservice.TenantServiceApplication;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
@@ -42,7 +43,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        //Initializing of test config
+        //Initializing of test com.speech4j.tenantservice.config
         testConfig = new ConfigDtoReq();
         testConfig.setApiName("Azure Api");
         testConfig.setUsername("testName");

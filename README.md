@@ -1,6 +1,8 @@
 # Tenant-service
 The tenant-service for getting a config file to APIs.
 
+[![Build Status](https://travis-ci.com/speech4j/tenant-service.svg?branch=master)](https://travis-ci.com/speech4j/tenant-service)
+
 ## Requirements
 
 * Java 11

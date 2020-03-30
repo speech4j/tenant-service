@@ -1,9 +1,9 @@
 plugins {
+	id 'java'
+	id 'jacoco'
+	id "org.sonarqube" version "2.8"
 	id 'org.springframework.boot' version '2.2.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'
-	id "org.sonarqube" version "2.8"
-	id 'jacoco'
 }
 
 group = 'com.speech4j'
@@ -15,27 +15,37 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+	imports {
+		mavenBom 'org.junit:junit-bom:5.6.0'
+		mavenBom 'org.testcontainers:testcontainers-bom:1.13.0'
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	// TODO MS: why this is here?
 	implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.5.RELEASE'
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	// TODO MS: version might be supported by bom
 	implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
 	annotationProcessor "org.projectlombok:lombok:1.18.12"
+	// TODO MS: should we use spring-security?
 	implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: '3.1.0.RELEASE'
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.2.33'
 
-	def junitJupiterVersion = '5.4.2'
-	testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-	testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
-	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
-	testImplementation "org.testcontainers:testcontainers:1.13.0"
-	testImplementation "org.testcontainers:junit-jupiter:1.13.0"
-	testImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.13.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params'
+	testImplementation 'org.testcontainers:testcontainers'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 test {

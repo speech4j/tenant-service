@@ -44,7 +44,6 @@ test {
 sonarqube {
 	properties {
 		property "sonar.projectKey", "speech4j_tenant-service"
-		property "sonar.organization", "speech4j"
 		property "sonar.sourceEncoding", "UTF-8"
 		property "sonar.host.url", "https://sonarcloud.io"
 	}

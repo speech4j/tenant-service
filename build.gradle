@@ -68,3 +68,7 @@ task codeCoverageReport(type: JacocoReport) {
 		csv.enabled true
 	}
 }
+
+plugins.withType(JacocoPlugin) {
+	tasks["test"].finalizedBy 'jacocoTestReport'
+}

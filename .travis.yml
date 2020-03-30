@@ -9,7 +9,16 @@ branches:
   only:
     - master
 
-script: ./gradlew test
+addons:
+  sonarcloud:
+    organization: "speech4j"
+    token:
+      secure: "$SONAR_SECRET_KEY"
+
+
+script:
+  - ./gradlew clean test
+  - sonar-scanner
 
 after_success:
   - docker build -t speech4j/tenant-service .

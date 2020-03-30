@@ -16,7 +16,7 @@ before_install:
 
 script:
   - ./gradlew clean test
-#  - git fetch --unshallow
+  - git fetch --unshallow
   - ./gradlew sonarqube --stacktrace
 
 after_success:

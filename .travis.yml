@@ -22,7 +22,6 @@ after_success:
   - docker build -t speech4j/tenant-service .gt
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push speech4j/tenant-service
-  - bash <(curl -s https://codecov.io/bash) -f "./build/reports/jacoco/test.xml"
 
 cache:
   directories:

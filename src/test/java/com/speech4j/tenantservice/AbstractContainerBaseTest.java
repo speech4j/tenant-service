@@ -6,7 +6,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 public class AbstractContainerBaseTest {
     static PostgreSQLContainer postgreSQLContainer;
 

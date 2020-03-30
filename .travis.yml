@@ -13,12 +13,14 @@ addons:
   sonarcloud:
     organization: "speech4j"
     token:
-      secure: "$SONAR_SECRET_KEY"
+      secure: "7f5c5d29aac23e01619c81f2cea39b19a0082c1f"
 
+before_install:
+  - chmod +x gradlew
 
 script:
   - ./gradlew clean test
-  - sonar-scanner
+  - ./gradlew sonarqube
 
 after_success:
   - docker build -t speech4j/tenant-service .

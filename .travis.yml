@@ -1,13 +1,9 @@
 dist: trusty
-
-language: java
+#
+#language: java
 
 jdk:
   - openjdk11
-
-branches:
-  only:
-    - master
 
 addons:
   sonarcloud:
@@ -20,9 +16,16 @@ before_install:
 
 script:
   - ./gradlew clean test
-  - gradle sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
+  - ./gradlew sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
 
 after_success:
-  - docker build -t speech4j/tenant-service .
+  - docker build -t speech4j/tenant-service .gt
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push speech4j/tenant-service
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+    - '$HOME/.gradle'
+    - '.gradle'

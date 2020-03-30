@@ -16,7 +16,7 @@ before_install:
 
 script:
   - ./gradlew clean test
-  - ./gradlew sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
+  - ./gradlew sonarqube
 
 after_success:
   - docker build -t speech4j/tenant-service .gt

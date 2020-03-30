@@ -15,11 +15,13 @@ before_install:
 script:
   - ./gradlew clean test
   - ./gradlew sonarqube --stacktrace
+  - ./gradlew codeCoverageReport
 
 after_success:
   - docker build -t speech4j/tenant-service .gt
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push speech4j/tenant-service
+  - bash <(curl -s https://codecov.io/bash) -f "./build/customJacocoReportDir/codeCoverageReport/codeCoverageReport.xml"
 
 cache:
   directories:

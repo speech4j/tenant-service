@@ -9,6 +9,8 @@ branches:
   only:
     - master
 
+script: ./gradlew test
+
 after_success:
   - docker build -t speech4j/tenant-service .
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin

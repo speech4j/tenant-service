@@ -42,7 +42,7 @@ public class ConfigServiceImpl implements EntityService<Config> {
 
     @Override
     public List<Config> findAllById(String id) {
-        return (List<Config>) repository.findAllByTenantId(id);
+        return repository.findAllByTenantId(id);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ConfigServiceImpl implements EntityService<Config> {
     }
 
     private Config findByIdOrThrowException(String id) {
-        //Checking if com.speech4j.tenantservice.config is found
+        //Checking if config is found
         return repository.findById(id)
                 .orElseThrow(() -> new ConfigNotFoundException("Config not found!"));
     }

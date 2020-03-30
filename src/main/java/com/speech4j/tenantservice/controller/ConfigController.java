@@ -5,7 +5,6 @@ import com.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import com.speech4j.tenantservice.dto.validation.NewData;
 import com.speech4j.tenantservice.entity.Config;
 import com.speech4j.tenantservice.entity.Tenant;
-import com.speech4j.tenantservice.entity.User;
 import com.speech4j.tenantservice.exception.EntityNotFoundException;
 import com.speech4j.tenantservice.mapper.ConfigDtoMapper;
 import com.speech4j.tenantservice.service.EntityService;
@@ -31,17 +30,14 @@ import java.util.List;
 @RequestMapping("tenants/{id}/configs")
 public class ConfigController{
     private EntityService<Config> configService;
-    private EntityService<User> userService;
     private EntityService<Tenant> tenantService;
     private ConfigDtoMapper mapper;
 
     @Autowired
     public ConfigController(EntityService<Config> configService,
-                            EntityService<User> userService,
                             EntityService<Tenant> tenantService,
                             ConfigDtoMapper mapper) {
         this.configService = configService;
-        this.userService = userService;
         this.tenantService = tenantService;
         this.mapper = mapper;
     }
@@ -77,12 +73,8 @@ public class ConfigController{
             @Parameter(description = "Config id for get", required = true)
             @PathVariable String configId
     ) {
-        Config config = configService.findById(configId);
-        if (config.getTenant().getId().equals(id)){
-            return mapper.toDto(config);
-        }else {
-            throw new EntityNotFoundException("Tenant with these data not found!");
-        }
+        checkIfExist(configId, id);
+        return mapper.toDto(configService.findById(configId));
     }
 
     @PutMapping("/{configId}")
@@ -101,13 +93,8 @@ public class ConfigController{
             @Parameter(description = "Config id for update", required = true)
             @PathVariable String configId
     ) {
-        Config config = configService.findById(configId);
-        if (config.getTenant().getId().equals(id)){
-            return mapper.toDto(configService.update(mapper.toEntity(dto), configId));
-        }else {
-            throw new EntityNotFoundException("Tenant with these data not found!");
-        }
-
+        checkIfExist(configId, id);
+        return mapper.toDto(configService.update(mapper.toEntity(dto), configId));
     }
 
     @DeleteMapping("/{configId}")
@@ -122,12 +109,8 @@ public class ConfigController{
             @Parameter(description = "Config id for delete", required = true)
             @PathVariable String configId
     ) {
-        Config config = configService.findById(configId);
-        if (config.getTenant().getId().equals(id)){
-            configService.deleteById(configId);
-        }else {
-            throw new EntityNotFoundException("Tenant with these data not found!");
-        }
+        checkIfExist(configId, id);
+        configService.deleteById(configId);
     }
 
     @GetMapping
@@ -142,5 +125,11 @@ public class ConfigController{
             @PathVariable String id
     ) {
         return mapper.toDtoList(configService.findAllById(id));
+    }
+
+    private void checkIfExist(String configId, String tenantId){
+        Config config = configService.findById(configId);
+        if (!config.getTenant().getId().equals(tenantId))
+            throw new EntityNotFoundException("Tenant with these data not found!");
     }
 }

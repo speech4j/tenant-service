@@ -75,12 +75,8 @@ public class UserController{
             @Parameter(description = "User id for get", required = true)
             @PathVariable String userId
     ) {
-        User user = userService.findById(userId);
-        if (user.getTenant().getId().equals(id)) {
-            return mapper.toDto(user);
-        }else {
-            throw new UserNotFoundException("User not found!");
-        }
+        checkIfExist(userId,id);
+        return mapper.toDto(userService.findById(userId));
     }
 
 
@@ -100,12 +96,8 @@ public class UserController{
             @Parameter(description = "User userId for update", required = true)
             @PathVariable String userId
     ) {
-        User user = userService.findById(userId);
-        if (user.getTenant().getId().equals(id)) {
-            return mapper.toDto(userService.update(mapper.toEntity(dto), userId));
-        }else {
-            throw new UserNotFoundException("User not found!");
-        }
+        checkIfExist(userId,id);
+        return mapper.toDto(userService.update(mapper.toEntity(dto), userId));
     }
 
     @DeleteMapping("/{userId}")
@@ -120,9 +112,8 @@ public class UserController{
             @Parameter(description = "User id for delete", required = true)
             @PathVariable String userId
     ) {
-        if (userService.findById(userId).getTenant().getId().equals(id)){
-            userService.deleteById(userId);
-        }
+        checkIfExist(userId,id);
+        userService.deleteById(userId);
     }
 
     @GetMapping
@@ -137,5 +128,11 @@ public class UserController{
             @PathVariable String id
     ) {
          return mapper.toDtoList(userService.findAllById(id));
+    }
+
+    private void checkIfExist(String userId, String tenantId){
+        User user = userService.findById(userId);
+        if (!user.getTenant().getId().equals(tenantId))
+            throw new UserNotFoundException("User not found!");
     }
 }

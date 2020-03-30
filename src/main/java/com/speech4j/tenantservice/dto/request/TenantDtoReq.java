@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 
 import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMPTY;
 

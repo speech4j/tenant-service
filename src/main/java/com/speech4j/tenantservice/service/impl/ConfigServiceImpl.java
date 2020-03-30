@@ -1,7 +1,6 @@
 package com.speech4j.tenantservice.service.impl;
 
 import com.speech4j.tenantservice.entity.Config;
-import com.speech4j.tenantservice.entity.User;
 import com.speech4j.tenantservice.exception.ConfigNotFoundException;
 import com.speech4j.tenantservice.repository.ConfigRepository;
 import com.speech4j.tenantservice.service.EntityService;

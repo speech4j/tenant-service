@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.speech4j.tenantservice.util.DataUtil.getListOfConfigs;

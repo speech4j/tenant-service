@@ -20,12 +20,4 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ResponseMessageDto(e.getMessage()));
     }
-
-    @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity<ResponseMessageDto> handleIllegalArgumentException(Exception e) {
-        LOGGER.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ResponseMessageDto(e.getMessage()));
-    }
 }

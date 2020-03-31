@@ -8,7 +8,8 @@ import com.speech4j.tenantservice.entity.Tenant;
 import com.speech4j.tenantservice.entity.User;
 import com.speech4j.tenantservice.exception.UserNotFoundException;
 import com.speech4j.tenantservice.mapper.UserDtoMapper;
-import com.speech4j.tenantservice.service.EntityService;
+import com.speech4j.tenantservice.service.TenantService;
+import com.speech4j.tenantservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,13 +31,13 @@ import java.util.List;
 @RestController
 @RequestMapping("tenants/{id}/users")
 public class UserController{
-    private EntityService<User> userService;
-    private EntityService<Tenant> tenantService;
+    private UserService userService;
+    private TenantService tenantService;
     private UserDtoMapper mapper;
 
     @Autowired
-    public UserController(EntityService<User> userService,
-                          EntityService<Tenant> tenantService,
+    public UserController(UserService userService,
+                          TenantService tenantService,
                           UserDtoMapper mapper
     ) {
         this.userService = userService;

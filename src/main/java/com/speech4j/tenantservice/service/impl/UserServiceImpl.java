@@ -4,7 +4,7 @@ import com.speech4j.tenantservice.entity.Role;
 import com.speech4j.tenantservice.entity.User;
 import com.speech4j.tenantservice.exception.UserNotFoundException;
 import com.speech4j.tenantservice.repository.UserRepository;
-import com.speech4j.tenantservice.service.EntityService;
+import com.speech4j.tenantservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements EntityService<User> {
+public class UserServiceImpl implements UserService {
     private UserRepository repository;
     private PasswordEncoder encoder;
 
@@ -66,12 +66,7 @@ public class UserServiceImpl implements EntityService<User> {
 
     @Override
     public List<User> findAllById(String id) {
-        return (List<User>) repository.findAll();
-    }
-
-    @Override
-    public List<User> findAll() {
-        throw new RuntimeException("This method can't be called!");
+        return repository.findAllByTenantId(id);
     }
 
     private User findByIdOrThrowException(String id) {

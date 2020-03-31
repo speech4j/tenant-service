@@ -3,7 +3,7 @@ package com.speech4j.tenantservice.service.impl;
 import com.speech4j.tenantservice.entity.Tenant;
 import com.speech4j.tenantservice.exception.TenantNotFoundException;
 import com.speech4j.tenantservice.repository.TenantRepository;
-import com.speech4j.tenantservice.service.EntityService;
+import com.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Service
-public class TenantServiceImpl implements EntityService<Tenant> {
+public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
 
     @Autowired
@@ -48,10 +48,6 @@ public class TenantServiceImpl implements EntityService<Tenant> {
     }
 
     @Override
-    public List<Tenant> findAllById(String id) {
-        throw new RuntimeException("This method can't be called!");
-    }
-
     public List<Tenant> findAll() {
         return (List<Tenant>) repository.findAll();
     }

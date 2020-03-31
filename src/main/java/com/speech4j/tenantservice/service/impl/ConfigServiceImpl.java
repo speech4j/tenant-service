@@ -3,14 +3,14 @@ package com.speech4j.tenantservice.service.impl;
 import com.speech4j.tenantservice.entity.Config;
 import com.speech4j.tenantservice.exception.ConfigNotFoundException;
 import com.speech4j.tenantservice.repository.ConfigRepository;
-import com.speech4j.tenantservice.service.EntityService;
+import com.speech4j.tenantservice.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ConfigServiceImpl implements EntityService<Config> {
+public class ConfigServiceImpl implements ConfigService {
     private ConfigRepository repository;
 
     @Autowired
@@ -43,11 +43,6 @@ public class ConfigServiceImpl implements EntityService<Config> {
     @Override
     public List<Config> findAllById(String id) {
         return repository.findAllByTenantId(id);
-    }
-
-    @Override
-    public List<Config> findAll() {
-        throw new RuntimeException("This method can't be called!");
     }
 
     private Config findByIdOrThrowException(String id) {

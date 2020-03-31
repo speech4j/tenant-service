@@ -4,9 +4,8 @@ import com.speech4j.tenantservice.dto.request.TenantDtoReq;
 import com.speech4j.tenantservice.dto.response.TenantDtoResp;
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
-import com.speech4j.tenantservice.entity.Tenant;
 import com.speech4j.tenantservice.mapper.TenantDtoMapper;
-import com.speech4j.tenantservice.service.EntityService;
+import com.speech4j.tenantservice.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,11 +27,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/tenants")
 public class TenantController{
-    private EntityService<Tenant> service;
+    private TenantService service;
     private TenantDtoMapper mapper;
 
     @Autowired
-    public TenantController(EntityService<Tenant> service, TenantDtoMapper mapper) {
+    public TenantController(TenantService service, TenantDtoMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }

@@ -7,7 +7,8 @@ import com.speech4j.tenantservice.entity.Config;
 import com.speech4j.tenantservice.entity.Tenant;
 import com.speech4j.tenantservice.exception.EntityNotFoundException;
 import com.speech4j.tenantservice.mapper.ConfigDtoMapper;
-import com.speech4j.tenantservice.service.EntityService;
+import com.speech4j.tenantservice.service.ConfigService;
+import com.speech4j.tenantservice.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,13 +30,13 @@ import java.util.List;
 @RestController
 @RequestMapping("tenants/{id}/configs")
 public class ConfigController{
-    private EntityService<Config> configService;
-    private EntityService<Tenant> tenantService;
+    private ConfigService configService;
+    private TenantService tenantService;
     private ConfigDtoMapper mapper;
 
     @Autowired
-    public ConfigController(EntityService<Config> configService,
-                            EntityService<Tenant> tenantService,
+    public ConfigController(ConfigService configService,
+                            TenantService tenantService,
                             ConfigDtoMapper mapper) {
         this.configService = configService;
         this.tenantService = tenantService;

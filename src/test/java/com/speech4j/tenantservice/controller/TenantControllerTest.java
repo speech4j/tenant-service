@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import static com.speech4j.tenantservice.util.DataUtil.getListOfTenants;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -35,7 +36,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
     private final String exceptionMessage = "Tenant not found!";
     private String testId;
-
+    private List<TenantDtoReq> tenantsList;
 
     @BeforeEach
     void setUp() throws URISyntaxException {
@@ -49,7 +50,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         request = new HttpEntity<>(testTenant, headers);
 
         //Populating of db
-        testId = populateDB(template, headers);
+        tenantsList = getListOfTenants();
+        testId = populateDB(template, headers, tenantsList);
     }
 
     @Test
@@ -87,7 +89,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void createEntityTest_unsuccessFlow() {
-        final String url = "/tenants/users/configs";
+        final String url = "/tenants";
 
         //Make entity null
         request = new HttpEntity<>(null, headers);
@@ -97,6 +99,21 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
         //Verify this exception because of validation null entity can't be accepted by controller
         assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
+    public void createEntityTestWithMissedRequiredField_unsuccessFlow() {
+        final String url = "/tenants";
+
+        testTenant.setName(null);
+        request = new HttpEntity<>(testTenant, headers);
+
+        ResponseEntity<ResponseMessageDto> response =
+                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
+
+        //Verify this exception because of validation missed field
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("Validation failed for object='tenantDtoReq'. Error count: 1", response.getBody().getMessage());
     }
 
     @Test
@@ -167,20 +184,12 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         assertEquals(exceptionMessage, response.getBody().getMessage());
     }
 
-    public String populateDB(TestRestTemplate template, HttpHeaders headers) throws URISyntaxException {
+    public String populateDB(TestRestTemplate template, HttpHeaders headers, List<TenantDtoReq> list) throws URISyntaxException {
         final String url = "/tenants";
         URI uri = new URI(url);
 
-        //entity1
-        TenantDtoReq tenant1 = new TenantDtoReq();
-        tenant1.setName("Company1");
-
-        //entity2
-        TenantDtoReq tenant2 = new TenantDtoReq();
-        tenant2.setName("Company2");
-
-        ResponseEntity<TenantDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(tenant1, headers), TenantDtoResp.class);
-        ResponseEntity<TenantDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(tenant2, headers), TenantDtoResp.class);
+        ResponseEntity<TenantDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(list.get(0), headers), TenantDtoResp.class);
+        ResponseEntity<TenantDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(list.get(1), headers), TenantDtoResp.class);
         return response1.getBody().getId();
     }
 }

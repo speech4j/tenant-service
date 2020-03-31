@@ -66,7 +66,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllById(String id) {
-        return repository.findAllByTenantId(id);
+        if (repository.findAllByTenantId(id).size() != 0){
+            return repository.findAllByTenantId(id);
+        }else {
+            throw new UserNotFoundException("User not found!");
+        }
     }
 
     private User findByIdOrThrowException(String id) {

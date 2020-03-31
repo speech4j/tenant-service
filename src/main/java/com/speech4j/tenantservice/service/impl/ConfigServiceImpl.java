@@ -42,7 +42,11 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public List<Config> findAllById(String id) {
-        return repository.findAllByTenantId(id);
+        if (repository.findAllByTenantId(id).size() !=0){
+            return repository.findAllByTenantId(id);
+        }else {
+            throw new ConfigNotFoundException("Config not found!");
+        }
     }
 
     private Config findByIdOrThrowException(String id) {

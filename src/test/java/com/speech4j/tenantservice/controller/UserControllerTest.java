@@ -3,6 +3,7 @@ package com.speech4j.tenantservice.controller;
 import com.speech4j.tenantservice.AbstractContainerBaseTest;
 import com.speech4j.tenantservice.TenantServiceApplication;
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
+import com.speech4j.tenantservice.dto.request.TenantDtoReq;
 import com.speech4j.tenantservice.dto.request.UserDtoReq;
 import com.speech4j.tenantservice.dto.response.UserDtoResp;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import static com.speech4j.tenantservice.util.DataUtil.getListOfTenants;
+import static com.speech4j.tenantservice.util.DataUtil.getListOfUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -36,6 +39,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     private final String exceptionMessage = "User not found!";
     private String  testId;
     private String testTenantId;
+    private List<UserDtoReq> usersList;
+    private List<TenantDtoReq> tenantsList;
 
     @BeforeEach
     void setUp() throws URISyntaxException {
@@ -52,8 +57,10 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         request = new HttpEntity<>(testUser, headers);
 
         //Populating of db
-        testTenantId = new TenantControllerTest().populateDB(template, headers);
-        populateDB();
+        tenantsList = getListOfTenants();
+        testTenantId = new TenantControllerTest().populateDB(template, headers,tenantsList);
+        usersList = getListOfUsers();
+        populateDB(usersList);
     }
 
     @Test
@@ -79,8 +86,21 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void createEntityTest_successFlow() {
-        final String url = "/tenants/"+testTenantId+"/users/";
+        final String url = "/tenants/" + testTenantId + "/users/";
 
+        ResponseEntity<UserDtoResp> response =
+                this.template.exchange(url, HttpMethod.POST, request, UserDtoResp.class);
+
+        //Verify request succeed
+        assertEquals(201, response.getStatusCodeValue());
+        assertThat(response.getBody()).isNotNull();
+    }
+
+    @Test
+    public void createEntityTestWithOptionalField_successFlow() {
+        final String url = "/tenants/" + testTenantId + "/users/";
+
+        testUser.setRole(null);
         ResponseEntity<UserDtoResp> response =
                 this.template.exchange(url, HttpMethod.POST, request, UserDtoResp.class);
 
@@ -102,9 +122,36 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         //Verify this exception because of validation null entity can't be accepted by controller
         assertEquals(400, response.getStatusCodeValue());
     }
-//    createUserSuccessfully (required/optional fields)
-//-- createUserFailedWithMissedTenantId
-//-- createUserFailedWithWrongEmail
+
+    @Test
+    public void createEntityTestWithWrongEmail_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantId + "/users/";
+
+        testUser.setEmail("wrong-email");
+        request = new HttpEntity<>(testUser, headers);
+
+        ResponseEntity<ResponseMessageDto> response =
+                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
+
+        //Verify this exception because of validation wrong email
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("Validation failed for object='userDtoReq'. Error count: 1", response.getBody().getMessage());
+    }
+
+    @Test
+    public void createEntityTestWithMissedRequiredField_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantId + "/users/";
+
+        testUser.setFirstName(null);
+        request = new HttpEntity<>(testUser, headers);
+
+        ResponseEntity<ResponseMessageDto> response =
+                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
+
+        //Verify this exception because of validation missed field
+        assertEquals(400, response.getStatusCodeValue());
+        assertEquals("Validation failed for object='userDtoReq'. Error count: 1", response.getBody().getMessage());
+    }
 
     @Test
     public void updateEntityTest_successFlow() {
@@ -163,12 +210,25 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllTest() {
+    public void findAllTestByTenantId_successFlow() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<List> response = template.exchange("/tenants/"+testTenantId+"/users/", HttpMethod.GET, request, List.class);
+        ResponseEntity<List> response = template.exchange("/tenants/" + testTenantId + "/users", HttpMethod.GET, request, List.class);
+       // System.out.println(response);
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
+        assertEquals(usersList.size(), response.getBody().size());
+    }
+
+    @Test
+    public void findAllTestByTenantId_unsuccessFlow() {
+        testTenantId = "0";
+        request = new HttpEntity<>(headers);
+        ResponseEntity<ResponseMessageDto> response = template.exchange("/tenants/" + testTenantId + "/users", HttpMethod.GET, request, ResponseMessageDto.class);
+        System.out.println(response);
+
+        //Checking if status code is correct
+        checkEntityNotFoundException(response);
     }
 
     private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response){
@@ -176,26 +236,12 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         assertEquals(exceptionMessage, response.getBody().getMessage());
     }
 
-    private void populateDB() throws URISyntaxException {
-        final String url = "/tenants/"+testTenantId+"/users/";
+    private void populateDB(List<UserDtoReq> list) throws URISyntaxException {
+        final String url = "/tenants/" + testTenantId + "/users";
         URI uri = new URI(url);
 
-        //entity1
-        UserDtoReq user1 = new UserDtoReq();
-        user1.setFirstName("Name1");
-        user1.setLastName("Surname1");
-        user1.setEmail("email@gmail.com");
-        user1.setPassword("qwerty123");
-
-        //entity2
-        UserDtoReq user2 = new UserDtoReq();
-        user2.setFirstName("Name2");
-        user2.setLastName("Surname2");
-        user2.setEmail("email@gmail.com");
-        user2.setPassword("qwerty123");
-
-        ResponseEntity<UserDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(user1, headers), UserDtoResp.class);
-        ResponseEntity<UserDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(user2, headers), UserDtoResp.class);
+        ResponseEntity<UserDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(list.get(0), headers), UserDtoResp.class);
+        ResponseEntity<UserDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(list.get(1), headers), UserDtoResp.class);
         testId = response1.getBody().getId();
     }
 }

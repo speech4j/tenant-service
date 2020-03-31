@@ -11,11 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMPTY;
 
 @Getter
 @Setter
@@ -24,19 +22,19 @@ import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMP
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDtoReq {
-    @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
+    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
     private String firstName;
-    @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
+    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
     private String lastName;
-    @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
-    @Email(groups = {NewData.class, ExistData.class}, message = "Please, enter a valid email")
+    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
+    @Email(groups = {NewData.class, ExistData.class}, message = "{email.not.valid}")
     private String email;
-    @NotNull(groups = {NewData.class,ExistData.class}, message = REQUIRED_NOT_EMPTY)
-    @Size(groups = {NewData.class, ExistData.class}, min = 6, message = "Password must be at least 6 symbols long")
+    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
+    @Size(groups = {NewData.class, ExistData.class}, min = 6, message = "{password.validation.length}")
     @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[A-Za-z]+.*",
-            message = "Pattern must contain at least 1 alphabetical character")
+            message = "{password.validation.letter}")
     @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[0-9]+.*",
-            message = "Pattern must contain at least 1 numeric character")
+            message = "{password.validation.letter}")
     private String password;
     private Role role;
 }

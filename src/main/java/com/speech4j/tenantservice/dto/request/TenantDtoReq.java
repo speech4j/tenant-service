@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-
-import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMPTY;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -20,6 +18,6 @@ import static com.speech4j.tenantservice.dto.validation.Message.REQUIRED_NOT_EMP
 @NoArgsConstructor
 @AllArgsConstructor
 public class TenantDtoReq {
-    @NotNull(groups = {NewData.class, ExistData.class}, message = REQUIRED_NOT_EMPTY)
+    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
     private String name;
 }

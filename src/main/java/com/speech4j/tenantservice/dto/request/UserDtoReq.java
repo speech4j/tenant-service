@@ -34,7 +34,7 @@ public class UserDtoReq {
     @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[A-Za-z]+.*",
             message = "{password.validation.letter}")
     @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[0-9]+.*",
-            message = "{password.validation.letter}")
+            message = "{password.validation.digit}")
     private String password;
     private Role role;
 }

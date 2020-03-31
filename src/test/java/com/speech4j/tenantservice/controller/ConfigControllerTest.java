@@ -78,7 +78,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void addEntityTest_successFlow() {
+    public void createEntityTest_successFlow() {
         final String url = "/tenants/" + testTenantId + "/configs";
 
         ResponseEntity<ConfigDtoResp> response =
@@ -90,7 +90,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void addEntityTest_unsuccessFlow() {
+    public void createEntityTest_unsuccessFlow() {
         final String url = "/tenants/" + testTenantId + "/configs";
 
         //Make entity null

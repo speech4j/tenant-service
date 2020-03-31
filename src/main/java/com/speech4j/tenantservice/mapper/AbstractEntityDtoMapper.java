@@ -8,10 +8,6 @@ public abstract class AbstractEntityDtoMapper<DtoRequest, E, DtoResponse> {
 
     public abstract DtoResponse toDto(E entity);
 
-    public List<E> toEntityList(List<DtoRequest> dtoList) {
-        return dtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
-
     public List<DtoResponse> toDtoList(List<E> entityList) {
         return entityList.stream().map(this::toDto).collect(Collectors.toList());
     }

@@ -78,7 +78,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void addEntityTest_successFlow() {
+    public void createEntityTest_successFlow() {
         final String url = "/tenants/"+testTenantId+"/users/";
 
         ResponseEntity<UserDtoResp> response =
@@ -90,7 +90,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void addEntityTest_unsuccessFlow() {
+    public void createEntityTest_unsuccessFlow() {
         final String url = "/tenants/"+testTenantId+"/users/";
 
         //Make entity null
@@ -102,6 +102,9 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         //Verify this exception because of validation null entity can't be accepted by controller
         assertEquals(400, response.getStatusCodeValue());
     }
+//    createUserSuccessfully (required/optional fields)
+//-- createUserFailedWithMissedTenantId
+//-- createUserFailedWithWrongEmail
 
     @Test
     public void updateEntityTest_successFlow() {

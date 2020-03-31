@@ -28,16 +28,11 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	// TODO MS: why this is here?
-	implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.5.RELEASE'
-	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-	// TODO MS: version might be supported by bom
-	implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
-	annotationProcessor "org.projectlombok:lombok:1.18.12"
-	// TODO MS: should we use spring-security?
-	implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: '3.1.0.RELEASE'
-	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.2.33'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+	implementation group: 'org.projectlombok', name: 'lombok'
+	annotationProcessor "org.projectlombok:lombok"
+	implementation group: 'org.springframework.security', name: 'spring-security-crypto'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.3.0'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api'
 	testImplementation 'org.junit.jupiter:junit-jupiter-params'

@@ -6,7 +6,7 @@ import com.speech4j.tenantservice.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDtoMapper extends AbstractEntityDtoMapper<UserDtoReq,User, UserDtoResp> {
+public class UserDtoMapper implements AbstractEntityDtoMapper<UserDtoReq,User, UserDtoResp> {
     @Override
     public User toEntity(UserDtoReq dto) {
         return User.builder()

@@ -6,7 +6,7 @@ import com.speech4j.tenantservice.entity.Config;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConfigDtoMapper extends AbstractEntityDtoMapper<ConfigDtoReq, Config, ConfigDtoResp> {
+public class ConfigDtoMapper implements AbstractEntityDtoMapper<ConfigDtoReq, Config, ConfigDtoResp> {
     @Override
     public Config toEntity(ConfigDtoReq dto) {
         return Config.builder()

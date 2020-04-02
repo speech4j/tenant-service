@@ -131,6 +131,6 @@ public class ConfigController{
     private void checkIfExist(String configId, String tenantId){
         Config config = configService.findById(configId);
         if (!config.getTenant().getId().equals(tenantId))
-            throw new EntityNotFoundException("Tenant with these data not found!");
+            throw new EntityNotFoundException("Config not found!");
     }
 }

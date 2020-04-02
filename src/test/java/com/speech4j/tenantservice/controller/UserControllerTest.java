@@ -52,7 +52,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         testUser.setFirstName("Mar");
         testUser.setLastName("Slob");
         testUser.setEmail("email@gmail.com");
-        testUser.setPassword("string123");
+        testUser.setPassword("strinG123");
 
         request = new HttpEntity<>(testUser, headers);
 

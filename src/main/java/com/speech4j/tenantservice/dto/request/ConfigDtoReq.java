@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -25,10 +24,7 @@ public class ConfigDtoReq {
     @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
     private String username;
     @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
-    @Size(groups = {NewData.class, ExistData.class}, min = 6, message = "{password.validation.length}")
-    @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[A-Za-z]+.*",
-            message = "{password.validation.letter}")
-    @Pattern(groups = {NewData.class, ExistData.class}, regexp = ".*[0-9]+.*",
-            message = "{password.validation.digit}")
+    @Pattern(groups = {NewData.class, ExistData.class}, regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$",
+            message = "{password.validation}")
     private String password;
 }

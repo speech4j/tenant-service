@@ -52,7 +52,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         testConfig = new ConfigDtoReq();
         testConfig.setApiName("Azure Api");
         testConfig.setUsername("testName");
-        testConfig.setPassword("qwerty123");
+        testConfig.setPassword("qwertY123");
 
         request = new HttpEntity<>(testConfig, headers);
 

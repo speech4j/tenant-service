@@ -51,7 +51,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
         //Populating of db
         tenantsList = getListOfTenants();
-        testId = populateDB(template, headers, tenantsList);
+        testId = populateDB(template, headers, tenantsList)[0];
     }
 
     @Test
@@ -184,12 +184,16 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         assertEquals(exceptionMessage, response.getBody().getMessage());
     }
 
-    public String populateDB(TestRestTemplate template, HttpHeaders headers, List<TenantDtoReq> list) throws URISyntaxException {
+    public String[] populateDB(TestRestTemplate template, HttpHeaders headers, List<TenantDtoReq> list) throws URISyntaxException {
         final String url = "/tenants";
         URI uri = new URI(url);
+        String [] idList = new String[2];
 
         ResponseEntity<TenantDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(list.get(0), headers), TenantDtoResp.class);
         ResponseEntity<TenantDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(list.get(1), headers), TenantDtoResp.class);
-        return response1.getBody().getId();
+        idList[0] = response1.getBody().getId();
+        idList[1] = response2.getBody().getId();
+
+        return idList;
     }
 }

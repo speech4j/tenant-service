@@ -33,7 +33,7 @@ public class DataUtil {
         user1.setFirstName("Name1");
         user1.setLastName("Surname1");
         user1.setEmail("email@gmail.com");
-        user1.setPassword("qwerty123");
+        user1.setPassword("qwertY123");
         list.add(user1);
 
         //entity2
@@ -41,7 +41,7 @@ public class DataUtil {
         user2.setFirstName("Name2");
         user2.setLastName("Surname2");
         user2.setEmail("email@gmail.com");
-        user2.setPassword("qwerty123");
+        user2.setPassword("qwertY123");
         list.add(user2);
 
         return list;
@@ -55,14 +55,14 @@ public class DataUtil {
         ConfigDtoReq config1 = new ConfigDtoReq();
         config1.setApiName("Google Api");
         config1.setUsername("mslob");
-        config1.setPassword("qwerty123");
+        config1.setPassword("qwertY123");
         list.add(config1);
 
         //entity2
         ConfigDtoReq config2 = new ConfigDtoReq();
         config2.setApiName("AWS Api");
         config2.setUsername("speech4j");
-        config2.setPassword("qwerty123");
+        config2.setPassword("qwertY123");
         list.add(config2);
 
         return list;

@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllById(String id) {
         List<User> list = repository.findAllByTenantId(id);
         if (!list.isEmpty()){
-            return repository.findAllByTenantId(id);
+            return list;
         }else {
             throw new UserNotFoundException("User not found!");
         }

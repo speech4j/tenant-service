@@ -46,7 +46,7 @@ public class ConfigController{
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(
-            summary = "Create user",
+            summary = "Create config",
             responses = {
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public ConfigDtoResp save(

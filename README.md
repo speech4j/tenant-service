@@ -30,5 +30,5 @@ docker run --name postgres-docker \
                 -e POSTGRES_PASSWORD=postgres \
                 -e POSTGRES_USERNAME=postgres \
                 -e POSTGRES_DB=tenant_db \
-                -p 5432:5432 -d postgres
+                -p 5433:5433 -d postgres
 ```

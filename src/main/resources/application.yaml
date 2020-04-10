@@ -13,7 +13,7 @@ spring:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://db:5432/tenant_db
+    url: jdbc:postgresql://db:5433/tenant_db
     username: ${POSTGRES_USERNAME:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
 ---

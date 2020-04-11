@@ -44,7 +44,7 @@ public class ConfigServiceImpl implements ConfigService {
     public List<Config> findAllById(String id) {
         List<Config> list = repository.findAllByTenantId(id);
         if (!list.isEmpty()){
-            return repository.findAllByTenantId(id);
+            return list;
         }else {
             throw new ConfigNotFoundException("Config not found!");
         }

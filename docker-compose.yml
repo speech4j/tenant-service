@@ -4,7 +4,7 @@ services:
     image: postgres
     restart: always
     ports:
-      - "5432:5432"
+      - "5433:5433"
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
@@ -13,7 +13,7 @@ services:
   app:
     image: openjdk:11
     ports:
-      - "8080:8080"
+      - "8083:8083"
     volumes:
       - ./build/libs:/tenant-service
     command: ["java", "--enable-preview", "-jar", "/tenant-service/tenant-service-0.0.1-SNAPSHOT.jar"]

@@ -1,6 +1,7 @@
 package com.speech4j.tenantservice.handler;
 
 import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
+import com.speech4j.tenantservice.exception.CrudException;
 import com.speech4j.tenantservice.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,14 @@ public class GlobalExceptionHandler {
         LOGGER.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessageDto(e.getMessage()));
+    }
+
+    @ExceptionHandler({CrudException.class})
+    public ResponseEntity<ResponseMessageDto> handleEntityCrudException(Exception e) {
+        LOGGER.error(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ResponseMessageDto(e.getMessage()));
     }
 }

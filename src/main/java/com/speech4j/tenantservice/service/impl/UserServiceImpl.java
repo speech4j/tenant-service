@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,7 +19,8 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository repository,
+                           PasswordEncoder encoder) {
         this.repository = repository;
         this.encoder = encoder;
     }
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllById(String id) {
-        List<User> list = repository.findAllByTenantId(id);
+        List<User> list = repository.findAllByTenantId(id).stream().filter(u->u.isActive()).collect(Collectors.toList());
         if (!list.isEmpty()){
             return list;
         }else {
@@ -75,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     private User findByIdOrThrowException(String id) {
         //Checking if user is found
-        return repository.findById(id)
+        return repository.findById(id).filter(user-> user.isActive())
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
     }
 }

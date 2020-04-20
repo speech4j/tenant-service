@@ -40,6 +40,7 @@ public class User implements Serializable {
     private String id;
     private String firstName;
     private String lastName;
+    @Column(unique=true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -49,7 +50,7 @@ public class User implements Serializable {
     private Timestamp createdDate;
     @LastModifiedDate
     private Timestamp modifiedDate;
-    private boolean active;
+    private boolean active = true;
     @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
     @JoinColumn
     @JsonBackReference

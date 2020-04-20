@@ -2,6 +2,7 @@ package com.speech4j.tenantservice.service.impl;
 
 import com.speech4j.tenantservice.entity.Role;
 import com.speech4j.tenantservice.entity.User;
+import com.speech4j.tenantservice.exception.CrudException;
 import com.speech4j.tenantservice.exception.UserNotFoundException;
 import com.speech4j.tenantservice.repository.UserRepository;
 import com.speech4j.tenantservice.service.UserService;
@@ -31,7 +32,12 @@ public class UserServiceImpl implements UserService {
             entity.setRole(Role.ADMIN);
         }
 
-        return repository.save(entity);
+        try {
+            return repository.save(entity);
+        }catch (RuntimeException e){
+            throw new CrudException("Error during the creating of user because of the duplicate value email: {" + entity.getEmail() + "}");
+        }
+
     }
 
     @Override

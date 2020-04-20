@@ -37,8 +37,9 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public void deleteById(String id) {
-        findByIdOrThrowException(id);
-        repository.deleteById(id);
+        Tenant tenant = findByIdOrThrowException(id);
+        tenant.setActive(false);
+        repository.save(tenant);
     }
 
     @Override

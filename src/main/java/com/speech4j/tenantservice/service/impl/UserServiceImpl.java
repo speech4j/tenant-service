@@ -58,8 +58,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(String id) {
-        findByIdOrThrowException(id);
-        repository.deleteById(id);
+        User user = findByIdOrThrowException(id);
+        user.setActive(false);
+        repository.save(user);
     }
 
     @Override

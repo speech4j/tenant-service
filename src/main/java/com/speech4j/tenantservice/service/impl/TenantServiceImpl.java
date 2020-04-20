@@ -7,7 +7,6 @@ import com.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -21,11 +20,6 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Tenant create(Tenant entity) {
-        //Setting a current date
-        entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        //Making status active
-        entity.setActive(true);
-
         return repository.save(entity);
     }
 

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -25,13 +24,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User entity) {
-        //Setting a current date
-        entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        entity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         //Encoding password before saving
         entity.setPassword(encoder.encode(entity.getPassword()));
-        //Making status active
-        entity.setActive(true);
         //Checking if role is missed
         if (entity.getRole() == null) {
             entity.setRole(Role.ADMIN);
@@ -52,8 +46,6 @@ public class UserServiceImpl implements UserService {
         user.setLastName(entity.getLastName());
         //Encoding password before updating
         user.setPassword(encoder.encode(entity.getPassword()));
-        //Setting a current date
-        user.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
 
         return repository.save(user);
     }

@@ -19,5 +19,7 @@ public class TenantDtoResp {
     private String name;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Timestamp createdDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Timestamp modifiedDate;
     private boolean active;
 }

@@ -27,7 +27,7 @@ public class UserDtoMapper implements AbstractEntityDtoMapper<UserDtoReq,User, U
                 .email(entity.getEmail())
                 .role(entity.getRole())
                 .createdDate(entity.getCreatedDate())
-                .updatedDate(entity.getUpdatedDate())
+                .updatedDate(entity.getModifiedDate())
                 .active(entity.isActive())
                 .build();
     }

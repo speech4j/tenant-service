@@ -7,6 +7,7 @@ import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import com.speech4j.tenantservice.dto.request.TenantDtoReq;
 import com.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import com.speech4j.tenantservice.dto.response.TenantDtoResp;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.speech4j.tenantservice.util.DataUtil.getListOfConfigs;
@@ -38,8 +40,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     private ConfigDtoReq testConfig;
 
     private final String exceptionMessage = "Config not found!";
-    private String testId;
-    private String []testTenantId;
+    private String []testConfigIds = new String[2];
+    private String []testTenantIds;
     private List<ConfigDtoReq> configsList;
     private List<TenantDtoReq> tenantsList;
 
@@ -58,16 +60,27 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
         //Populating of db
         tenantsList = getListOfTenants();
-        testTenantId = new TenantControllerTest().populateDB(template, headers, tenantsList);
+        testTenantIds = new TenantControllerTest().populateDB(template, headers, tenantsList);
         configsList = getListOfConfigs();
         populateDB(configsList);
+    }
+
+    @AfterEach
+    void clear(){
+        request = new HttpEntity<>(headers);
+
+        Arrays.stream(testConfigIds).forEach(configId->{
+            String url = "/tenants/" + testTenantIds[0] + "/configs/" + configId;
+            template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
+        });
+
     }
 
     @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<TenantDtoResp> response
-                = template.exchange("/tenants/" + testTenantId[0] + "/configs/" + testId, HttpMethod.GET, request, TenantDtoResp.class);
+                = template.exchange("/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0], HttpMethod.GET, request, TenantDtoResp.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -78,7 +91,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void findByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange("/tenants/" + testTenantId[0] + "/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange("/tenants/" + testTenantIds[0] + "/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
@@ -88,15 +101,15 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void findByIdTestDifferentTenantId_unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange("/tenants/" + testTenantId[1] + "/configs/" + testId, HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange("/tenants/" + testTenantIds[1] + "/configs/" + testConfigIds[0], HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
     @Test
-    public void createEntityTest_successFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/configs";
+    public void createConfigTest_successFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/configs";
 
         ResponseEntity<ConfigDtoResp> response =
                 this.template.exchange(url, HttpMethod.POST, request, ConfigDtoResp.class);
@@ -107,8 +120,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTest_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/configs";
+    public void createConfigTest_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/configs";
 
         //Make entity null
         request = new HttpEntity<>(null, headers);
@@ -121,8 +134,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTestWithWrongEmail_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/configs/";
+    public void createConfigTestWithWrongEmail_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/configs/";
 
         testConfig.setPassword("wrong-password");
         request = new HttpEntity<>(testConfig, headers);
@@ -136,8 +149,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTestWithMissedRequiredField_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/configs/";
+    public void createConfigTestWithMissedRequiredField_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/configs/";
 
         testConfig.setApiName(null);
         request = new HttpEntity<>(testConfig, headers);
@@ -151,8 +164,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateEntityTest_successFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/configs/" + testId;
+    public void updateConfigTest_successFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0];
 
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
@@ -167,8 +180,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateEntityTest_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/configs/" + 0;
+    public void updateConfigTest_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0;
 
         testConfig.setApiName("newName");
         request = new HttpEntity<>(testConfig, headers);
@@ -181,8 +194,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteEntity_successFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/configs/" + testId;
+    public void deleteConfig_successFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0];
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -194,8 +207,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteEntity_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/configs/" + 0l;
+    public void deleteConfig_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0l;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -206,9 +219,9 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllTest() {
+    public void findAllConfigsTest() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<List> response = template.exchange("/tenants/" + testTenantId[0] + "/configs",
+        ResponseEntity<List> response = template.exchange("/tenants/" + testTenantIds[0] + "/configs",
                 HttpMethod.GET, request, List.class);
 
         //Checking if status code is correct
@@ -217,7 +230,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllTestByTenantId_unsuccessFlow() {
+    public void findAllConfigsTestByTenantId_unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response = template.exchange("/tenants/" + 0 + "/configs", HttpMethod.GET, request, ResponseMessageDto.class);
         System.out.println(response);
@@ -232,12 +245,13 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     private void populateDB(List<ConfigDtoReq> list) throws URISyntaxException {
-        final String url = "/tenants/" + testTenantId[0] + "/configs/";
+        final String url = "/tenants/" + testTenantIds[0] + "/configs/";
         URI uri = new URI(url);
 
         ResponseEntity<ConfigDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(list.get(0), headers), ConfigDtoResp.class);
         ResponseEntity<ConfigDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(list.get(1), headers), ConfigDtoResp.class);
 
-        testId = response1.getBody().getId();
+        testConfigIds[0] = response1.getBody().getId();
+        testConfigIds[1] = response2.getBody().getId();
     }
 }

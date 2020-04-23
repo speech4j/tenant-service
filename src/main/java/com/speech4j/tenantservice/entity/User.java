@@ -40,7 +40,8 @@ public class User implements Serializable {
     private String id;
     private String firstName;
     private String lastName;
-    @Column(unique=true)
+    //ToDo use later
+    //@Column(unique=true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)

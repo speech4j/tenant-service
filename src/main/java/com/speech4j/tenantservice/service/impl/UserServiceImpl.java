@@ -33,13 +33,7 @@ public class UserServiceImpl implements UserService {
         if (entity.getRole() == null) {
             entity.setRole(Role.ADMIN);
         }
-
-        try {
-            return repository.save(entity);
-        }catch (RuntimeException e){
-            throw new CrudException("Error during the creating of user because of the duplicate value email: {" + entity.getEmail() + "}");
-        }
-
+         return repository.save(entity);
     }
 
     @Override

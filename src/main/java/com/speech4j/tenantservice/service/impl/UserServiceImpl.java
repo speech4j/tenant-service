@@ -2,7 +2,6 @@ package com.speech4j.tenantservice.service.impl;
 
 import com.speech4j.tenantservice.entity.Role;
 import com.speech4j.tenantservice.entity.User;
-import com.speech4j.tenantservice.exception.CrudException;
 import com.speech4j.tenantservice.exception.UserNotFoundException;
 import com.speech4j.tenantservice.repository.UserRepository;
 import com.speech4j.tenantservice.service.UserService;

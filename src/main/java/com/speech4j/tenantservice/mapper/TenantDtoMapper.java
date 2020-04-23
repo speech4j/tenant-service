@@ -11,6 +11,7 @@ public class TenantDtoMapper implements AbstractEntityDtoMapper<TenantDtoReq, Te
     public Tenant toEntity(TenantDtoReq dto) {
         return Tenant.builder()
                 .name(dto.getName())
+                .active(true)
                 .build();
     }
 

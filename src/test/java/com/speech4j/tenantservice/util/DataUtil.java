@@ -32,7 +32,7 @@ public class DataUtil {
         UserDtoReq user1 = new UserDtoReq();
         user1.setFirstName("Name1");
         user1.setLastName("Surname1");
-        user1.setEmail("email@gmail.com");
+        user1.setEmail("email1@gmail.com");
         user1.setPassword("qwertY123");
         list.add(user1);
 
@@ -40,7 +40,7 @@ public class DataUtil {
         UserDtoReq user2 = new UserDtoReq();
         user2.setFirstName("Name2");
         user2.setLastName("Surname2");
-        user2.setEmail("email@gmail.com");
+        user2.setEmail("email2@gmail.com");
         user2.setPassword("qwertY123");
         list.add(user2);
 

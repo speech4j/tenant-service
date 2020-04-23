@@ -15,6 +15,7 @@ public class UserDtoMapper implements AbstractEntityDtoMapper<UserDtoReq,User, U
                 .email(dto.getEmail())
                 .password(dto.getPassword())
                 .role(dto.getRole())
+                .active(true)
                 .build();
     }
 

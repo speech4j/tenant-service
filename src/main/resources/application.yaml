@@ -13,9 +13,11 @@ spring:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/tenant_db
+    url: jdbc:postgresql://localhost:5432/tenant_db?currentSchema=speech4j
     username: ${POSTGRES_USERNAME:postgres}
     password: ${POSTGRES_PASSWORD:qwerty123}
+  liquibase:
+    default-schema: speech4j
 ---
 # ===============================
 # JPA / HIBERNATE
@@ -42,13 +44,13 @@ springdoc:
 # ===============================
 # SCHEMA-GENERATION / HIBERNATE
 # ===============================
-spring:
-  jpa:
-    properties:
-      javax:
-        persistence:
-          schema-generation:
-            create-source: metadata
-            scripts:
-              action: create
-              create-target: db/changelog/migrations/schema-script.sql
+#spring:
+#  jpa:
+#    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: db/changelog/migrations/schema-script.sql

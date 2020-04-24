@@ -1,6 +1,8 @@
-package com.speech4j.tenantservice.entity;
+package com.speech4j.tenantservice.entity.metadata;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.speech4j.tenantservice.entity.general.Config;
+import com.speech4j.tenantservice.entity.general.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,16 +16,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -31,29 +30,24 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(name = "tenants")
 @EntityListeners(AuditingEntityListener.class)
-public class User implements Serializable {
+public class Tenant implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
-    private String firstName;
-    private String lastName;
-    //ToDo use later
-    //@Column(unique=true)
-    private String email;
-    private String password;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private String  id;
+    private String name;
     @Column(nullable = false, updatable = false)
     @CreatedDate
     private Timestamp createdDate;
     @LastModifiedDate
     private Timestamp modifiedDate;
     private boolean active = true;
-    @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
-    @JoinColumn
-    @JsonBackReference
-    private Tenant tenant;
+    @OneToMany(mappedBy = "tenant")
+    @JsonManagedReference
+    private Set<User> users;
+    @OneToMany(mappedBy = "tenant")
+    @JsonManagedReference
+    private Set<Config> configs;
 }

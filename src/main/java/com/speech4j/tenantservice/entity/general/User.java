@@ -1,6 +1,7 @@
-package com.speech4j.tenantservice.entity;
+package com.speech4j.tenantservice.entity.general;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.speech4j.tenantservice.entity.metadata.Tenant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,13 +15,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -28,24 +32,29 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tenants")
+@Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
-public class Tenant implements Serializable {
+public class User implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String  id;
-    private String name;
+    private String id;
+    private String firstName;
+    private String lastName;
+    //ToDo use later
+    //@Column(unique=true)
+    private String email;
+    private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @Column(nullable = false, updatable = false)
     @CreatedDate
     private Timestamp createdDate;
     @LastModifiedDate
     private Timestamp modifiedDate;
     private boolean active = true;
-    @OneToMany(mappedBy = "tenant")
-    @JsonManagedReference
-    private Set<User> users;
-    @OneToMany(mappedBy = "tenant")
-    @JsonManagedReference
-    private Set<Config> configs;
+    @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
+    @JoinColumn
+    @JsonBackReference
+    private Tenant tenant;
 }

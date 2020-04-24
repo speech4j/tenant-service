@@ -1,6 +1,6 @@
 package com.speech4j.tenantservice.repository;
 
-import com.speech4j.tenantservice.entity.User;
+import com.speech4j.tenantservice.entity.general.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

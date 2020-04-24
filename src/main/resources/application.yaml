@@ -13,7 +13,7 @@ spring:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/tenant_db?currentSchema=speech4j
+    url: jdbc:postgresql://localhost:5432/tenant_db
     username: ${POSTGRES_USERNAME:postgres}
     password: ${POSTGRES_PASSWORD:qwerty123}
   liquibase:

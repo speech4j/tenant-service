@@ -2,7 +2,7 @@ package com.speech4j.tenantservice.dto.request;
 
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
-import com.speech4j.tenantservice.entity.general.Role;
+import com.speech4j.tenantservice.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

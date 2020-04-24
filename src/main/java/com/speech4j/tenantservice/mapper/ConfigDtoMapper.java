@@ -2,7 +2,7 @@ package com.speech4j.tenantservice.mapper;
 
 import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import com.speech4j.tenantservice.dto.response.ConfigDtoResp;
-import com.speech4j.tenantservice.entity.general.Config;
+import com.speech4j.tenantservice.entity.Config;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,8 +1,8 @@
 package com.speech4j.tenantservice.entity.metadata;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.speech4j.tenantservice.entity.general.Config;
-import com.speech4j.tenantservice.entity.general.User;
+import com.speech4j.tenantservice.entity.Config;
+import com.speech4j.tenantservice.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

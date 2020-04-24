@@ -5,7 +5,7 @@ import com.speech4j.tenantservice.dto.response.UserDtoResp;
 import com.speech4j.tenantservice.dto.validation.ExistData;
 import com.speech4j.tenantservice.dto.validation.NewData;
 import com.speech4j.tenantservice.entity.metadata.Tenant;
-import com.speech4j.tenantservice.entity.general.User;
+import com.speech4j.tenantservice.entity.User;
 import com.speech4j.tenantservice.exception.UserNotFoundException;
 import com.speech4j.tenantservice.mapper.UserDtoMapper;
 import com.speech4j.tenantservice.service.TenantService;

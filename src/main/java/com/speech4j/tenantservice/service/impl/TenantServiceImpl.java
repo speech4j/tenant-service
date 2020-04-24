@@ -2,7 +2,6 @@ package com.speech4j.tenantservice.service.impl;
 
 import com.speech4j.tenantservice.entity.metadata.Tenant;
 import com.speech4j.tenantservice.exception.TenantNotFoundException;
-import com.speech4j.tenantservice.liquibase.service.LiquibaseService;
 import com.speech4j.tenantservice.repository.ConfigRepository;
 import com.speech4j.tenantservice.repository.TenantRepository;
 import com.speech4j.tenantservice.repository.UserRepository;

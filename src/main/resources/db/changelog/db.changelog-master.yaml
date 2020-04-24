@@ -7,6 +7,6 @@ databaseChangeLog:
             dbms: postgresql
             encoding: utf8
             endDelimiter: \n/\s*\n|\n/\s*$
-            path: db/changelog/migrations/001-schema.sql
+            path: db/changelog/migrations/default-schema.sql
             splitStatements: true
             stripComments: true

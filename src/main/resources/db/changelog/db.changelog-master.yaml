@@ -1,2 +1,12 @@
 databaseChangeLog:
-  - logicalFilePath: db/changelog/db.changelog-v001.yaml
+  - changeSet:
+      id: generateShema
+      author: postgres
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \n/\s*\n|\n/\s*$
+            path: db/changelog/migrations/001-schema.sql
+            splitStatements: true
+            stripComments: true

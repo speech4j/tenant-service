@@ -1,8 +1,7 @@
 package com.speech4j.tenantservice.service.impl;
 
-import com.speech4j.tenantservice.entity.general.Config;
+import com.speech4j.tenantservice.entity.Config;
 import com.speech4j.tenantservice.exception.ConfigNotFoundException;
-import com.speech4j.tenantservice.liquibase.service.LiquibaseService;
 import com.speech4j.tenantservice.repository.ConfigRepository;
 import com.speech4j.tenantservice.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +12,14 @@ import java.util.List;
 @Service
 public class ConfigServiceImpl implements ConfigService {
     private ConfigRepository repository;
-    private LiquibaseService liquibaseService;
 
     @Autowired
-    public ConfigServiceImpl(ConfigRepository repository,
-                             LiquibaseService liquibaseService) {
+    public ConfigServiceImpl(ConfigRepository repository) {
         this.repository = repository;
-        this.liquibaseService = liquibaseService;
     }
 
     @Override
     public Config create(Config entity) {
-            liquibaseService.run("tenant100");
             return repository.save(entity);
     }
 

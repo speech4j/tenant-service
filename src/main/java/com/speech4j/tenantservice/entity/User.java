@@ -7,8 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -17,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
@@ -26,20 +32,26 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class User {
+@EntityListeners(AuditingEntityListener.class)
+public class User implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
     private String firstName;
     private String lastName;
+    //ToDo use later
+    //@Column(unique=true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(nullable = false, updatable = false)
+    @CreatedDate
     private Timestamp createdDate;
-    private Timestamp updatedDate;
-    private boolean active;
+    @LastModifiedDate
+    private Timestamp modifiedDate;
+    private boolean active = true;
     @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
     @JoinColumn
     @JsonBackReference

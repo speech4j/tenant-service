@@ -17,7 +17,7 @@ script:
   - ./gradlew sonarqube --stacktrace
 
 after_success:
-  - docker build -t speech4j/tenant-service .gt
+  - docker build -t speech4j/tenant-service -f Dockerfile .
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push speech4j/tenant-service
 

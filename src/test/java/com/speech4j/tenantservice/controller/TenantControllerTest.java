@@ -55,7 +55,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findByIdTest_successFlow() {
+    public void findTenantByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<TenantDtoResp> response
                 = template.exchange("/tenants/" + testId, HttpMethod.GET, request, TenantDtoResp.class);
@@ -66,7 +66,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findByIdTest__unsuccessFlow() {
+    public void findTenantByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
                 = template.exchange("/tenants/0", HttpMethod.GET, request, ResponseMessageDto.class);
@@ -76,7 +76,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTest_successFlow() {
+    public void createTenantTest_successFlow() {
         final String url = "/tenants";
 
         ResponseEntity<TenantDtoResp> response =
@@ -88,7 +88,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTest_unsuccessFlow() {
+    public void createTenantTest_unsuccessFlow() {
         final String url = "/tenants";
 
         //Make entity null
@@ -102,7 +102,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTestWithMissedRequiredField_unsuccessFlow() {
+    public void createTenantTestWithMissedRequiredField_unsuccessFlow() {
         final String url = "/tenants";
 
         testTenant.setName(null);
@@ -117,7 +117,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateEntityTest_successFlow() {
+    public void updateTenantTest_successFlow() {
         final String url = "/tenants/" + testId;
 
         testTenant.setName("New Company");
@@ -133,7 +133,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateEntityTest_unsuccessFlow() {
+    public void updateTenantTest_unsuccessFlow() {
         final String url = "/tenants/" + 0;
 
         testTenant.setName("New Company");
@@ -147,7 +147,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteEntity_successFlow() {
+    public void deleteTenant_successFlow() {
         final String url = "/tenants/" + testId;
 
         request = new HttpEntity<>(headers);
@@ -159,7 +159,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteEntity_unsuccessFlow() {
+    public void deleteTenant_unsuccessFlow() {
         final String url = "/tenants/" + 0;
 
         request = new HttpEntity<>(headers);
@@ -171,7 +171,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllTest() {
+    public void findAllTenantsTest() {
         request = new HttpEntity<>(headers);
         ResponseEntity<List> response = template.exchange("/tenants", HttpMethod.GET, request, List.class);
 

@@ -2,30 +2,33 @@ package com.speech4j.tenantservice.service.impl;
 
 import com.speech4j.tenantservice.entity.Tenant;
 import com.speech4j.tenantservice.exception.TenantNotFoundException;
+import com.speech4j.tenantservice.repository.ConfigRepository;
 import com.speech4j.tenantservice.repository.TenantRepository;
+import com.speech4j.tenantservice.repository.UserRepository;
 import com.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
 public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
+    private UserRepository userRepository;
+    private ConfigRepository configRepository;
 
     @Autowired
-    public TenantServiceImpl(TenantRepository repository) {
+    public TenantServiceImpl(TenantRepository repository,
+                             UserRepository userRepository,
+                             ConfigRepository configRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
+        this.configRepository = configRepository;
     }
 
     @Override
     public Tenant create(Tenant entity) {
-        //Setting a current date
-        entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        //Making status active
-        entity.setActive(true);
-
         return repository.save(entity);
     }
 
@@ -42,9 +45,13 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
+    @Transactional
     public void deleteById(String id) {
-        findByIdOrThrowException(id);
-        repository.deleteById(id);
+        Tenant tenant = findByIdOrThrowException(id);
+        tenant.setActive(false);
+        configRepository.deleteAllByTenantId(id);
+        userRepository.deleteAllByTenantId(id);
+        repository.save(tenant);
     }
 
     @Override
@@ -54,7 +61,7 @@ public class TenantServiceImpl implements TenantService {
 
     private Tenant findByIdOrThrowException(String id) {
         //Checking if tenant is found
-        return repository.findById(id)
+        return repository.findById(id).filter(t->t.isActive())
                 .orElseThrow(() -> new TenantNotFoundException("Tenant not found!"));
     }
 }

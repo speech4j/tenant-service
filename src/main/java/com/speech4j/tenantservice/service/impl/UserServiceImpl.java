@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,26 +18,21 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository repository,
+                           PasswordEncoder encoder) {
         this.repository = repository;
         this.encoder = encoder;
     }
 
     @Override
     public User create(User entity) {
-        //Setting a current date
-        entity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        entity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         //Encoding password before saving
         entity.setPassword(encoder.encode(entity.getPassword()));
-        //Making status active
-        entity.setActive(true);
         //Checking if role is missed
         if (entity.getRole() == null) {
             entity.setRole(Role.ADMIN);
         }
-
-        return repository.save(entity);
+         return repository.save(entity);
     }
 
     @Override
@@ -52,21 +47,20 @@ public class UserServiceImpl implements UserService {
         user.setLastName(entity.getLastName());
         //Encoding password before updating
         user.setPassword(encoder.encode(entity.getPassword()));
-        //Setting a current date
-        user.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
 
         return repository.save(user);
     }
 
     @Override
     public void deleteById(String id) {
-        findByIdOrThrowException(id);
-        repository.deleteById(id);
+        User user = findByIdOrThrowException(id);
+        user.setActive(false);
+        repository.save(user);
     }
 
     @Override
     public List<User> findAllById(String id) {
-        List<User> list = repository.findAllByTenantId(id);
+        List<User> list = repository.findAllByTenantId(id).stream().filter(u->u.isActive()).collect(Collectors.toList());
         if (!list.isEmpty()){
             return list;
         }else {
@@ -76,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     private User findByIdOrThrowException(String id) {
         //Checking if user is found
-        return repository.findById(id)
+        return repository.findById(id).filter(user-> user.isActive())
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
     }
 }

@@ -6,6 +6,7 @@ import com.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import com.speech4j.tenantservice.dto.request.TenantDtoReq;
 import com.speech4j.tenantservice.dto.request.UserDtoReq;
 import com.speech4j.tenantservice.dto.response.UserDtoResp;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.speech4j.tenantservice.util.DataUtil.getListOfTenants;
@@ -37,8 +39,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     private UserDtoReq testUser;
 
     private final String exceptionMessage = "User not found!";
-    private String  testId;
-    private String []testTenantId;
+    private String []testUserIds = new String[2];
+    private String []testTenantIds;
     private List<UserDtoReq> usersList;
     private List<TenantDtoReq> tenantsList;
 
@@ -51,23 +53,34 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         testUser = new UserDtoReq();
         testUser.setFirstName("Mar");
         testUser.setLastName("Slob");
-        testUser.setEmail("email@gmail.com");
+        testUser.setEmail("email1@gmail.com");
         testUser.setPassword("strinG123");
 
         request = new HttpEntity<>(testUser, headers);
 
         //Populating of db
         tenantsList = getListOfTenants();
-        testTenantId = new TenantControllerTest().populateDB(template, headers,tenantsList);
+        testTenantIds = new TenantControllerTest().populateDB(template, headers,tenantsList);
         usersList = getListOfUsers();
         populateDB(usersList);
     }
 
+    @AfterEach
+    void clear(){
+        request = new HttpEntity<>(headers);
+
+        Arrays.stream(testUserIds).forEach(userId->{
+            String url = "/tenants/" + testTenantIds[0] + "/users/" + userId;
+            template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
+        });
+
+    }
+
     @Test
-    public void findByIdTest_successFlow() {
+    public void findUserByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<UserDtoResp> response
-                = template.exchange("/tenants/" + testTenantId[0] + "/users/" + testId, HttpMethod.GET, request, UserDtoResp.class);
+                = template.exchange("/tenants/" + testTenantIds[0] + "/users/" + testUserIds[0], HttpMethod.GET, request, UserDtoResp.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
@@ -75,28 +88,28 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findByIdTest__unsuccessFlow() {
+    public void findUserByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange("/tenants/" + testTenantId[0] + "/users/" + 0, HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange("/tenants/" + testTenantIds[0] + "/users/" + 0, HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
     @Test
-    public void findByIdTestDifferentTenantId_unsuccessFlow() {
+    public void findUserByIdTestDifferentTenantId_unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange("/tenants/" + testTenantId[1] + "/users/" + testId, HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange("/tenants/" + testTenantIds[1] + "/users/" + testUserIds[0], HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
     @Test
-    public void createEntityTest_successFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/users/";
+    public void createUserTest_successFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         ResponseEntity<UserDtoResp> response =
                 this.template.exchange(url, HttpMethod.POST, request, UserDtoResp.class);
@@ -107,8 +120,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTestWithOptionalField_successFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/users/";
+    public void createUserTestWithOptionalField_successFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         testUser.setRole(null);
         ResponseEntity<UserDtoResp> response =
@@ -120,8 +133,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTest_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/users/";
+    public void createUserTest_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         //Make entity null
         request = new HttpEntity<>(null, headers);
@@ -134,8 +147,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTestWithWrongEmail_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/users/";
+    public void createUserTestWithWrongEmail_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         testUser.setEmail("wrong-email");
         request = new HttpEntity<>(testUser, headers);
@@ -149,8 +162,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createEntityTestWithMissedRequiredField_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantId[0] + "/users/";
+    public void createUserTestWithMissedRequiredField_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         testUser.setFirstName(null);
         request = new HttpEntity<>(testUser, headers);
@@ -164,8 +177,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateEntityTest_successFlow() {
-        final String url = "/tenants/"+testTenantId[0]+"/users/" + testId;
+    public void updateUserTest_successFlow() {
+        final String url = "/tenants/"+testTenantIds[0]+"/users/" + testUserIds[0];
 
         testUser.setFirstName("NewName");
         request = new HttpEntity<>(testUser, headers);
@@ -181,8 +194,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateEntityTest_unsuccessFlow() {
-        final String url = "/tenants/"+testTenantId[0]+"/users/" + 0;
+    public void updateUseerTest_unsuccessFlow() {
+        final String url = "/tenants/"+testTenantIds[0]+"/users/" + 0;
 
         testUser.setFirstName("NewName");
         request = new HttpEntity<>(testUser, headers);
@@ -195,8 +208,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteEntity_successFlow() {
-        final String url = "/tenants/"+testTenantId[0]+"/users/" + testId;
+    public void deleteUser_successFlow() {
+        final String url = "/tenants/"+testTenantIds[0]+"/users/" + testUserIds[0];
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -208,8 +221,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteEntity_unsuccessFlow() {
-        final String url = "/tenants/"+testTenantId[0]+"/users/" + 0;
+    public void deleteUser_unsuccessFlow() {
+        final String url = "/tenants/"+testTenantIds[0]+"/users/" + 0;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
@@ -220,10 +233,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllTestByTenantId_successFlow() {
-        request = new HttpEntity<>(headers);
-        ResponseEntity<List> response = template.exchange("/tenants/" + testTenantId[0] + "/users", HttpMethod.GET, request, List.class);
-       // System.out.println(response);
+    public void findAllUsersTestByTenantId_successFlow() {
+        ResponseEntity<List> response = template.exchange("/tenants/" + testTenantIds[0] + "/users", HttpMethod.GET, null , List.class);
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
@@ -231,10 +242,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllTestByTenantId_unsuccessFlow() {
-        request = new HttpEntity<>(headers);
-        ResponseEntity<ResponseMessageDto> response = template.exchange("/tenants/" + 0 + "/users", HttpMethod.GET, request, ResponseMessageDto.class);
-        System.out.println(response);
+    public void findAllUsersTestByTenantId_unsuccessFlow() {
+        ResponseEntity<ResponseMessageDto> response = template.exchange("/tenants/" + 0 + "/users", HttpMethod.GET, null, ResponseMessageDto.class);
 
         //Checking if status code is correct
         checkEntityNotFoundException(response);
@@ -246,11 +255,12 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     private void populateDB(List<UserDtoReq> list) throws URISyntaxException {
-        final String url = "/tenants/" + testTenantId[0] + "/users";
+        final String url = "/tenants/" + testTenantIds[0] + "/users";
         URI uri = new URI(url);
 
         ResponseEntity<UserDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(list.get(0), headers), UserDtoResp.class);
         ResponseEntity<UserDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(list.get(1), headers), UserDtoResp.class);
-        testId = response1.getBody().getId();
+        testUserIds[0] = response1.getBody().getId();
+        testUserIds[1] = response2.getBody().getId();
     }
 }

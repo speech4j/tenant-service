@@ -24,6 +24,6 @@ public class UserDtoResp {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Timestamp createdDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Timestamp updatedDate;
+    private Timestamp modifiedDate;
     private boolean active;
 }

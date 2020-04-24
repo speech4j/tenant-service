@@ -11,6 +11,7 @@ public class TenantDtoMapper implements AbstractEntityDtoMapper<TenantDtoReq, Te
     public Tenant toEntity(TenantDtoReq dto) {
         return Tenant.builder()
                 .name(dto.getName())
+                .active(true)
                 .build();
     }
 
@@ -20,6 +21,7 @@ public class TenantDtoMapper implements AbstractEntityDtoMapper<TenantDtoReq, Te
                 .id(entity.getId())
                 .name(entity.getName())
                 .createdDate(entity.getCreatedDate())
+                .modifiedDate(entity.getModifiedDate())
                 .active(entity.isActive())
                 .build();
     }

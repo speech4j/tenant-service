@@ -1,9 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: Generate metadata
+      id: Generate metadata schema
       author: postgres
       changes:
         - sqlFile:
+            schemaName: metadata
             dbms: postgresql
             encoding: utf8
             endDelimiter: \n/\s*\n|\n/\s*$
@@ -16,6 +17,7 @@ databaseChangeLog:
       author: postgres
       changes:
         - sqlFile:
+           schemaName: speech4j
            dbms: postgresql
            encoding: utf8
            endDelimiter: \n/\s*\n|\n/\s*$

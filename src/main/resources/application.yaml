@@ -38,3 +38,17 @@ spring:
 springdoc:
   api-docs.ath: /api-docs
   swagger-ui.path: /swagger-ui.html
+---
+# ===============================
+# SCHEMA-GENERATION / HIBERNATE
+# ===============================
+spring:
+  jpa:
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              action: create
+              create-target: db/changelog/migrations/schema-script.sql

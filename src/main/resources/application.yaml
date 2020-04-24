@@ -13,11 +13,11 @@ spring:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/tenant_db
+    url: jdbc:postgresql://localhost:5432/tenant_db?currentSchema=metadata
     username: ${POSTGRES_USERNAME:postgres}
     password: ${POSTGRES_PASSWORD:qwerty123}
   liquibase:
-    default-schema: speech4j
+    default-schema: metadata
 ---
 # ===============================
 # JPA / HIBERNATE

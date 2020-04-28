@@ -31,7 +31,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tenants")
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public class Tenant implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid")
@@ -44,10 +44,10 @@ public class Tenant implements Serializable {
     @LastModifiedDate
     private Timestamp modifiedDate;
     private boolean active;
-    @OneToMany(mappedBy = "tenant")
-    @JsonManagedReference
-    private Set<User> users;
-    @OneToMany(mappedBy = "tenant")
-    @JsonManagedReference
-    private Set<Config> configs;
+//    @OneToMany(mappedBy = "tenant")
+//    @JsonManagedReference
+//    private Set<User> users;
+//    @OneToMany(mappedBy = "tenant")
+//    @JsonManagedReference
+//    private Set<Config> configs;
 }

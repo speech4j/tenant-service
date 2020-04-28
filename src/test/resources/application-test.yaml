@@ -1,12 +1,15 @@
 # ===============================
 # DATABASE
 # ===============================
+db:
+  host: db
+  port: 5432
+  name: tenant_db
 spring:
-  profiles: test
   datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:tenant_db}
-    username: ${POSTGRES_USERNAME:postgres}
-    password: ${POSTGRES_PASSWORD:postgres}
+    driver: org.postgresql.Driver
+    url: jdbc:postgresql://${db.host}:${db.port}/${db.name}?currentSchema=metadata
+    username: postgres
+    password: qwerty123
   liquibase:
-    default-schema: speech4j
+    default-schema: metadata

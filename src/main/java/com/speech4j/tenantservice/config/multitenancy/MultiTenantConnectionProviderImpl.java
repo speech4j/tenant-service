@@ -41,13 +41,12 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         final Connection connection = getAnyConnection();
         try {
-            if (tenantIdentifier != null) {
+            if (tenantIdentifier != null && !tenantIdentifier.equals(DEFAULT_TENANT_ID)) {
                 // Create the schema
-                //ToDo Add later `tenant` to schema Name as it should start with alphabetic character.
-                //  String persistentTenant = "tenant_" + tenantIdentifier;
-                String persistentTenant = tenantIdentifier;
+                String persistentTenant = "tenant_" + tenantIdentifier;
 
                 connection.createStatement().executeUpdate("CREATE SCHEMA IF NOT EXISTS " + persistentTenant);
+                connection.setSchema(persistentTenant);
 
                 Database database = DatabaseFactory.getInstance()
                         .findCorrectDatabaseImplementation(new JdbcConnection(connection));
@@ -62,7 +61,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
                         resourceAcessor, database)
                         .update(springLiquibase.getContexts());
 
-                connection.setSchema(persistentTenant);
+
             } else {
                 connection.setSchema(DEFAULT_TENANT_ID);
             }

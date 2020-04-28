@@ -1,6 +1,6 @@
 package com.speech4j.tenantservice.repository;
 
-import com.speech4j.tenantservice.entity.Config;
+import com.speech4j.tenantservice.entity.general.Config;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

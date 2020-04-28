@@ -1,14 +1,13 @@
 package org.speech4j.tenantservice.entity.general;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.speech4j.tenantservice.entity.metadata.Tenant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.speech4j.tenantservice.entity.metadata.Tenant;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +25,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "configs")
-@DynamicUpdate
 public class Config implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid")

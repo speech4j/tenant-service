@@ -1,0 +1,73 @@
+databaseChangeLog:
+- changeSet:
+    id: 1588105819227-1
+    author: mslob (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: configsPK
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: apiName
+            type: VARCHAR(255)
+        - column:
+            name: password
+            type: VARCHAR(255)
+        - column:
+            name: tenantId
+            type: VARCHAR(255)
+        - column:
+            name: username
+            type: VARCHAR(255)
+        tableName: configs
+- changeSet:
+    id: 1588105819227-2
+    author: mslob (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: usersPK
+            name: id
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: createdDate
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: email
+            type: VARCHAR(255)
+        - column:
+            name: firstName
+            type: VARCHAR(255)
+        - column:
+            name: lastName
+            type: VARCHAR(255)
+        - column:
+            name: modifiedDate
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: password
+            type: VARCHAR(255)
+        - column:
+            name: role
+            type: VARCHAR(255)
+        - column:
+            name: tenantId
+            type: VARCHAR(255)
+        tableName: users
+

@@ -1,7 +1,5 @@
 package org.speech4j.tenantservice.entity.general;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.speech4j.tenantservice.entity.metadata.Tenant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,11 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -47,14 +42,13 @@ public class User implements Serializable {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "createddate")
     @CreatedDate
     private Timestamp createdDate;
     @LastModifiedDate
+    @Column(name = "modifieddate")
     private Timestamp modifiedDate;
     private boolean active;
-    @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
-    @JoinColumn
-    @JsonBackReference
-    private Tenant tenant;
+    @Column(name = "tenantid")
+    private String tenantId;
 }

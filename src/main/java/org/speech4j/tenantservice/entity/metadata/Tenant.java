@@ -1,8 +1,5 @@
 package org.speech4j.tenantservice.entity.metadata;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.speech4j.tenantservice.entity.general.Config;
-import org.speech4j.tenantservice.entity.general.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,11 +15,9 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -31,23 +26,18 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tenants")
-//@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class)
 public class Tenant implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String  id;
     private String name;
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "createddate")
     @CreatedDate
     private Timestamp createdDate;
     @LastModifiedDate
+    @Column(name = "modifieddate")
     private Timestamp modifiedDate;
     private boolean active;
-//    @OneToMany(mappedBy = "tenant")
-//    @JsonManagedReference
-//    private Set<User> users;
-//    @OneToMany(mappedBy = "tenant")
-//    @JsonManagedReference
-//    private Set<Config> configs;
 }

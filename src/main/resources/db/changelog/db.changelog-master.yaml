@@ -1,13 +1,3 @@
 databaseChangeLog:
-  - changeSet:
-      id: Generate metadata schema
-      author: postgres
-      changes:
-        - sqlFile:
-            schemaName: metadata
-            dbms: postgresql
-            encoding: utf8
-            endDelimiter: \n/\s*\n|\n/\s*$
-            path: db/changelog/migrations/metadata-schema.sql
-            splitStatements: true
-            stripComments: true
+    - include:
+          file: db/changelog/migrations/metadata-schema.yaml

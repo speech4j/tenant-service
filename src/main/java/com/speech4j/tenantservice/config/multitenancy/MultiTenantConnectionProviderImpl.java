@@ -43,7 +43,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
         try {
             if (tenantIdentifier != null && !tenantIdentifier.equals(DEFAULT_TENANT_ID)) {
                 // Create the schema
-                String persistentTenant = "tenant_" + tenantIdentifier;
+                String persistentTenant = tenantIdentifier.equals("speech4j") ? tenantIdentifier : "tenant_" + tenantIdentifier;
 
                 connection.createStatement().executeUpdate("CREATE SCHEMA IF NOT EXISTS " + persistentTenant);
                 connection.setSchema(persistentTenant);

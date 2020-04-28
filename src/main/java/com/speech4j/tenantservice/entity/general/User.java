@@ -53,7 +53,7 @@ public class User implements Serializable {
     private Timestamp createdDate;
     @LastModifiedDate
     private Timestamp modifiedDate;
-    private boolean active = true;
+    private boolean active;
     @ManyToOne(targetEntity = Tenant.class, fetch = FetchType.LAZY)
     @JoinColumn
     @JsonBackReference

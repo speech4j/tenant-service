@@ -43,7 +43,7 @@ public class Tenant implements Serializable {
     private Timestamp createdDate;
     @LastModifiedDate
     private Timestamp modifiedDate;
-    private boolean active = true;
+    private boolean active;
     @OneToMany(mappedBy = "tenant")
     @JsonManagedReference
     private Set<User> users;

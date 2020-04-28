@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.DEFAULT_TENANT_ID;
 
@@ -45,32 +46,31 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
                 // Create the schema
                 String persistentTenant = tenantIdentifier.equals("speech4j") ? tenantIdentifier : "tenant_" + tenantIdentifier;
 
-                connection.createStatement().executeUpdate("CREATE SCHEMA IF NOT EXISTS " + persistentTenant);
-                connection.setSchema(persistentTenant);
 
-                Database database = DatabaseFactory.getInstance()
-                        .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+                try (Statement ps = connection.createStatement()) {
 
-                ClassLoaderResourceAccessor resourceAcessor =
-                        new ClassLoaderResourceAccessor(getClass().getClassLoader());
+                    ps.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + persistentTenant);
+                    connection.setSchema(persistentTenant);
 
-                database.setLiquibaseSchemaName(persistentTenant);
-                database.setDefaultSchemaName(persistentTenant);
-                new Liquibase(
-                        "db/changelog/db.changelog-default.yaml",
-                        resourceAcessor, database)
-                        .update(springLiquibase.getContexts());
+                    Database database = DatabaseFactory.getInstance()
+                            .findCorrectDatabaseImplementation(new JdbcConnection(connection));
 
+                    database.setLiquibaseSchemaName(persistentTenant);
+                    database.setDefaultSchemaName(persistentTenant);
+
+                    //Updating of schema
+                    updateSchema(database);
+
+                }
 
             } else {
                 connection.setSchema(DEFAULT_TENANT_ID);
             }
-        }
-        catch (SQLException | LiquibaseException e ) {
+        } catch (SQLException | LiquibaseException e) {
             throw new HibernateException(
-                    "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]", e
-            );
+                    "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]", e);
         }
+
         return connection;
     }
 
@@ -78,8 +78,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
         try {
             connection.setSchema(DEFAULT_TENANT_ID);
-        }
-        catch ( SQLException e ) {
+        } catch (SQLException e) {
             throw new HibernateException(
                     "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]", e
             );
@@ -103,5 +102,17 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
         return true;
     }
 
+    private void updateSchema(Database database) throws LiquibaseException {
+        ClassLoaderResourceAccessor resourceAcessor =
+                new ClassLoaderResourceAccessor(getClass().getClassLoader());
 
+        try {
+            Liquibase liquibase = new Liquibase(
+                    "db/changelog/db.changelog-schema.yaml", resourceAcessor, database);
+            liquibase.update(springLiquibase.getContexts());
+
+        } catch (Exception e) {
+            throw new LiquibaseException("Error during the effort to update schema!");
+        }
+    }
 }

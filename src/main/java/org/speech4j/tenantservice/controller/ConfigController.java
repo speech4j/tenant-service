@@ -57,7 +57,7 @@ public class ConfigController{
     ) {
         Tenant tenant = tenantService.findById(id);
         Config config = mapper.toEntity(dto);
-        config.setTenant(tenant);
+        config.setTenantId("speech4j");
         return mapper.toDto(configService.create(config));
     }
 
@@ -130,7 +130,7 @@ public class ConfigController{
 
     private void checkIfExist(String configId, String tenantId){
         Config config = configService.findById(configId);
-        if (!config.getTenant().getId().equals(tenantId))
+        if (!config.getTenantId().equals(tenantId))
             throw new EntityNotFoundException("Config not found!");
     }
 }

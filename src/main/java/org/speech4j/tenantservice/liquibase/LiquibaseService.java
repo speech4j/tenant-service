@@ -45,7 +45,7 @@ public class LiquibaseService {
 
             database.setLiquibaseSchemaName(schemaName);
             database.setDefaultSchemaName(schemaName);
-            new Liquibase("db/changelog/db.changelog-default.yaml",
+            new Liquibase("db/changelog/db.changelog-schema.yaml",
                     resourceAcessor, database)
                     .update(springLiquibase.getContexts());
         } catch (SQLException | LiquibaseException e) {

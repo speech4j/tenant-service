@@ -32,3 +32,8 @@ docker run --name postgres-docker \
                 -e POSTGRES_DB=tenant_db \
                 -p 5433:5433 -d postgres
 ```
+
+## Running DB Migration
+(metadata is default, use without an additional argument)
+*`./gradlew liquibase -Pname=schema` - generate a migration script for general schema
+*`./gradlew liquibase` - generate a migration script for metadata schema

@@ -1,5 +1,3 @@
-def diffLog = "$projectDir/src/main/resources/db/changelog/migrations/" +
-        new Date().format("yyyy-MM-dd, HH:mm:ss-") + "v001.yaml"
 
 configurations {
     liquibase
@@ -9,8 +7,16 @@ dependencies {
     implementation 'org.liquibase.ext:liquibase-hibernate5:3.6'
 }
 
+
 Properties properties = new Properties()
-properties.load(new FileInputStream("src/main/resources/liquibase.properties"))
+
+Properties metadata = new Properties()
+metadata.load(new FileInputStream("src/main/resources/liquibase-metadata.properties"))
+properties = metadata;
+
+Properties schema = new Properties()
+schema.load(new FileInputStream("src/main/resources/liquibase-schema.properties"))
+
 
 task liquibaseDiff(type: JavaExec) {
     group = "liquibase"
@@ -18,12 +24,15 @@ task liquibaseDiff(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "liquibase.integration.commandline.Main"
 
-    if(project.hasProperty('diffChangeLogFile')){
-        diffLog = diffChangeLogFile
+    if(project.hasProperty('name')){
+        if (name == "metadata"){
+            properties = metadata;
+        }else {
+            properties = schema;
+        }
     }
 
-
-    args "--changeLogFile=" + diffLog
+    args "--changeLogFile=" + properties.getProperty('changeLogFile')
     args "--referenceUrl=" + properties.getProperty('referenceUrl')  //hibernate entities
     args "--username=" + properties.getProperty('username')
     args "--password=" + properties.getProperty('password')

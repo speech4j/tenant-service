@@ -59,7 +59,7 @@ public class UserController{
     ) {
         Tenant tenant = tenantService.findById(id);
         User user = mapper.toEntity(dto);
-        user.setTenant(tenant);
+        user.setTenantId(id);
         return mapper.toDto(userService.create(user));
     }
 
@@ -133,7 +133,7 @@ public class UserController{
 
     private void checkIfExist(String userId, String tenantId){
         User user = userService.findById(userId);
-        if (!user.getTenant().getId().equals(tenantId))
+        if (!user.getTenantId().equals(tenantId))
             throw new UserNotFoundException("User not found!");
     }
 }

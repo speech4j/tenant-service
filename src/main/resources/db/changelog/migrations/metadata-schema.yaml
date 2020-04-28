@@ -1,2 +1,32 @@
-databaseChangeLog: []
+databaseChangeLog:
+- changeSet:
+    id: 1588105101280-1
+    author: mslob (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tenantsPK
+            name: id
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: createddate
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: modifieddate
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: tenants
 

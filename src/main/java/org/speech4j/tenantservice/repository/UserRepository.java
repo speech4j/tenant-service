@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserRepository extends CrudRepository<User,String> {
     List<User> findAllByTenantId(String tenantId);
 
-    @Modifying
-    @Query( value = "UPDATE User u SET u.active = false WHERE u.tenant.id = :tenantId")
+    //@Modifying
+   // @Query( value = "UPDATE User u SET u.active = false WHERE u.tenant.id = :tenantId")
     void deleteAllByTenantId(String tenantId);
 }

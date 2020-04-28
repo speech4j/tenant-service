@@ -2,6 +2,8 @@ package org.speech4j.tenantservice.config.multitenancy;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.DEFAULT_TENANT_ID;
 
@@ -27,12 +30,15 @@ public class DataSourceConfig {
     @Value("${spring.datasource.password}")
     private String password;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConfig.class);
 
     private void init(DataSource dataSource){
         try (final Connection connection = dataSource.getConnection()){
-            connection.createStatement().executeUpdate("CREATE SCHEMA IF NOT EXISTS " + DEFAULT_TENANT_ID);
+            try(Statement st = connection.createStatement()) {
+                st.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + DEFAULT_TENANT_ID);
+            }
         }catch (SQLException e){
-            e.printStackTrace();
+            LOGGER.debug(e.getMessage());
         }
 
     }

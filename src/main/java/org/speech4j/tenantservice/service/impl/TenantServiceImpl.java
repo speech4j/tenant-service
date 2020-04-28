@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 @Service
@@ -17,6 +18,8 @@ public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
     private UserRepository userRepository;
     private ConfigRepository configRepository;
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     public TenantServiceImpl(TenantRepository repository,

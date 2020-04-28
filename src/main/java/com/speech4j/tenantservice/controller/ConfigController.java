@@ -3,7 +3,7 @@ package com.speech4j.tenantservice.controller;
 import com.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import com.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import com.speech4j.tenantservice.dto.validation.NewData;
-import com.speech4j.tenantservice.entity.Config;
+import com.speech4j.tenantservice.entity.general.Config;
 import com.speech4j.tenantservice.entity.metadata.Tenant;
 import com.speech4j.tenantservice.exception.EntityNotFoundException;
 import com.speech4j.tenantservice.mapper.ConfigDtoMapper;
@@ -41,9 +41,6 @@ public class ConfigController{
         this.configService = configService;
         this.tenantService = tenantService;
         this.mapper = mapper;
-    }
-
-    public ConfigController() {
     }
 
     @PostMapping
@@ -104,7 +101,7 @@ public class ConfigController{
     @DeleteMapping("/{configId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(
-            summary = "Delete config by ID",
+            summary = "Delete com.speech4j.tenantservice.config by ID",
             responses = {
                     @ApiResponse(responseCode = "404", description = "Config not found")})
     public void delete(

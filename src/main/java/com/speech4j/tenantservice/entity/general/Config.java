@@ -1,4 +1,4 @@
-package com.speech4j.tenantservice.entity;
+package com.speech4j.tenantservice.entity.general;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.speech4j.tenantservice.entity.metadata.Tenant;

@@ -1,6 +1,6 @@
 package com.speech4j.tenantservice.service;
 
-import com.speech4j.tenantservice.entity.User;
+import com.speech4j.tenantservice.entity.general.User;
 
 import java.util.List;
 

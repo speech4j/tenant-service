@@ -19,8 +19,8 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
 
         Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
-        if (pathVariables != null) {
-            String tenantId = (String) pathVariables.get("id");
+        if (pathVariables != null && pathVariables.size() != 0) {
+            String tenantId = ((String) pathVariables.get("id")).replaceAll("-","");
             TenantContext.setCurrentTenant(tenantId);
         }
 

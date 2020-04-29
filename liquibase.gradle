@@ -25,9 +25,7 @@ task liquibaseDiff(type: JavaExec) {
     main = "liquibase.integration.commandline.Main"
 
     if(project.hasProperty('name')){
-        if (name == "metadata"){
-            properties = metadata;
-        }else {
+        if (name == "schema"){
             properties = schema;
         }
     }

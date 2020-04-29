@@ -55,9 +55,10 @@ public class ConfigController{
             @Parameter(description = "Tenant id for saving", required = true)
             @PathVariable String id
     ) {
-        Tenant tenant = tenantService.findById(id);
+        //Make it when this feature will be done
+       // Tenant tenant = tenantService.findById(id);
         Config config = mapper.toEntity(dto);
-        config.setTenantId("speech4j");
+        config.setTenantId(id);
         return mapper.toDto(configService.create(config));
     }
 
@@ -101,7 +102,7 @@ public class ConfigController{
     @DeleteMapping("/{configId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(
-            summary = "Delete com.speech4j.tenantservice.config by ID",
+            summary = "Delete config by ID",
             responses = {
                     @ApiResponse(responseCode = "404", description = "Config not found")})
     public void delete(

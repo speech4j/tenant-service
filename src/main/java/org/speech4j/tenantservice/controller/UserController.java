@@ -57,7 +57,8 @@ public class UserController{
             @Parameter(description = "Tenant id for saving", required = true)
             @PathVariable String id
     ) {
-        Tenant tenant = tenantService.findById(id);
+        //Make it when this feature will be done
+       // Tenant tenant = tenantService.findById(id);
         User user = mapper.toEntity(dto);
         user.setTenantId(id);
         return mapper.toDto(userService.create(user));

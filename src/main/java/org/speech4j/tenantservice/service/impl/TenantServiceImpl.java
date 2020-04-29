@@ -52,8 +52,9 @@ public class TenantServiceImpl implements TenantService {
     public void deleteById(String id) {
         Tenant tenant = findByIdOrThrowException(id);
         tenant.setActive(false);
-        configRepository.deleteAllByTenantId(id);
-        userRepository.deleteAllByTenantId(id);
+//ToDo comment temporary
+//        configRepository.deleteAllByTenantId(id);
+//        userRepository.deleteAllByTenantId(id);
         repository.save(tenant);
     }
 

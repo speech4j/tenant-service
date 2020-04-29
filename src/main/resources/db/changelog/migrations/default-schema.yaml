@@ -52,10 +52,10 @@ databaseChangeLog:
             name: email
             type: VARCHAR(255)
         - column:
-            name: firstName
+            name: firstname
             type: VARCHAR(255)
         - column:
-            name: lastName
+            name: lastname
             type: VARCHAR(255)
         - column:
             name: modifieddate

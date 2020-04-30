@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllById(String id) {
-        List<User> list = repository.findAllByTenantId(id).stream().filter(u->u.isActive()).collect(Collectors.toList());
+        List<User> list = repository.findAllByTenantId(id).stream().filter(User::isActive).collect(Collectors.toList());
         if (!list.isEmpty()){
             return list;
         }else {
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     private User findByIdOrThrowException(String id) {
         //Checking if user is found
-        return repository.findById(id).filter(user-> user.isActive())
+        return repository.findById(id).filter(User::isActive)
                 .orElseThrow(() -> new UserNotFoundException("User not found!"));
     }
 }

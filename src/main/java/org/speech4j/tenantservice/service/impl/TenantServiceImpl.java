@@ -65,7 +65,7 @@ public class TenantServiceImpl implements TenantService {
 
     private Tenant findByIdOrThrowException(String id) {
         //Checking if tenant is found
-        return repository.findById(id).filter(t->t.isActive())
+        return repository.findById(id).filter(Tenant::isActive)
                 .orElseThrow(() -> new TenantNotFoundException("Tenant not found!"));
     }
 }

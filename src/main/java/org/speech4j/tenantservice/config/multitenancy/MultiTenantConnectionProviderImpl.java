@@ -22,11 +22,14 @@ import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstant
 @Component
 public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
 
-    @Autowired
     private DataSource dataSource;
+    private transient SpringLiquibase springLiquibase;
 
     @Autowired
-    private SpringLiquibase springLiquibase;
+    public MultiTenantConnectionProviderImpl(DataSource dataSource, SpringLiquibase springLiquibase) {
+        this.dataSource = dataSource;
+        this.springLiquibase = springLiquibase;
+    }
 
     @Override
     public Connection getAnyConnection() throws SQLException {

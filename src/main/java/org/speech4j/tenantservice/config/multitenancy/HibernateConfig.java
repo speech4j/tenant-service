@@ -1,6 +1,7 @@
 package org.speech4j.tenantservice.config.multitenancy;
 
 import org.hibernate.MultiTenancyStrategy;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
@@ -36,9 +37,9 @@ public class HibernateConfig {
                                                                        MultiTenantConnectionProvider multiTenantConnectionProviderImpl,
                                                                        CurrentTenantIdentifierResolver currentTenantIdentifierResolverImpl) {
         Map<String, Object> properties = new HashMap<>(jpaProperties.getProperties());
-        properties.put(Environment.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
-        properties.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProviderImpl);
-        properties.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolverImpl);
+        properties.put(AvailableSettings.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
+        properties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProviderImpl);
+        properties.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolverImpl);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);

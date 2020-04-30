@@ -2,7 +2,6 @@ package org.speech4j.tenantservice.config.multitenancy;
 
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,9 @@ import java.util.Map;
 
 @Configuration
 public class HibernateConfig {
-
-    @Autowired
     private final JpaProperties jpaProperties;
 
+    @Autowired
     public HibernateConfig(JpaProperties jpaProperties) {
         this.jpaProperties = jpaProperties;
     }

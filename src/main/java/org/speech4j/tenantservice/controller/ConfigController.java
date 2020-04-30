@@ -1,17 +1,15 @@
 package org.speech4j.tenantservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import org.speech4j.tenantservice.dto.validation.NewData;
 import org.speech4j.tenantservice.entity.general.Config;
-import org.speech4j.tenantservice.entity.metadata.Tenant;
 import org.speech4j.tenantservice.exception.EntityNotFoundException;
 import org.speech4j.tenantservice.mapper.ConfigDtoMapper;
 import org.speech4j.tenantservice.service.ConfigService;
-import org.speech4j.tenantservice.service.TenantService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -31,15 +29,12 @@ import java.util.List;
 @RequestMapping("tenants/{id}/configs")
 public class ConfigController{
     private ConfigService configService;
-    private TenantService tenantService;
     private ConfigDtoMapper mapper;
 
     @Autowired
     public ConfigController(ConfigService configService,
-                            TenantService tenantService,
                             ConfigDtoMapper mapper) {
         this.configService = configService;
-        this.tenantService = tenantService;
         this.mapper = mapper;
     }
 

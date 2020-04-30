@@ -1,18 +1,16 @@
 package org.speech4j.tenantservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
 import org.speech4j.tenantservice.dto.response.UserDtoResp;
 import org.speech4j.tenantservice.dto.validation.ExistData;
 import org.speech4j.tenantservice.dto.validation.NewData;
-import org.speech4j.tenantservice.entity.metadata.Tenant;
 import org.speech4j.tenantservice.entity.general.User;
 import org.speech4j.tenantservice.exception.UserNotFoundException;
 import org.speech4j.tenantservice.mapper.UserDtoMapper;
-import org.speech4j.tenantservice.service.TenantService;
 import org.speech4j.tenantservice.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -32,16 +30,13 @@ import java.util.List;
 @RequestMapping("tenants/{id}/users")
 public class UserController{
     private UserService userService;
-    private TenantService tenantService;
     private UserDtoMapper mapper;
 
     @Autowired
     public UserController(UserService userService,
-                          TenantService tenantService,
                           UserDtoMapper mapper
     ) {
         this.userService = userService;
-        this.tenantService = tenantService;
         this.mapper = mapper;
     }
 

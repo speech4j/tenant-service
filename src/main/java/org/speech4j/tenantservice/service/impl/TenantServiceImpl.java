@@ -2,32 +2,21 @@ package org.speech4j.tenantservice.service.impl;
 
 import org.speech4j.tenantservice.entity.metadata.Tenant;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
-import org.speech4j.tenantservice.repository.ConfigRepository;
 import org.speech4j.tenantservice.repository.TenantRepository;
-import org.speech4j.tenantservice.repository.UserRepository;
 import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 @Service
 public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
-    private UserRepository userRepository;
-    private ConfigRepository configRepository;
-    @Autowired
-    private DataSource dataSource;
 
     @Autowired
-    public TenantServiceImpl(TenantRepository repository,
-                             UserRepository userRepository,
-                             ConfigRepository configRepository) {
+    public TenantServiceImpl(TenantRepository repository) {
         this.repository = repository;
-        this.userRepository = userRepository;
-        this.configRepository = configRepository;
     }
 
     @Override

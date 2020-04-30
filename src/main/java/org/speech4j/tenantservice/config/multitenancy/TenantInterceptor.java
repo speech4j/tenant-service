@@ -17,10 +17,11 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
                              HttpServletResponse response,
                              Object handler){
 
-        Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+        Map<String, String> pathVariables =
+                (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
         if (pathVariables != null && pathVariables.size() != 0) {
-            String tenantId = ((String) pathVariables.get("id")).replaceAll("-","");
+            String tenantId = pathVariables.get("id").replace("-","");
             TenantContext.setCurrentTenant(tenantId);
         }
 

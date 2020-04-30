@@ -22,7 +22,7 @@ import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstant
 @Component
 public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
 
-    private DataSource dataSource;
+    private transient DataSource dataSource;
     private transient SpringLiquibase springLiquibase;
 
     @Autowired

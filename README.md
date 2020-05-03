@@ -34,6 +34,6 @@ docker run --name postgres-docker \
 ```
 
 ## Running DB Migration
-(metadata is default, use without an additional argument)
-*`./gradlew liquibase -Pname=schema` - generate a migration script for general schema
+(Metadata is a default schema type. To generate a default one - execute command without an additional argument)
+*`./gradlew liquibase -PschemaType=schema` - generate a migration script for general schema
 *`./gradlew liquibase` - generate a migration script for metadata schema

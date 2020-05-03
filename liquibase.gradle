@@ -12,6 +12,7 @@ Properties properties = new Properties()
 
 Properties metadata = new Properties()
 metadata.load(new FileInputStream("src/main/resources/liquibase-metadata.properties"))
+//Setting a default schema
 properties = metadata;
 
 Properties schema = new Properties()
@@ -24,10 +25,12 @@ task liquibaseDiff(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "liquibase.integration.commandline.Main"
 
-    if(project.hasProperty('name')){
-        if (name == "schema"){
-            properties = schema;
-        }
+    if(project.hasProperty('schemaType')){
+        def requiredSchemaType = 'schema'
+        def inputSchemaType = project.property('schemaType')
+
+        //Checking of an input schema type
+        properties = requiredSchemaType.equals(inputSchemaType) ? schema : properties
     }
 
     args "--changeLogFile=" + properties.getProperty('changeLogFile')

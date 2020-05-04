@@ -2,14 +2,16 @@ package org.speech4j.tenantservice.service.impl;
 
 import org.speech4j.tenantservice.entity.general.Config;
 import org.speech4j.tenantservice.exception.ConfigNotFoundException;
-import org.speech4j.tenantservice.repository.ConfigRepository;
+import org.speech4j.tenantservice.repository.general.ConfigRepository;
 import org.speech4j.tenantservice.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+//@Transactional("generalTransactionManager")
 public class ConfigServiceImpl implements ConfigService {
     private ConfigRepository repository;
 

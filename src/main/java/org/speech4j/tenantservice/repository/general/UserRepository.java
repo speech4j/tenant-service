@@ -1,13 +1,11 @@
-package org.speech4j.tenantservice.repository;
+package org.speech4j.tenantservice.repository.general;
 
 import org.speech4j.tenantservice.entity.general.User;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface UserRepository extends CrudRepository<User,String> {
+public interface UserRepository extends CrudRepository<User, String> {
     List<User> findAllByTenantId(String tenantId);
 
     //@Modifying

@@ -4,6 +4,8 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.speech4j.tenantservice.liquibase.LiquibaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,12 +32,20 @@ public class DataSourceConfig {
     @Value("${spring.datasource.password}")
     private String password;
 
+    @Value("${jpa.general_default_schema}")
+    private String generalSchema;
+
+    @Value("${jpa.metadata_default_schema}")
+    private String metadataSchema;
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConfig.class);
 
     private void init(DataSource dataSource){
         try (final Connection connection = dataSource.getConnection()){
             try(Statement st = connection.createStatement()) {
-                st.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + DEFAULT_TENANT_ID);
+                st.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + metadataSchema);
+                st.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + generalSchema);
             }
         }catch (SQLException e){
             LOGGER.debug(e.getMessage());

@@ -1,4 +1,4 @@
-package org.speech4j.tenantservice.config.multitenancy;
+package org.speech4j.tenantservice.config.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

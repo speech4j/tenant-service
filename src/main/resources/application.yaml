@@ -1,3 +1,4 @@
+spring.main.allow-bean-definition-overriding: true
 # ===============================
 # Default connection pool
 # ===============================
@@ -11,13 +12,13 @@ spring:
 # DATABASE
 # ===============================
 db:
-  host: db
+  host: localhost
   port: 5432
   name: tenant_db
 spring:
   datasource:
     driver: org.postgresql.Driver
-    url: jdbc:postgresql://${db.host}:${db.port}/${db.name}?currentSchema=metadata
+    url: jdbc:postgresql://${db.host}:${db.port}/${db.name}?currentSchema=speech4j
     username: postgres
     password: qwerty123
   liquibase:
@@ -45,17 +46,10 @@ spring:
 springdoc:
   api-docs.ath: /api-docs
   swagger-ui.path: /swagger-ui.html
----
+
 # ===============================
-# SCHEMA-GENERATION / HIBERNATE
+# JPA/ SCHEMA_TYPE
 # ===============================
-#spring:
-#  jpa:
-#    properties:
-#      javax:
-#        persistence:
-#          schema-generation:
-#            create-source: metadata
-#            scripts:
-#              action: create
-#              create-target: db/changelog/migrations/schema-script.sql
+jpa:
+  general_default_schema: speech4j
+  metadata_default_schema: metadata

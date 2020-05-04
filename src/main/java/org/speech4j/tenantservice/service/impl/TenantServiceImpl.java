@@ -2,21 +2,24 @@ package org.speech4j.tenantservice.service.impl;
 
 import org.speech4j.tenantservice.entity.metadata.Tenant;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
-import org.speech4j.tenantservice.repository.TenantRepository;
+import org.speech4j.tenantservice.repository.general.ConfigRepository;
+import org.speech4j.tenantservice.repository.metadata.TenantRepository;
 import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
+    private ConfigRepository configRepository;
 
     @Autowired
-    public TenantServiceImpl(TenantRepository repository) {
+    public TenantServiceImpl(TenantRepository repository,
+                             ConfigRepository configRepository) {
         this.repository = repository;
+        this.configRepository = configRepository;
     }
 
     @Override
@@ -37,13 +40,12 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
-    @Transactional
     public void deleteById(String id) {
         Tenant tenant = findByIdOrThrowException(id);
         tenant.setActive(false);
 //ToDo comment temporary
-//        configRepository.deleteAllByTenantId(id);
-//        userRepository.deleteAllByTenantId(id);
+//      configRepository.deleteAllByTenantId(id);
+//      userRepository.deleteAllByTenantId(id);
         repository.save(tenant);
     }
 

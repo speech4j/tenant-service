@@ -51,7 +51,7 @@ public class ConfigController{
             @PathVariable String id
     ) {
         //Make it when this feature will be done
-       // Tenant tenant = tenantService.findById(id);
+        //Tenant tenant = tenantService.findById(id);
         Config config = mapper.toEntity(dto);
         config.setTenantId(id);
         return mapper.toDto(configService.create(config));

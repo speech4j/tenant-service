@@ -3,7 +3,7 @@ package org.speech4j.tenantservice.service.impl;
 import org.speech4j.tenantservice.entity.general.Role;
 import org.speech4j.tenantservice.entity.general.User;
 import org.speech4j.tenantservice.exception.UserNotFoundException;
-import org.speech4j.tenantservice.repository.UserRepository;
+import org.speech4j.tenantservice.repository.general.UserRepository;
 import org.speech4j.tenantservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

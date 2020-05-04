@@ -1,4 +1,4 @@
-package org.speech4j.tenantservice.repository;
+package org.speech4j.tenantservice.repository.general;
 
 import org.speech4j.tenantservice.entity.general.Config;
 import org.springframework.data.repository.CrudRepository;

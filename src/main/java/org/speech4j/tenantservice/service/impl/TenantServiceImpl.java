@@ -3,6 +3,7 @@ package org.speech4j.tenantservice.service.impl;
 import org.speech4j.tenantservice.entity.metadata.Tenant;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
 import org.speech4j.tenantservice.repository.general.ConfigRepository;
+import org.speech4j.tenantservice.repository.general.UserRepository;
 import org.speech4j.tenantservice.repository.metadata.TenantRepository;
 import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,15 @@ import java.util.List;
 public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
     private ConfigRepository configRepository;
+    private UserRepository userRepository;
 
     @Autowired
     public TenantServiceImpl(TenantRepository repository,
-                             ConfigRepository configRepository) {
+                             ConfigRepository configRepository,
+                             UserRepository userRepository) {
         this.repository = repository;
         this.configRepository = configRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -43,9 +47,8 @@ public class TenantServiceImpl implements TenantService {
     public void deleteById(String id) {
         Tenant tenant = findByIdOrThrowException(id);
         tenant.setActive(false);
-//ToDo comment temporary
-//      configRepository.deleteAllByTenantId(id);
-//      userRepository.deleteAllByTenantId(id);
+        configRepository.deleteAllByTenantId(id);
+        userRepository.deleteAllByTenantId(id);
         repository.save(tenant);
     }
 

@@ -22,7 +22,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     private String generalChangelogFile;
 
     private transient DataSource dataSource;
-    private LiquibaseService liquibaseService;
+    private transient LiquibaseService liquibaseService;
 
     @Autowired
     public MultiTenantConnectionProviderImpl(DataSource dataSource,

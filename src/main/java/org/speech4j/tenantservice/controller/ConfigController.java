@@ -10,6 +10,7 @@ import org.speech4j.tenantservice.entity.general.Config;
 import org.speech4j.tenantservice.exception.EntityNotFoundException;
 import org.speech4j.tenantservice.mapper.ConfigDtoMapper;
 import org.speech4j.tenantservice.service.ConfigService;
+import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -29,12 +30,15 @@ import java.util.List;
 @RequestMapping("tenants/{id}/configs")
 public class ConfigController{
     private ConfigService configService;
+    private TenantService tenantService;
     private ConfigDtoMapper mapper;
 
     @Autowired
     public ConfigController(ConfigService configService,
+                            TenantService tenantService,
                             ConfigDtoMapper mapper) {
         this.configService = configService;
+        this.tenantService = tenantService;
         this.mapper = mapper;
     }
 
@@ -51,7 +55,7 @@ public class ConfigController{
             @PathVariable String id
     ) {
         //Make it when this feature will be done
-        //Tenant tenant = tenantService.findById(id);
+        tenantService.findById(id);
         Config config = mapper.toEntity(dto);
         config.setTenantId(id);
         return mapper.toDto(configService.create(config));

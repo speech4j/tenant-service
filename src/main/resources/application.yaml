@@ -12,7 +12,7 @@ spring:
 # DATABASE
 # ===============================
 db:
-  host: localhost
+  host: db
   port: 5432
   name: tenant_db
 spring:
@@ -22,7 +22,7 @@ spring:
     username: postgres
     password: qwerty123
   liquibase:
-    default-schema: metadata
+    default-schema: speech4j
 ---
 # ===============================
 # JPA / HIBERNATE
@@ -53,3 +53,7 @@ springdoc:
 jpa:
   general_default_schema: speech4j
   metadata_default_schema: metadata
+
+liquibase:
+  general_changelog: db/changelog/db.changelog-master.yaml
+  metadata_changelog: db/changelog/db.changelog-metadata.yaml

@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.SQL_CREATE_SCHEMA;
+
 @Configuration
 public class DataSourceConfig {
 
@@ -40,8 +42,8 @@ public class DataSourceConfig {
     private void init(DataSource dataSource){
         try (final Connection connection = dataSource.getConnection()){
             try(Statement st = connection.createStatement()) {
-                st.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + metadataSchema);
-                st.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + generalSchema);
+               st.executeUpdate(String.format(SQL_CREATE_SCHEMA, metadataSchema));
+               st.executeUpdate(String.format(SQL_CREATE_SCHEMA, generalSchema));
             }
         }catch (SQLException e){
             LOGGER.debug(e.getMessage());

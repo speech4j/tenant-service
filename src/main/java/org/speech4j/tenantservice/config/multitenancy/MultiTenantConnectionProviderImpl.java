@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.DEFAULT_TENANT_ID;
+import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.SQL_CREATE_SCHEMA;
 
 @Component
 public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
@@ -51,7 +52,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
 
                 try (Statement ps = connection.createStatement()) {
 
-                    ps.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + persistentTenant);
+                    ps.executeUpdate(String.format(SQL_CREATE_SCHEMA, persistentTenant));
                     connection.setSchema(persistentTenant);
 
                     //Updating of schema

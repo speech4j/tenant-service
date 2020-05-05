@@ -38,8 +38,6 @@ public class User implements Serializable {
     private String firstName;
     @Column(name = "lastname")
     private String lastName;
-    //ToDo use later
-    //@Column(unique=true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)

@@ -78,8 +78,9 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
             throw new HibernateException(
                     "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]", e
             );
+        }finally {
+            connection.close();
         }
-        connection.close();
     }
 
     @SuppressWarnings("rawtypes")

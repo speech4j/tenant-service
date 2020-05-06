@@ -37,12 +37,10 @@ public class LiquibaseServiceImpl implements LiquibaseService {
 
         ClassLoaderResourceAccessor resourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
 
-        try {
-            Liquibase liquibase = new Liquibase(changelogFile, resourceAccessor, database);
+        try (Liquibase liquibase = new Liquibase(changelogFile, resourceAccessor, database)){
             liquibase.update(springLiquibase.getContexts());
 
             LOGGER.debug("LIQUIBASE: Schema was successfully updated");
-
         } catch (Exception e) {
             throw new LiquibaseException("Error during the effort to update schema!");
         }

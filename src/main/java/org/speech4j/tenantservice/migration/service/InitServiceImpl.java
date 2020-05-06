@@ -1,7 +1,6 @@
 package org.speech4j.tenantservice.migration.service;
 
 import liquibase.exception.LiquibaseException;
-import org.speech4j.tenantservice.config.multitenancy.MultiTenantConnectionProviderImpl;
 import org.speech4j.tenantservice.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

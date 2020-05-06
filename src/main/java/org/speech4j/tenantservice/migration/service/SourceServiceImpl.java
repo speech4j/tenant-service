@@ -20,10 +20,11 @@ public class SourceServiceImpl implements SourceService {
         try (final Connection connection = dataSource.getConnection()){
             connection.setSchema("metadata");
             try(Statement statement = connection.createStatement()) {
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM tenants");
+                try (ResultSet resultSet = statement.executeQuery("SELECT * FROM tenants")) {
 
-                while (resultSet.next()){
-                    tenants.add(resultSet.getString("id").replace("-", ""));
+                    while (resultSet.next()) {
+                        tenants.add(resultSet.getString("id").replace("-", ""));
+                    }
                 }
             }
         }

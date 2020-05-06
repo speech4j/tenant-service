@@ -19,7 +19,7 @@ import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstant
 public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
     private transient Logger logger = LoggerFactory.getLogger(MultiTenantConnectionProviderImpl.class);
     private transient DataSource dataSource;
-    private SourceService sourceService;
+    private transient SourceService sourceService;
 
     @Autowired
     public MultiTenantConnectionProviderImpl(DataSource dataSource,

@@ -1,4 +1,4 @@
-package org.speech4j.tenantservice.liquibase;
+package org.speech4j.tenantservice.migration.service;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;

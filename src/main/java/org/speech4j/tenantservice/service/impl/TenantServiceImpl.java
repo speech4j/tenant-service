@@ -2,33 +2,35 @@ package org.speech4j.tenantservice.service.impl;
 
 import org.speech4j.tenantservice.entity.metadata.Tenant;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
-import org.speech4j.tenantservice.repository.general.ConfigRepository;
-import org.speech4j.tenantservice.repository.general.UserRepository;
+import org.speech4j.tenantservice.migration.service.InitService;
 import org.speech4j.tenantservice.repository.metadata.TenantRepository;
 import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
-    private ConfigRepository configRepository;
-    private UserRepository userRepository;
+    private InitService initService;
 
     @Autowired
     public TenantServiceImpl(TenantRepository repository,
-                             ConfigRepository configRepository,
-                             UserRepository userRepository) {
+                             InitService initService) {
         this.repository = repository;
-        this.configRepository = configRepository;
-        this.userRepository = userRepository;
+        this.initService = initService;
     }
 
     @Override
     public Tenant create(Tenant entity) {
-        return repository.save(entity);
+        Tenant tenant = repository.save(entity);
+        Set<String> tenants = new HashSet<>(Arrays.asList(tenant.getId()));
+        initService.initSchema(tenants);
+        return tenant;
     }
 
     @Override
@@ -47,8 +49,6 @@ public class TenantServiceImpl implements TenantService {
     public void deleteById(String id) {
         Tenant tenant = findByIdOrThrowException(id);
         tenant.setActive(false);
-        configRepository.deleteAllByTenantId(id);
-        userRepository.deleteAllByTenantId(id);
         repository.save(tenant);
     }
 

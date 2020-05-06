@@ -218,7 +218,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllConfigsTest() {
+    public void findAllConfigsTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<List> response = template.exchange("/tenants/" + testTenantIds[0] + "/configs",
                 HttpMethod.GET, request, List.class);
@@ -235,7 +235,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         System.out.println(response);
 
         //Checking if status code is correct
-        checkEntityNotFoundException(response);
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals("Tenant with specified identifier [0] not found!", response.getBody().getMessage());
     }
 
     private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response){

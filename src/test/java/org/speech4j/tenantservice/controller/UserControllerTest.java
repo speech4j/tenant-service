@@ -245,7 +245,8 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         ResponseEntity<ResponseMessageDto> response = template.exchange("/tenants/" + 0 + "/users", HttpMethod.GET, null, ResponseMessageDto.class);
 
         //Checking if status code is correct
-        checkEntityNotFoundException(response);
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals("Tenant with specified identifier [0] not found!", response.getBody().getMessage());
     }
 
     private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response){

@@ -1,35 +1,31 @@
 package org.speech4j.tenantservice.config.multitenancy;
 
-import liquibase.exception.LiquibaseException;
-import org.hibernate.HibernateException;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.speech4j.tenantservice.liquibase.LiquibaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.speech4j.tenantservice.exception.InternalServerException;
+import org.speech4j.tenantservice.exception.TenantNotFoundException;
+import org.speech4j.tenantservice.migration.service.SourceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.DEFAULT_TENANT_ID;
-import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.SQL_CREATE_SCHEMA;
 
 @Component
 public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
-
-    @Value("${liquibase.general_changelog}")
-    private String generalChangelogFile;
-
+    private transient Logger logger = LoggerFactory.getLogger(MultiTenantConnectionProviderImpl.class);
     private transient DataSource dataSource;
-    private transient LiquibaseService liquibaseService;
+    private SourceService sourceService;
 
     @Autowired
     public MultiTenantConnectionProviderImpl(DataSource dataSource,
-                                             LiquibaseService liquibaseService) {
+                                             SourceService sourceService) {
         this.dataSource = dataSource;
-        this.liquibaseService = liquibaseService;
+        this.sourceService = sourceService;
     }
 
     @Override
@@ -46,25 +42,23 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         final Connection connection = getAnyConnection();
         try {
-            if (tenantIdentifier != null) {
-                // Create the schema
+            if (
+                tenantIdentifier != null
+                //Checking if specified tenant is in database even if this tenant will be created at runtime
+                && sourceService.getAllTenants(dataSource).contains(tenantIdentifier)
+            ){
+
                 String persistentTenant = tenantIdentifier.equals("speech4j") ? tenantIdentifier : "tenant_" + tenantIdentifier;
+                connection.setSchema(persistentTenant);
 
-                try (Statement ps = connection.createStatement()) {
+                logger.debug("DATABASE: Schema with id [{}] was successfully set as default!", tenantIdentifier);
 
-                    ps.executeUpdate(String.format(SQL_CREATE_SCHEMA, persistentTenant));
-                    connection.setSchema(persistentTenant);
-
-                    //Updating of schema
-                    liquibaseService.updateSchema(connection, generalChangelogFile, persistentTenant);
-                }
 
             } else {
-                connection.setSchema(DEFAULT_TENANT_ID);
+                throw new TenantNotFoundException("Tenant with specified identifier [" + tenantIdentifier + "] not found!");
             }
-        } catch (SQLException | LiquibaseException e) {
-            throw new HibernateException(
-                    "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]", e);
+        } catch (SQLException e) {
+            throw new InternalServerException("Error during the switching to schema: [ " + tenantIdentifier + "]");
         }
 
         return connection;
@@ -75,9 +69,8 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
         try {
             connection.setSchema(DEFAULT_TENANT_ID);
         } catch (SQLException e) {
-            throw new HibernateException(
-                    "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]", e
-            );
+            throw new InternalServerException("Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]");
+
         }finally {
             connection.close();
         }

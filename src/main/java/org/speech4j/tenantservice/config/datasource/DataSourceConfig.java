@@ -43,7 +43,6 @@ public class DataSourceConfig {
         try (final Connection connection = dataSource.getConnection()){
             try(Statement st = connection.createStatement()) {
                st.executeUpdate(String.format(SQL_CREATE_SCHEMA, metadataSchema));
-               st.executeUpdate(String.format(SQL_CREATE_SCHEMA, generalSchema));
             }
         }catch (SQLException e){
             LOGGER.debug(e.getMessage());

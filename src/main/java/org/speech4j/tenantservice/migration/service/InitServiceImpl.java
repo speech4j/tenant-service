@@ -31,22 +31,17 @@ public class InitServiceImpl implements InitService {
 
     @Override
     public void initSchema(List<String> tenants) {
-        if (tenants != null && !tenants.isEmpty()){
-            tenants.forEach(tenant->{
-
-                try(Connection connection = dataSource.getConnection()) {
-
+        if (tenants != null && !tenants.isEmpty()) {
+            tenants.forEach(tenant -> {
+                try (Connection connection = dataSource.getConnection()) {
                     try (Statement st = connection.createStatement()) {
                         st.executeUpdate(String.format(SQL_CREATE_SCHEMA, tenant));
                         connection.setSchema(tenant);
-
                         liquibaseService.updateSchema(connection, generalChangelogFile, tenant);
                     }
-
-               } catch (SQLException | LiquibaseException  e) {
+                } catch (SQLException | LiquibaseException e) {
                     throw new InternalServerException("Error during updating of database!");
                 }
-
             });
 
         }

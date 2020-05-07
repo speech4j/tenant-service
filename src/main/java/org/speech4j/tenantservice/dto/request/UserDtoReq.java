@@ -1,14 +1,12 @@
 package org.speech4j.tenantservice.dto.request;
 
-import org.speech4j.tenantservice.dto.validation.ExistData;
-import org.speech4j.tenantservice.dto.validation.NewData;
-import org.speech4j.tenantservice.entity.general.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.speech4j.tenantservice.entity.general.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -21,15 +19,15 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDtoReq {
-    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
+    @NotBlank( message = "{field.not.empty}")
     private String firstName;
-    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
+    @NotBlank(message = "{field.not.empty}")
     private String lastName;
-    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
-    @Email(groups = {NewData.class, ExistData.class}, message = "{email.not.valid}")
+    @NotBlank(message = "{field.not.empty}")
+    @Email( message = "{email.not.valid}")
     private String email;
-    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
-    @Pattern(groups = {NewData.class, ExistData.class}, regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$",
+    @NotBlank(message = "{field.not.empty}")
+    @Pattern( regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$",
             message = "{password.validation}")
     private String password;
     private Role role;

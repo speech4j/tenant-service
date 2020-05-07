@@ -1,7 +1,5 @@
 package org.speech4j.tenantservice.dto.request;
 
-import org.speech4j.tenantservice.dto.validation.ExistData;
-import org.speech4j.tenantservice.dto.validation.NewData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -19,12 +17,11 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConfigDtoReq {
-    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
+    @NotBlank(message = "{field.not.empty}")
     private String apiName;
-    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
+    @NotBlank(message = "{field.not.empty}")
     private String username;
-    @NotBlank(groups = {NewData.class, ExistData.class}, message = "{field.not.empty}")
-    @Pattern(groups = {NewData.class, ExistData.class}, regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$",
-            message = "{password.validation}")
+    @NotBlank(message = "{field.not.empty}")
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$", message = "{password.validation}")
     private String password;
 }

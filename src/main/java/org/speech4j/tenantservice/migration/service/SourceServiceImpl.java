@@ -32,7 +32,7 @@ public class SourceServiceImpl implements SourceService {
         List<String> tenants = new ArrayList<>();
 
         tenantService.findAll().forEach(tenant -> {
-            tenants.add(tenant.getId().replace("-",""));
+            tenants.add(tenant.getId());
         });
 
         return tenants;

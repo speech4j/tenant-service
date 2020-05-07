@@ -1,20 +1,22 @@
 package org.speech4j.tenantservice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.speech4j.tenantservice.entity.general.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import org.speech4j.tenantservice.entity.general.Role;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserDtoResp {
     private String id;
     private String firstName;
@@ -22,8 +24,8 @@ public class UserDtoResp {
     private String email;
     private Role role;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Timestamp createdDate;
+    private LocalDate createdDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Timestamp modifiedDate;
+    private LocalDate modifiedDate;
     private boolean active;
 }

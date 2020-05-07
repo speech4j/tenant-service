@@ -48,11 +48,8 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
                 && sourceService.getAllTenantIdentifiers().contains(tenantIdentifier)
             ){
 
-                String persistentTenant = tenantIdentifier.equals("speech4j") ? tenantIdentifier : "tenant_" + tenantIdentifier;
-                connection.setSchema(persistentTenant);
-
+                connection.setSchema(tenantIdentifier);
                 logger.debug("DATABASE: Schema with id [{}] was successfully set as default!", tenantIdentifier);
-
 
             } else {
                 throw new TenantNotFoundException("Tenant with specified identifier [" + tenantIdentifier + "] not found!");
@@ -70,7 +67,6 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
             connection.setSchema(DEFAULT_TENANT_ID);
         } catch (SQLException e) {
             throw new InternalServerException("Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]");
-
         }finally {
             connection.close();
         }

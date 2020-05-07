@@ -225,7 +225,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(configsList.size(), response.getBody().size());
+        assertEquals(3, response.getBody().size());
     }
 
     @Test

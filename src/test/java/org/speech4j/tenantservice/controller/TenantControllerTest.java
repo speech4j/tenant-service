@@ -45,7 +45,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
         //Initializing of test tenant
         testTenant = new TenantDtoReq();
-        testTenant.setName("SoftServe");
+        testTenant.setName("soft_serve");
+        testTenant.setDescription("Company");
 
         request = new HttpEntity<>(testTenant, headers);
 
@@ -120,7 +121,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     public void updateTenantTest_successFlow() {
         final String url = "/tenants/" + testId;
 
-        testTenant.setName("New Company");
+        testTenant.setDescription("New Company");
         request = new HttpEntity<>(testTenant, headers);
 
         ResponseEntity<TenantDtoResp> response =
@@ -128,7 +129,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
-        assertThat(testTenant).isEqualToIgnoringGivenFields(response.getBody(), "createdDate");
+        assertThat(testTenant).isEqualToIgnoringGivenFields(response.getBody(), "createdDate", "modifiedDate", "name");
         assertThat(response.getBody()).isNotNull();
     }
 

@@ -5,8 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
 import org.speech4j.tenantservice.dto.response.UserDtoResp;
-import org.speech4j.tenantservice.dto.validation.ExistData;
-import org.speech4j.tenantservice.dto.validation.NewData;
 import org.speech4j.tenantservice.entity.general.User;
 import org.speech4j.tenantservice.exception.UserNotFoundException;
 import org.speech4j.tenantservice.mapper.UserDtoMapper;
@@ -52,7 +50,7 @@ public class UserController{
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public UserDtoResp save(
             @Parameter(description = "User object that needs to be added to db", required = true)
-            @Validated({NewData.class}) @RequestBody UserDtoReq dto,
+            @Validated @RequestBody UserDtoReq dto,
             @Parameter(description = "Tenant id for saving", required = true)
             @PathVariable String id
     ) {
@@ -90,7 +88,7 @@ public class UserController{
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public UserDtoResp update(
             @Parameter(description = "User object that needs to be updated", required = true)
-            @Validated({ExistData.class}) @RequestBody UserDtoReq dto,
+            @Validated @RequestBody UserDtoReq dto,
             @Parameter(description = "Tenant id for update", required = true)
             @PathVariable String id,
             @Parameter(description = "User userId for update", required = true)

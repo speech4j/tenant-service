@@ -1,14 +1,12 @@
 package org.speech4j.tenantservice.controller;
 
-import org.speech4j.tenantservice.dto.request.TenantDtoReq;
-import org.speech4j.tenantservice.dto.response.TenantDtoResp;
-import org.speech4j.tenantservice.dto.validation.ExistData;
-import org.speech4j.tenantservice.dto.validation.NewData;
-import org.speech4j.tenantservice.mapper.TenantDtoMapper;
-import org.speech4j.tenantservice.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.speech4j.tenantservice.dto.request.TenantDtoReq;
+import org.speech4j.tenantservice.dto.response.TenantDtoResp;
+import org.speech4j.tenantservice.mapper.TenantDtoMapper;
+import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -44,7 +42,7 @@ public class TenantController{
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public TenantDtoResp save(
             @Parameter(description = "Tenant object that needs to be added to db", required = true)
-            @Validated({NewData.class}) @RequestBody TenantDtoReq dto) {
+            @Validated @RequestBody TenantDtoReq dto) {
         return mapper.toDto(service.create(mapper.toEntity(dto)));
     }
 
@@ -71,7 +69,7 @@ public class TenantController{
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public TenantDtoResp update(
             @Parameter(description = "Tenant object that needs to be updated", required = true)
-            @Validated({ExistData.class}) @RequestBody TenantDtoReq dto,
+            @Validated @RequestBody TenantDtoReq dto,
             @Parameter(description = "Tenant id for update", required = true)
             @PathVariable String id) {
         return mapper.toDto(service.update(mapper.toEntity(dto), id));

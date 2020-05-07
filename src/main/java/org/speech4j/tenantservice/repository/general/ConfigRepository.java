@@ -8,7 +8,4 @@ import java.util.List;
 
 public interface ConfigRepository extends CrudRepository<Config, String> {
     List<Config> findAllByTenantId(String tenantId);
-
-    @Transactional
-    void deleteAllByTenantId(String tenantId);
 }

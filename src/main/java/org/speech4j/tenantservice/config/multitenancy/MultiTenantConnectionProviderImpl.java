@@ -1,8 +1,7 @@
 package org.speech4j.tenantservice.config.multitenancy;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.speech4j.tenantservice.exception.InternalServerException;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
 import org.speech4j.tenantservice.migration.service.SourceService;
@@ -16,8 +15,8 @@ import java.sql.SQLException;
 import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.DEFAULT_TENANT_ID;
 
 @Component
+@Slf4j
 public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
-    private transient Logger logger = LoggerFactory.getLogger(MultiTenantConnectionProviderImpl.class);
     private transient DataSource dataSource;
     private transient SourceService sourceService;
 
@@ -43,14 +42,12 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
         final Connection connection = getAnyConnection();
         try {
             if (
-                tenantIdentifier != null
-                //Checking if specified tenant is in database even if this tenant will be created at runtime
-                && sourceService.getAllTenantIdentifiers().contains(tenantIdentifier)
-            ){
-
+                    tenantIdentifier != null
+                            //Checking if specified tenant is in database even if this tenant will be created at runtime
+                            && sourceService.getAllTenantIdentifiers().contains(tenantIdentifier)
+            ) {
                 connection.setSchema(tenantIdentifier);
-                logger.debug("DATABASE: Schema with id [{}] was successfully set as default!", tenantIdentifier);
-
+                log.debug("DATABASE: Schema with id [{}] was successfully set as default!", tenantIdentifier);
             } else {
                 throw new TenantNotFoundException("Tenant with specified identifier [" + tenantIdentifier + "] not found!");
             }
@@ -67,7 +64,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
             connection.setSchema(DEFAULT_TENANT_ID);
         } catch (SQLException e) {
             throw new InternalServerException("Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]");
-        }finally {
+        } finally {
             connection.close();
         }
     }

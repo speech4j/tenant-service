@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
-import org.speech4j.tenantservice.dto.validation.NewData;
 import org.speech4j.tenantservice.entity.general.Config;
 import org.speech4j.tenantservice.exception.EntityNotFoundException;
 import org.speech4j.tenantservice.mapper.ConfigDtoMapper;
@@ -50,7 +49,7 @@ public class ConfigController{
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public ConfigDtoResp save(
             @Parameter(description = "Config object that needs to be added to db", required = true)
-            @Validated({NewData.class}) @RequestBody ConfigDtoReq dto,
+            @Validated @RequestBody ConfigDtoReq dto,
             @Parameter(description = "Tenant id for saving", required = true)
             @PathVariable String id
     ) {
@@ -88,7 +87,7 @@ public class ConfigController{
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public ConfigDtoResp update(
             @Parameter(description = "Config object that needs to be added to db", required = true)
-            @Validated({NewData.class}) @RequestBody ConfigDtoReq dto,
+            @Validated @RequestBody ConfigDtoReq dto,
             @Parameter(description = "Tenant id for update", required = true)
             @PathVariable String id,
             @Parameter(description = "Config id for update", required = true)

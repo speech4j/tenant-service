@@ -16,8 +16,8 @@ The tenant-service for getting a config file to APIs.
 * Docker
 
 ## Building Instructions
- * `./gradlew package` -- create executable jar
- * `./gradlew clean build` -- build the project
+(If running from windows - replace / to \ )
+ * `./gradlew clean build` -- build the project and run the tests.
 
 ## Testing Instructions
 (If running from windows - replace / to \ )
@@ -30,7 +30,7 @@ docker run --name postgres-docker \
                 -e POSTGRES_PASSWORD=postgres \
                 -e POSTGRES_USERNAME=postgres \
                 -e POSTGRES_DB=tenant_db \
-                -p 5433:5433 -d postgres
+                -p 5432:5432 -d postgres
 ```
 
 ## Running DB Migration

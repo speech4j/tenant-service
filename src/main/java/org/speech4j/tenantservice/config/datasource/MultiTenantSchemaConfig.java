@@ -51,7 +51,7 @@ public class MultiTenantSchemaConfig {
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("/org/speech4j/tenantservice/entity.general");
+        em.setPackagesToScan("/org/speech4j/tenantservice/entity/general");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaPropertyMap(properties);
         return em;

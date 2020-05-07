@@ -207,7 +207,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void deleteConfig_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0l;
+        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0;
 
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response

@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1588830955992-1
+    id: 1588842422893-1
     author: mslob (generated)
     changes:
     - createTable:
@@ -30,7 +30,7 @@ databaseChangeLog:
             type: TIMESTAMP WITHOUT TIME ZONE
         tableName: tenants
 - changeSet:
-    id: 1588830955992-2
+    id: 1588842422893-2
     author: mslob (generated)
     changes:
     - addUniqueConstraint:

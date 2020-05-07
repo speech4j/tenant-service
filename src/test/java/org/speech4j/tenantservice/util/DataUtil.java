@@ -14,12 +14,14 @@ public class DataUtil {
 
         //entity1
         TenantDtoReq tenant1 = new TenantDtoReq();
-        tenant1.setName("Company1");
+        tenant1.setName("name1");
+        tenant1.setDescription("Company1");
         list.add(tenant1);
 
         //entity2
         TenantDtoReq tenant2 = new TenantDtoReq();
-        tenant2.setName("Company2");
+        tenant2.setName("name2");
+        tenant2.setDescription("Company2");
         list.add(tenant2);
 
         return list;

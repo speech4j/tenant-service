@@ -19,7 +19,7 @@ public class TenantDtoMapper implements AbstractEntityDtoMapper<TenantDtoReq, Te
     @Override
     public TenantDtoResp toDto(Tenant entity) {
         return TenantDtoResp.builder()
-                .name(entity.getId())
+                .id(entity.getId())
                 .description(entity.getDescription())
                 .createdDate(entity.getCreatedDate())
                 .modifiedDate(entity.getModifiedDate())

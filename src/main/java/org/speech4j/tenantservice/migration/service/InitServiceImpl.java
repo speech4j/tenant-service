@@ -34,10 +34,8 @@ public class InitServiceImpl implements InitService {
     public void initSchema(List<String> tenants) {
         if (tenants != null && !tenants.isEmpty()){
             tenants.forEach(tenant->{
-                tenant = tenant.replace("-","");
 
                 try(Connection connection = dataSource.getConnection()) {
-                    tenant = tenant.equals("speech4j") ? tenant : "tenant_" + tenant;
 
                     try (Statement st = connection.createStatement()) {
                         st.executeUpdate(String.format(SQL_CREATE_SCHEMA, tenant));

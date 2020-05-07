@@ -19,7 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -44,10 +44,10 @@ public class User implements Serializable {
     private Role role;
     @Column(nullable = false, updatable = false, name = "createddate")
     @CreatedDate
-    private Timestamp createdDate;
+    private LocalDate createdDate;
     @LastModifiedDate
     @Column(name = "modifieddate")
-    private Timestamp modifiedDate;
+    private LocalDate modifiedDate;
     private boolean active;
     @Column(name = "tenantid")
     private String tenantId;

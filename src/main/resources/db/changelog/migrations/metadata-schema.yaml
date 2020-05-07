@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1588105101280-1
+    id: 1588829070552-1
     author: mslob (generated)
     changes:
     - createTable:

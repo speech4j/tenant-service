@@ -29,8 +29,8 @@ dependencyManagement {
 	}
 }
 
-apply from: 'liquibase.gradle'
-diffChangeLog.dependsOn build
+diff.dependsOn assemble
+diffChangeLog.dependsOn compileJava
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -50,10 +50,10 @@ dependencies {
 	testImplementation 'org.testcontainers:testcontainers'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
-
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-	implementation 'org.liquibase:liquibase-core:3.8.9'
+	liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:3.8'
+	liquibaseRuntime sourceSets.main.runtimeClasspath
 }
 
 test {
@@ -78,6 +78,40 @@ jacocoTestReport {
 }
 
 project.tasks["sonarqube"].dependsOn "jacocoTestReport"
+
+
+//===Liquibase configurations===
+Properties properties = new Properties()
+
+Properties metadata = new Properties()
+metadata.load(new FileInputStream("src/main/resources/liquibase-metadata.properties"))
+//Setting a default schema
+properties = metadata;
+
+Properties general = new Properties()
+general.load(new FileInputStream("src/main/resources/liquibase-general.properties"))
+
+if(project.hasProperty('schemaType')){
+	def requiredSchemaType = 'general'
+	def inputSchemaType = project.property('schemaType')
+
+	//Checking of an input schema type
+	properties = requiredSchemaType.equals(inputSchemaType) ? general : properties
+}
+
+liquibase {
+	activities {
+		main {
+			changeLogFile properties.getProperty('changeLogFile')
+			referenceUrl properties.getProperty('referenceUrl')  //hibernate entities
+			url properties.getProperty('url')                    //current db schema
+			username properties.getProperty('username')
+			password properties.getProperty('password')
+			referenceDriver properties.getProperty('referenceDriver')
+			excludeObjects 'table:contents,tags,content_tag'
+		}
+	}
+}
 
 //tasks.withType(JavaCompile).each {
 //	it.options.compilerArgs.add('--enable-preview')

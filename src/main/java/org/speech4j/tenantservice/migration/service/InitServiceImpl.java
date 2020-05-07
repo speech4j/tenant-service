@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Set;
 
 import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.SQL_CREATE_SCHEMA;
@@ -30,7 +31,7 @@ public class InitServiceImpl implements InitService {
     }
 
     @Override
-    public void initSchema(Set<String> tenants) {
+    public void initSchema(List<String> tenants) {
         if (tenants != null && !tenants.isEmpty()){
             tenants.forEach(tenant->{
                 tenant = tenant.replace("-","");

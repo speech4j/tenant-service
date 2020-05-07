@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
 
 @ConditionalOnBean(MultiTenantConnectionProviderImpl.class)
 @Component
@@ -30,8 +29,8 @@ public class MigrationInitBean {
     }
 
     @PostConstruct
-    public void init() throws SQLException {
-        Set<String> tenants = sourceService.getAllTenants(dataSource);
+    public void init(){
+        List<String> tenants = sourceService.getAllTenantIdentifiers();
         //Migration of schemas for tenants
         initService.initSchema(tenants);
     }

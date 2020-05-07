@@ -1,4 +1,8 @@
-spring.main.allow-bean-definition-overriding: true
+spring:
+  main:
+    lazy-initialization: false
+    allow-bean-definition-overriding: true
+---
 # ===============================
 # Default connection pool
 # ===============================

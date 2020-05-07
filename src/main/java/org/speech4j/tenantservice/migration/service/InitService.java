@@ -1,7 +1,7 @@
 package org.speech4j.tenantservice.migration.service;
 
-import java.util.Set;
+import java.util.List;
 
 public interface InitService {
-    void initSchema(Set<String> tenants);
+    void initSchema(List<String> tenants);
 }

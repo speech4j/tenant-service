@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class TenantServiceImpl implements TenantService {
@@ -28,8 +26,7 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public Tenant create(Tenant entity) {
         Tenant tenant = repository.save(entity);
-        Set<String> tenants = new HashSet<>(Arrays.asList(tenant.getId()));
-        initService.initSchema(tenants);
+        initService.initSchema(Arrays.asList(tenant.getId()));
         return tenant;
     }
 

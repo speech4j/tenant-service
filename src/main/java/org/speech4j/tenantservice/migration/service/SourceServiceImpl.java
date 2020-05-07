@@ -1,33 +1,38 @@
 package org.speech4j.tenantservice.migration.service;
 
+import org.speech4j.tenantservice.entity.metadata.Tenant;
+import org.speech4j.tenantservice.service.TenantService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SourceServiceImpl implements SourceService {
+    private TenantService tenantService;
+
+    @Autowired
+    public SourceServiceImpl(TenantService tenantService) {
+        this.tenantService = tenantService;
+    }
 
     @Override
-    public Set<String> getAllTenants(DataSource dataSource) throws SQLException {
-        Set<String> tenants = new HashSet<>();
+    public void insertDefaultData() {
+        Tenant tenant = new Tenant();
+        tenant.setId("speech4j");
+      //  tenant.setDescription("Speech4j is a default company.");
 
-        try (final Connection connection = dataSource.getConnection()){
-            connection.setSchema("metadata");
-            try(Statement statement = connection.createStatement()) {
-                try (ResultSet resultSet = statement.executeQuery("SELECT * FROM tenants")) {
+        tenantService.create(tenant);
+    }
 
-                    while (resultSet.next()) {
-                        tenants.add(resultSet.getString("id").replace("-", ""));
-                    }
-                }
-            }
-        }
+    @Override
+    public List<String> getAllTenantIdentifiers(){
+        List<String> tenants = new ArrayList<>();
+
+        tenantService.findAll().forEach(tenant -> {
+            tenants.add(tenant.getId().replace("-",""));
+        });
 
         return tenants;
     }

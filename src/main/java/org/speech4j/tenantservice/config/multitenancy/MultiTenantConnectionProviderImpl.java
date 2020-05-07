@@ -45,7 +45,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
             if (
                 tenantIdentifier != null
                 //Checking if specified tenant is in database even if this tenant will be created at runtime
-                && sourceService.getAllTenants(dataSource).contains(tenantIdentifier)
+                && sourceService.getAllTenantIdentifiers().contains(tenantIdentifier)
             ){
 
                 String persistentTenant = tenantIdentifier.equals("speech4j") ? tenantIdentifier : "tenant_" + tenantIdentifier;

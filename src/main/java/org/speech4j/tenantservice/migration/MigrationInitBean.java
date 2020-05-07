@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
 import java.util.List;
 
 @ConditionalOnBean(MultiTenantConnectionProviderImpl.class)
@@ -17,15 +16,12 @@ public class MigrationInitBean {
 
     private InitService initService;
     private SourceService sourceService;
-    private DataSource dataSource;
 
     @Autowired
     public MigrationInitBean(InitService initService,
-                             SourceService sourceService,
-                             DataSource dataSource) {
+                             SourceService sourceService) {
         this.initService = initService;
         this.sourceService = sourceService;
-        this.dataSource = dataSource;
     }
 
     @PostConstruct

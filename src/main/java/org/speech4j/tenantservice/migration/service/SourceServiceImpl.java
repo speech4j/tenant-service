@@ -31,9 +31,7 @@ public class SourceServiceImpl implements SourceService {
     public List<String> getAllTenantIdentifiers(){
         List<String> tenants = new ArrayList<>();
 
-        tenantService.findAll().forEach(tenant -> {
-            tenants.add(tenant.getId());
-        });
+        tenantService.findAll().forEach(tenant -> tenants.add(tenant.getId()));
 
         return tenants;
     }

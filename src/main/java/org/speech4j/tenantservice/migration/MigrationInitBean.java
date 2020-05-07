@@ -30,6 +30,7 @@ public class MigrationInitBean {
 
     @PostConstruct
     public void init(){
+        sourceService.insertDefaultData();
         List<String> tenants = sourceService.getAllTenantIdentifiers();
         //Migration of schemas for tenants
         initService.initSchema(tenants);

@@ -21,7 +21,8 @@ public class SourceServiceImpl implements SourceService {
     public void insertDefaultData() {
         Tenant tenant = new Tenant();
         tenant.setId("speech4j");
-      //  tenant.setDescription("Speech4j is a default company.");
+        tenant.setActive(true);
+        tenant.setDescription("Speech4j is a default company.");
 
         tenantService.create(tenant);
     }

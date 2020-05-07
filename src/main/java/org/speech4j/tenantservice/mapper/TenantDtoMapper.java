@@ -10,7 +10,8 @@ public class TenantDtoMapper implements AbstractEntityDtoMapper<TenantDtoReq, Te
     @Override
     public Tenant toEntity(TenantDtoReq dto) {
         return Tenant.builder()
-                .name(dto.getName())
+                .id(dto.getName())
+                .description(dto.getDescription())
                 .active(true)
                 .build();
     }
@@ -18,8 +19,8 @@ public class TenantDtoMapper implements AbstractEntityDtoMapper<TenantDtoReq, Te
     @Override
     public TenantDtoResp toDto(Tenant entity) {
         return TenantDtoResp.builder()
-                .id(entity.getId())
-                .name(entity.getName())
+                .name(entity.getId())
+                .description(entity.getDescription())
                 .createdDate(entity.getCreatedDate())
                 .modifiedDate(entity.getModifiedDate())
                 .active(entity.isActive())

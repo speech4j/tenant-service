@@ -17,8 +17,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @ToString
 public class TenantDtoResp {
-    private String id;
     private String name;
+    private String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Timestamp createdDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

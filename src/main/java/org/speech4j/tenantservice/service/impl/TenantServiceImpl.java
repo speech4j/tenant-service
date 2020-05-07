@@ -38,7 +38,7 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public Tenant update(Tenant entity, String id) {
         Tenant tenant = findByIdOrThrowException(id);
-        tenant.setName(entity.getName());
+        tenant.setDescription(entity.getDescription());
         return repository.save(tenant);
     }
 

@@ -29,10 +29,9 @@ import java.sql.Timestamp;
 @EntityListeners(AuditingEntityListener.class)
 public class Tenant implements Serializable {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(unique = true)
     private String  id;
-    private String name;
+    private String description;
     @Column(nullable = false, updatable = false, name = "createddate")
     @CreatedDate
     private Timestamp createdDate;

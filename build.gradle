@@ -32,6 +32,10 @@ dependencyManagement {
 diff.dependsOn assemble
 diffChangeLog.dependsOn compileJava
 
+diffChangeLog {
+	jvmArgs(['--enable-preview'])
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	runtimeOnly 'org.postgresql:postgresql'
@@ -113,10 +117,10 @@ liquibase {
 	}
 }
 
-//tasks.withType(JavaCompile).each {
-//	it.options.compilerArgs.add('--enable-preview')
-//}
-//
-//test {
-//	jvmArgs(['--enable-preview'])
-//}
+tasks.withType(JavaCompile).each {
+	it.options.compilerArgs.add('--enable-preview')
+}
+
+test {
+	jvmArgs(['--enable-preview'])
+}

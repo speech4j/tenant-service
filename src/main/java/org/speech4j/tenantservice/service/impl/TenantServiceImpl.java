@@ -2,6 +2,7 @@ package org.speech4j.tenantservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.speech4j.tenantservice.entity.metadata.Tenant;
+import org.speech4j.tenantservice.exception.DuplicateEntityException;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
 import org.speech4j.tenantservice.migration.service.InitService;
 import org.speech4j.tenantservice.repository.metadata.TenantRepository;
@@ -27,10 +28,15 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Tenant create(Tenant entity) {
-        Tenant tenant = repository.save(entity);
-        initService.initSchema(Arrays.asList(tenant.getId()));
-        log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully created!", entity.getId());
-        return tenant;
+        try {
+            findByIdOrThrowException(entity.getId());
+            throw new DuplicateEntityException("Tenant with a specified id already exists!");
+        }catch (TenantNotFoundException e) {
+            Tenant tenant = repository.save(entity);
+            initService.initSchema(Arrays.asList(tenant.getId()));
+            log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully created!", entity.getId());
+            return tenant;
+        }
     }
 
     @Override

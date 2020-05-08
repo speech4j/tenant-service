@@ -108,7 +108,7 @@ liquibase {
 			username properties.getProperty('username')
 			password properties.getProperty('password')
 			referenceDriver properties.getProperty('referenceDriver')
-			excludeObjects 'table:contents,tags,content_tag'
+			excludeObjects 'table:content_contents,content_tags,content_content_tag'
 		}
 	}
 }

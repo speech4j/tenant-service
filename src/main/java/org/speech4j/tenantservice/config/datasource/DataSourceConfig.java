@@ -2,8 +2,7 @@ package org.speech4j.tenantservice.config.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +15,7 @@ import java.sql.Statement;
 import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.SQL_CREATE_SCHEMA;
 
 @Configuration
+@Slf4j
 public class DataSourceConfig {
 
     @Value("${spring.datasource.driver}")
@@ -30,14 +30,8 @@ public class DataSourceConfig {
     @Value("${spring.datasource.password}")
     private String password;
 
-    @Value("${jpa.general_default_schema}")
-    private String generalSchema;
-
     @Value("${jpa.metadata_default_schema}")
     private String metadataSchema;
-
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConfig.class);
 
     private void init(DataSource dataSource){
         try (final Connection connection = dataSource.getConnection()){
@@ -45,7 +39,7 @@ public class DataSourceConfig {
                st.executeUpdate(String.format(SQL_CREATE_SCHEMA, metadataSchema));
             }
         }catch (SQLException e){
-            LOGGER.debug(e.getMessage());
+            log.debug(e.getMessage());
         }
 
     }

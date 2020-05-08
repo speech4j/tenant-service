@@ -1,4 +1,4 @@
-package org.speech4j.tenantservice.util;
+package org.speech4j.tenantservice.fixture;
 
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
@@ -7,7 +7,7 @@ import org.speech4j.tenantservice.dto.request.UserDtoReq;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataUtil {
+public class DataFixture {
 
     public static List<TenantDtoCreateReq> getListOfTenants(){
         List<TenantDtoCreateReq> list = new ArrayList<>();

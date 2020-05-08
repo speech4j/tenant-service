@@ -1,13 +1,14 @@
 package org.speech4j.tenantservice.controller;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.speech4j.tenantservice.AbstractContainerBaseTest;
 import org.speech4j.tenantservice.TenantServiceApplication;
 import org.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.speech4j.tenantservice.util.DataUtil;
+import org.speech4j.tenantservice.fixture.DataFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +30,10 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest(classes = TenantServiceApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TenantControllerTest extends AbstractContainerBaseTest {
-   @Autowired
+    @Autowired
     private TestRestTemplate template;
+    @Autowired
+    private CleanService cleanService;
 
     private HttpHeaders headers;
     private HttpEntity<TenantDtoCreateReq> request;
@@ -52,8 +56,13 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         request = new HttpEntity<>(testTenant, headers);
 
         //Populating of db
-        tenantsList = DataUtil.getListOfTenants();
+        tenantsList = DataFixture.getListOfTenants();
         testId = populateDB(template, headers, tenantsList)[0];
+    }
+
+    @AfterEach
+    void cleanUp() throws SQLException {
+        cleanService.cleanUp("metadata.tenants");
     }
 
     @Test

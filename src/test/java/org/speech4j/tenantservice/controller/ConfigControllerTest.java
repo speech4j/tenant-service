@@ -10,7 +10,7 @@ import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
-import org.speech4j.tenantservice.util.DataUtil;
+import org.speech4j.tenantservice.fixture.DataFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,6 +34,8 @@ import static org.junit.Assert.assertEquals;
 class ConfigControllerTest extends AbstractContainerBaseTest {
     @Autowired
     private TestRestTemplate template;
+    @Autowired
+    private CleanService cleanService;
 
     private HttpHeaders headers;
     private HttpEntity<ConfigDtoReq> request;
@@ -59,21 +61,16 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         request = new HttpEntity<>(testConfig, headers);
 
         //Populating of db
-        tenantsList = DataUtil.getListOfTenants();
+        tenantsList = DataFixture.getListOfTenants();
         testTenantIds = new TenantControllerTest().populateDB(template, headers, tenantsList);
-        configsList = DataUtil.getListOfConfigs();
+        configsList = DataFixture.getListOfConfigs();
         populateDB(configsList);
     }
 
     @AfterEach
-    void clear(){
-        request = new HttpEntity<>(headers);
-
-        Arrays.stream(testConfigIds).forEach(configId->{
-            String url = "/tenants/" + testTenantIds[0] + "/configs/" + configId;
-            template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
-        });
-
+    void cleanUp() throws SQLException {
+        cleanService.cleanUp("metadata.tenants");
+        cleanService.cleanUp("name1.tenant_configs");
     }
 
     @Test
@@ -226,7 +223,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(3, response.getBody().size());
+        assertEquals(2, response.getBody().size());
     }
 
     @Test

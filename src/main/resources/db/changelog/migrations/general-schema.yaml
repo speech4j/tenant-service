@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1588917499435-1
+    id: 1588955324396-1
     author: mslob (generated)
     changes:
     - createTable:
@@ -26,7 +26,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: tenant_configs
 - changeSet:
-    id: 1588917499435-2
+    id: 1588955324396-2
     author: mslob (generated)
     changes:
     - createTable:

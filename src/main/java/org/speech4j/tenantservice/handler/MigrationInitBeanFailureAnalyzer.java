@@ -14,7 +14,7 @@ public class MigrationInitBeanFailureAnalyzer extends AbstractFailureAnalyzer<Be
     }
 
     private String getDescription(BeanCreationException ex) {
-        return String.format("The bean [ %s ] could not be injected because of cause: %s", ex.getBeanName(), ex.getCause());
+        return String.format("The bean [ %s ] could not be injected because of cause: %s %s", ex.getBeanName(), ex.getCause(), ex);
     }
 
     private String getAction(BeanCreationException ex) {

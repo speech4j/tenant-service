@@ -1,7 +1,7 @@
 package org.speech4j.tenantservice.util;
 
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
-import org.speech4j.tenantservice.dto.request.TenantDtoReq;
+import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
 
 import java.util.ArrayList;
@@ -9,17 +9,17 @@ import java.util.List;
 
 public class DataUtil {
 
-    public static List<TenantDtoReq> getListOfTenants(){
-        List<TenantDtoReq> list = new ArrayList<>();
+    public static List<TenantDtoCreateReq> getListOfTenants(){
+        List<TenantDtoCreateReq> list = new ArrayList<>();
 
         //entity1
-        TenantDtoReq tenant1 = new TenantDtoReq();
+        TenantDtoCreateReq tenant1 = new TenantDtoCreateReq();
         tenant1.setName("name1");
         tenant1.setDescription("Company1");
         list.add(tenant1);
 
         //entity2
-        TenantDtoReq tenant2 = new TenantDtoReq();
+        TenantDtoCreateReq tenant2 = new TenantDtoCreateReq();
         tenant2.setName("name2");
         tenant2.setDescription("Company2");
         list.add(tenant2);

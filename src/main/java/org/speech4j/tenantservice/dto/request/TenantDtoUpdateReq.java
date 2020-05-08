@@ -15,9 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TenantDtoReq {
-    @NotBlank(message = "{field.not.empty}")
-    private String name;
+public class TenantDtoUpdateReq {
     @NotBlank(message = "{field.not.empty}")
     private String description;
 }

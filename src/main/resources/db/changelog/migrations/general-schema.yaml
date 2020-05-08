@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1588828770479-1
+    id: 1588917499435-1
     author: mslob (generated)
     changes:
     - createTable:
@@ -9,7 +9,7 @@ databaseChangeLog:
             constraints:
               nullable: false
               primaryKey: true
-              primaryKeyName: configsPK
+              primaryKeyName: tenant_configsPK
             name: id
             type: VARCHAR(255)
         - column:
@@ -24,9 +24,9 @@ databaseChangeLog:
         - column:
             name: username
             type: VARCHAR(255)
-        tableName: configs
+        tableName: tenant_configs
 - changeSet:
-    id: 1588828770479-2
+    id: 1588917499435-2
     author: mslob (generated)
     changes:
     - createTable:
@@ -35,7 +35,7 @@ databaseChangeLog:
             constraints:
               nullable: false
               primaryKey: true
-              primaryKeyName: usersPK
+              primaryKeyName: tenant_usersPK
             name: id
             type: VARCHAR(255)
         - column:
@@ -47,7 +47,7 @@ databaseChangeLog:
             constraints:
               nullable: false
             name: createddate
-            type: TIMESTAMP WITHOUT TIME ZONE
+            type: date
         - column:
             name: email
             type: VARCHAR(255)
@@ -59,7 +59,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         - column:
             name: modifieddate
-            type: TIMESTAMP WITHOUT TIME ZONE
+            type: date
         - column:
             name: password
             type: VARCHAR(255)
@@ -69,5 +69,5 @@ databaseChangeLog:
         - column:
             name: tenantid
             type: VARCHAR(255)
-        tableName: users
+        tableName: tenant_users
 

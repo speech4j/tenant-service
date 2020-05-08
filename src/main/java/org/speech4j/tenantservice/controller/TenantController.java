@@ -3,8 +3,10 @@ package org.speech4j.tenantservice.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.speech4j.tenantservice.dto.request.TenantDtoReq;
+import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
+import org.speech4j.tenantservice.dto.request.TenantDtoUpdateReq;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
+import org.speech4j.tenantservice.entity.metadata.Tenant;
 import org.speech4j.tenantservice.mapper.TenantDtoMapper;
 import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ public class TenantController{
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public TenantDtoResp save(
             @Parameter(description = "Tenant object that needs to be added to db", required = true)
-            @Validated @RequestBody TenantDtoReq dto) {
+            @Validated @RequestBody TenantDtoCreateReq dto) {
         return mapper.toDto(service.create(mapper.toEntity(dto)));
     }
 
@@ -69,10 +71,11 @@ public class TenantController{
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
     public TenantDtoResp update(
             @Parameter(description = "Tenant object that needs to be updated", required = true)
-            @Validated @RequestBody TenantDtoReq dto,
+            @Validated @RequestBody TenantDtoUpdateReq dto,
             @Parameter(description = "Tenant id for update", required = true)
             @PathVariable String id) {
-        return mapper.toDto(service.update(mapper.toEntity(dto), id));
+        Tenant tenant = Tenant.builder().description(dto.getDescription()).build();
+        return mapper.toDto(service.update(tenant, id));
     }
 
     @DeleteMapping("/{id}")

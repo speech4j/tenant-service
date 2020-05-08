@@ -3,7 +3,7 @@ package org.speech4j.tenantservice.controller;
 import org.speech4j.tenantservice.AbstractContainerBaseTest;
 import org.speech4j.tenantservice.TenantServiceApplication;
 import org.speech4j.tenantservice.dto.handler.ResponseMessageDto;
-import org.speech4j.tenantservice.dto.request.TenantDtoReq;
+import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,7 @@ import org.speech4j.tenantservice.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,12 +32,12 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     private TestRestTemplate template;
 
     private HttpHeaders headers;
-    private HttpEntity<TenantDtoReq> request;
-    private TenantDtoReq testTenant;
+    private HttpEntity<TenantDtoCreateReq> request;
+    private TenantDtoCreateReq testTenant;
 
     private final String exceptionMessage = "Tenant not found!";
     private String testId;
-    private List<TenantDtoReq> tenantsList;
+    private List<TenantDtoCreateReq> tenantsList;
 
     @BeforeEach
     void setUp() throws URISyntaxException {
@@ -44,7 +45,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //Initializing of test tenant
-        testTenant = new TenantDtoReq();
+        testTenant = new TenantDtoCreateReq();
         testTenant.setName("soft_serve");
         testTenant.setDescription("Company");
 
@@ -114,7 +115,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
 
         //Verify this exception because of validation missed field
         assertEquals(400, response.getStatusCodeValue());
-        assertEquals("Validation failed for object='tenantDtoReq'. Error count: 1", response.getBody().getMessage());
+        assertEquals("Validation failed for object='tenantDtoCreateReq'. Error count: 1", response.getBody().getMessage());
     }
 
     @Test
@@ -174,7 +175,8 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findAllTenantsTest() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<List> response = template.exchange("/tenants", HttpMethod.GET, request, List.class);
+        ResponseEntity<List<TenantDtoResp>> response =
+                template.exchange("/tenants", HttpMethod.GET, request, new ParameterizedTypeReference<List<TenantDtoResp>>(){});
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
@@ -185,7 +187,7 @@ public class TenantControllerTest extends AbstractContainerBaseTest {
         assertEquals(exceptionMessage, response.getBody().getMessage());
     }
 
-    public String[] populateDB(TestRestTemplate template, HttpHeaders headers, List<TenantDtoReq> list) throws URISyntaxException {
+    public String[] populateDB(TestRestTemplate template, HttpHeaders headers, List<TenantDtoCreateReq> list) throws URISyntaxException {
         final String url = "/tenants";
         URI uri = new URI(url);
         String [] idList = new String[2];

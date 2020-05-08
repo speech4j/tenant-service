@@ -1,19 +1,20 @@
 package org.speech4j.tenantservice.controller;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.speech4j.tenantservice.AbstractContainerBaseTest;
 import org.speech4j.tenantservice.TenantServiceApplication;
 import org.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
-import org.speech4j.tenantservice.dto.request.TenantDtoReq;
+import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.speech4j.tenantservice.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,7 +43,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     private String []testConfigIds = new String[2];
     private String []testTenantIds;
     private List<ConfigDtoReq> configsList;
-    private List<TenantDtoReq> tenantsList;
+    private List<TenantDtoCreateReq> tenantsList;
 
     @BeforeEach
     void setUp() throws URISyntaxException {
@@ -220,8 +221,8 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findAllConfigsTest_successFlow() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<List> response = template.exchange("/tenants/" + testTenantIds[0] + "/configs",
-                HttpMethod.GET, request, List.class);
+        ResponseEntity<List<ConfigDtoResp>> response = template.exchange("/tenants/" + testTenantIds[0] + "/configs",
+                HttpMethod.GET, request, new ParameterizedTypeReference<List<ConfigDtoResp>>(){});
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());

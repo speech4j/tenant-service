@@ -3,7 +3,7 @@ package org.speech4j.tenantservice.controller;
 import org.speech4j.tenantservice.AbstractContainerBaseTest;
 import org.speech4j.tenantservice.TenantServiceApplication;
 import org.speech4j.tenantservice.dto.handler.ResponseMessageDto;
-import org.speech4j.tenantservice.dto.request.TenantDtoReq;
+import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
 import org.speech4j.tenantservice.dto.response.UserDtoResp;
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +13,7 @@ import org.speech4j.tenantservice.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -41,7 +42,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     private String []testUserIds = new String[2];
     private String []testTenantIds;
     private List<UserDtoReq> usersList;
-    private List<TenantDtoReq> tenantsList;
+    private List<TenantDtoCreateReq> tenantsList;
 
     @BeforeEach
     void setUp() throws URISyntaxException {
@@ -233,7 +234,9 @@ public class UserControllerTest extends AbstractContainerBaseTest {
 
     @Test
     public void findAllUsersTestByTenantId_successFlow() {
-        ResponseEntity<List> response = template.exchange("/tenants/" + testTenantIds[0] + "/users", HttpMethod.GET, null , List.class);
+        ResponseEntity<List<UserDtoResp>> response =
+                template.exchange("/tenants/" + testTenantIds[0] + "/users",
+                        HttpMethod.GET, null , new ParameterizedTypeReference<List<UserDtoResp>>(){});
 
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());

@@ -1,5 +1,6 @@
 package org.speech4j.tenantservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.speech4j.tenantservice.entity.metadata.Tenant;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
 import org.speech4j.tenantservice.migration.service.InitService;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Slf4j
 public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
     private InitService initService;
@@ -27,19 +29,25 @@ public class TenantServiceImpl implements TenantService {
     public Tenant create(Tenant entity) {
         Tenant tenant = repository.save(entity);
         initService.initSchema(Arrays.asList(tenant.getId()));
+        log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully created!", entity.getId());
         return tenant;
     }
 
     @Override
     public Tenant findById(String id) {
-        return findByIdOrThrowException(id);
+        Tenant tenant = findByIdOrThrowException(id);
+        log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully found!", id);
+        return tenant;
     }
 
     @Override
     public Tenant update(Tenant entity, String id) {
         Tenant tenant = findByIdOrThrowException(id);
         tenant.setDescription(entity.getDescription());
-        return repository.save(tenant);
+
+        Tenant updatedTenant =  repository.save(tenant);
+        log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully updated!", id);
+        return updatedTenant;
     }
 
     @Override
@@ -47,11 +55,14 @@ public class TenantServiceImpl implements TenantService {
         Tenant tenant = findByIdOrThrowException(id);
         tenant.setActive(false);
         repository.save(tenant);
+        log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully deleted!", id);
     }
 
     @Override
     public List<Tenant> findAll() {
-        return (List<Tenant>) repository.findAll();
+        List<Tenant> tenats = (List<Tenant>) repository.findAll();
+        log.debug("TENANT-SERVICE: Tenants with was successfully found!");
+        return tenats;
     }
 
     private Tenant findByIdOrThrowException(String id) {

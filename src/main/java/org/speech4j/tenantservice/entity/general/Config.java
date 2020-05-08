@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "configs")
+@Table(name = "tenant_configs")
 @ToString
 public class Config implements Serializable {
     @Id

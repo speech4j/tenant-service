@@ -1,10 +1,7 @@
 package org.speech4j.tenantservice.repository.general;
 
 import org.speech4j.tenantservice.entity.general.User;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

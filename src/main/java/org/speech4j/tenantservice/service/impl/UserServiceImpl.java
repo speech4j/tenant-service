@@ -1,5 +1,6 @@
 package org.speech4j.tenantservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.speech4j.tenantservice.entity.general.Role;
 import org.speech4j.tenantservice.entity.general.User;
 import org.speech4j.tenantservice.exception.UserNotFoundException;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private UserRepository repository;
     private PasswordEncoder encoder;
@@ -32,12 +34,16 @@ public class UserServiceImpl implements UserService {
         if (entity.getRole() == null) {
             entity.setRole(Role.ADMIN);
         }
-         return repository.save(entity);
+         User user = repository.save(entity);
+         log.debug("USER-SERVICE: User with [ id: {}] was successfully created!", entity.getId());
+         return user;
     }
 
     @Override
     public User findById(String id) {
-        return findByIdOrThrowException(id);
+        User user = findByIdOrThrowException(id);
+        log.debug("USER-SERVICE: User with [ id: {}] was successfully found!", id);
+        return user;
     }
 
     @Override
@@ -48,7 +54,9 @@ public class UserServiceImpl implements UserService {
         //Encoding password before updating
         user.setPassword(encoder.encode(entity.getPassword()));
 
-        return repository.save(user);
+        User updatedUser = repository.save(user);
+        log.debug("USER-SERVICE: User with [ id: {}] was successfully updated!", id);
+        return updatedUser;
     }
 
     @Override
@@ -56,12 +64,14 @@ public class UserServiceImpl implements UserService {
         User user = findByIdOrThrowException(id);
         user.setActive(false);
         repository.save(user);
+        log.debug("USER-SERVICE: User with [ id: {}] was successfully deleted!", id);
     }
 
     @Override
     public List<User> findAllById(String id) {
         List<User> list = repository.findAllByTenantId(id).stream().filter(User::isActive).collect(Collectors.toList());
         if (!list.isEmpty()){
+            log.debug("USER-SERVICE: Users with [ tenantId: {}] were successfully found!", id);
             return list;
         }else {
             throw new UserNotFoundException("User not found!");

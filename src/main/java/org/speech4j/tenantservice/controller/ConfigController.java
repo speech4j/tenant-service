@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
-import org.speech4j.tenantservice.entity.general.Config;
+import org.speech4j.tenantservice.entity.tenant.Config;
 import org.speech4j.tenantservice.exception.EntityNotFoundException;
 import org.speech4j.tenantservice.mapper.ConfigDtoMapper;
 import org.speech4j.tenantservice.service.ConfigService;
@@ -53,7 +53,6 @@ public class ConfigController{
             @Parameter(description = "Tenant id for saving", required = true)
             @PathVariable String id
     ) {
-        //Make it when this feature will be done
         tenantService.findById(id);
         Config config = mapper.toEntity(dto);
         config.setTenantId(id);

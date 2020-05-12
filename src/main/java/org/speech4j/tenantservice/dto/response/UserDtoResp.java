@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.speech4j.tenantservice.entity.general.Role;
+import org.speech4j.tenantservice.entity.tenant.Role;
 
 import java.time.LocalDate;
 

@@ -92,15 +92,15 @@ metadata.load(new FileInputStream("src/main/resources/liquibase-metadata.propert
 //Setting a default schema
 properties = metadata;
 
-Properties general = new Properties()
-general.load(new FileInputStream("src/main/resources/liquibase-general.properties"))
+Properties tenant = new Properties()
+tenant.load(new FileInputStream("src/main/resources/liquibase-tenant.properties"))
 
 if(project.hasProperty('schemaType')){
-	def requiredSchemaType = 'general'
+	def requiredSchemaType = 'tenant'
 	def inputSchemaType = project.property('schemaType')
 
 	//Checking of an input schema type
-	properties = requiredSchemaType.equals(inputSchemaType) ? general : properties
+	properties = requiredSchemaType.equals(inputSchemaType) ? tenant : properties
 }
 
 liquibase {

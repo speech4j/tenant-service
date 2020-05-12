@@ -54,7 +54,7 @@ public class DataSourceConfig {
         dataSourceConfig.setMaximumPoolSize(5);
 
         DataSource dataSource = new HikariDataSource(dataSourceConfig);
-        //Initializing of speech4j schema
+        //Initializing of metadata schema
         init(dataSource);
 
         return dataSource;

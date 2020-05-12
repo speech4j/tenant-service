@@ -1,4 +1,4 @@
-package org.speech4j.tenantservice.entity.general;
+package org.speech4j.tenantservice.entity.tenant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

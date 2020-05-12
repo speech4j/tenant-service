@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
 import org.speech4j.tenantservice.dto.response.UserDtoResp;
-import org.speech4j.tenantservice.entity.general.User;
+import org.speech4j.tenantservice.entity.tenant.User;
 import org.speech4j.tenantservice.exception.UserNotFoundException;
 import org.speech4j.tenantservice.mapper.UserDtoMapper;
 import org.speech4j.tenantservice.service.TenantService;

@@ -58,7 +58,7 @@ jpa:
   metadata_default_schema: metadata
 
 liquibase:
-  general_changelog: db/changelog/db.changelog-general.yaml
+  general_changelog: db/changelog/db.changelog-tenant.yaml
   metadata_changelog: db/changelog/db.changelog-master.yaml
 
 server:

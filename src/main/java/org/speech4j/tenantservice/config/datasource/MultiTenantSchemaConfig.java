@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "org.speech4j.tenantservice.repository.general",
+        basePackages = "org.speech4j.tenantservice.repository.tenant",
         entityManagerFactoryRef = "multitenantEntityManagerFactory",
         transactionManagerRef = "multitenantTransactionManager"
 )
@@ -51,7 +51,7 @@ public class MultiTenantSchemaConfig {
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("/org/speech4j/tenantservice/entity/general");
+        em.setPackagesToScan("/org/speech4j/tenantservice/entity/tenant");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaPropertyMap(properties);
         return em;

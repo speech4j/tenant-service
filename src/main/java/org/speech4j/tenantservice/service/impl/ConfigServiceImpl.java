@@ -1,9 +1,9 @@
 package org.speech4j.tenantservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.speech4j.tenantservice.entity.general.Config;
+import org.speech4j.tenantservice.entity.tenant.Config;
 import org.speech4j.tenantservice.exception.ConfigNotFoundException;
-import org.speech4j.tenantservice.repository.general.ConfigRepository;
+import org.speech4j.tenantservice.repository.tenant.ConfigRepository;
 import org.speech4j.tenantservice.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

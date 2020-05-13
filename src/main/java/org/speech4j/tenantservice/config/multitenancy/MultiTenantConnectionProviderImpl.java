@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.speech4j.tenantservice.exception.InternalServerException;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
-import org.speech4j.tenantservice.migration.service.SourceService;
+import org.speech4j.tenantservice.migration.service.MetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +18,13 @@ import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstant
 @Slf4j
 public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
     private transient DataSource dataSource;
-    private transient SourceService sourceService;
+    private transient MetadataService metadataService;
 
     @Autowired
     public MultiTenantConnectionProviderImpl(DataSource dataSource,
-                                             SourceService sourceService) {
+                                             MetadataService metadataService) {
         this.dataSource = dataSource;
-        this.sourceService = sourceService;
+        this.metadataService = metadataService;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
             if (
                     tenantIdentifier != null
                             //Checking if specified tenant is in database even if this tenant will be created at runtime
-                            && sourceService.getAllTenantIdentifiers().contains(tenantIdentifier)
+                            && metadataService.getAllTenantIdentifiers().contains(tenantIdentifier)
             ) {
                 connection.setSchema(tenantIdentifier);
                 log.debug("DATABASE: Schema with id [{}] was successfully set as default!", tenantIdentifier);

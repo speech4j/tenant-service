@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @Builder
@@ -14,6 +16,5 @@ import lombok.Setter;
 public class ConfigDtoResp {
     private String id;
     private String apiName;
-    private String username;
-    private String password;
+    private Map<String, Object> credentials;
 }

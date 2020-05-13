@@ -86,11 +86,9 @@ project.tasks["sonarqube"].dependsOn "jacocoTestReport"
 
 //===Liquibase configurations===
 Properties properties = new Properties()
-
 Properties metadata = new Properties()
 metadata.load(new FileInputStream("src/main/resources/liquibase-metadata.properties"))
-//Setting a default schema
-properties = metadata;
+properties = metadata
 
 Properties tenant = new Properties()
 tenant.load(new FileInputStream("src/main/resources/liquibase-tenant.properties"))
@@ -103,10 +101,23 @@ if(project.hasProperty('schemaType')){
 	properties = requiredSchemaType.equals(inputSchemaType) ? tenant : properties
 }
 
+def changeLogFilePath = properties.getProperty('changeLogFile')
+int fileCounter = new File(changeLogFilePath).list().length + 1
+def getFileVersion = { number ->
+	def count = 0
+	while(number > 1){
+		number /= 10
+		count++
+	}
+	return count == 0 || count == 1 ? "00" : (count == 2) ? "0" : ""
+}
+def fileVersion = getFileVersion(fileCounter) + fileCounter
+def diffLog = changeLogFilePath + properties.getProperty('changeLogFileName') + fileVersion + ".xml"
+
 liquibase {
 	activities {
 		main {
-			changeLogFile properties.getProperty('changeLogFile')
+			changeLogFile diffLog
 			referenceUrl properties.getProperty('referenceUrl')  //hibernate entities
 			url properties.getProperty('url')                    //current db schema
 			username properties.getProperty('username')

@@ -24,7 +24,9 @@ import org.springframework.http.ResponseEntity;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -55,8 +57,10 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         //Initializing of test config
         testConfig = new ConfigDtoReq();
         testConfig.setApiName("Azure Api");
-        testConfig.setUsername("testName");
-        testConfig.setPassword("qwertY123");
+        Map<String,Object> credentials = new HashMap<>();
+        credentials.put("username", "mslob");
+        credentials.put("password", "qwerty123");
+        testConfig.setCredentials(credentials);
 
         request = new HttpEntity<>(testConfig, headers);
 
@@ -128,36 +132,6 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
         //Verify this exception because of validation null entity can't be accepted by controller
         assertEquals(400, response.getStatusCodeValue());
-    }
-
-    @Test
-    public void createConfigTestWithWrongEmail_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs/";
-
-        testConfig.setPassword("wrong-password");
-        request = new HttpEntity<>(testConfig, headers);
-
-        ResponseEntity<ResponseMessageDto> response =
-                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
-
-        //Verify this exception because of validation wrong password
-        assertEquals(400, response.getStatusCodeValue());
-        assertEquals("Validation failed for object='configDtoReq'. Error count: 1", response.getBody().getMessage());
-    }
-
-    @Test
-    public void createConfigTestWithMissedRequiredField_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs/";
-
-        testConfig.setApiName(null);
-        request = new HttpEntity<>(testConfig, headers);
-
-        ResponseEntity<ResponseMessageDto> response =
-                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
-
-        //Verify this exception because of validation missed field
-        assertEquals(400, response.getStatusCodeValue());
-        assertEquals("Validation failed for object='configDtoReq'. Error count: 1", response.getBody().getMessage());
     }
 
     @Test

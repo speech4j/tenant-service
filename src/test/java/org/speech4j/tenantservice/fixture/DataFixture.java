@@ -5,7 +5,9 @@ import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataFixture {
 
@@ -52,19 +54,20 @@ public class DataFixture {
 
     public static List<ConfigDtoReq> getListOfConfigs(){
         List<ConfigDtoReq> list = new ArrayList<>();
+        Map<String,Object> credentials = new HashMap<>();
+        credentials.put("username", "mslob");
+        credentials.put("password", "qwerty123");
 
         //entity1
         ConfigDtoReq config1 = new ConfigDtoReq();
         config1.setApiName("Google Api");
-        config1.setUsername("mslob");
-        config1.setPassword("qwertY123");
+        config1.setCredentials(credentials);
         list.add(config1);
 
         //entity2
         ConfigDtoReq config2 = new ConfigDtoReq();
         config2.setApiName("AWS Api");
-        config2.setUsername("speech4j");
-        config2.setPassword("qwertY123");
+        config1.setCredentials(credentials);
         list.add(config2);
 
         return list;

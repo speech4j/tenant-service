@@ -20,7 +20,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public void insertDefaultTenant() throws DuplicateEntityException{
+    public void insertDefaultTenant(){
         Tenant tenant = new Tenant();
         tenant.setId("speech4j");
         tenant.setActive(true);

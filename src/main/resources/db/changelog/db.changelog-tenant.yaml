@@ -1,3 +1,3 @@
 databaseChangeLog:
-  - include:
-      file: db/changelog/migrations/tenant/tenant-schema.yaml
+  - includeAll:
+      path: db/changelog/migrations/tenant

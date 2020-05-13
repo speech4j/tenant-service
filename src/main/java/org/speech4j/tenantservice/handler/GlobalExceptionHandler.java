@@ -22,16 +22,8 @@ public class GlobalExceptionHandler {
                 .body(new ResponseMessageDto(e.getMessage()));
     }
 
-    @ExceptionHandler({InternalServerException.class})
+    @ExceptionHandler({InternalServerException.class, DuplicateEntityException.class})
     public ResponseEntity<ResponseMessageDto> handleInternalServerException(Exception e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ResponseMessageDto(e.getMessage()));
-    }
-
-    @ExceptionHandler({DuplicateEntityException.class})
-    public ResponseEntity<ResponseMessageDto> handleDuplicateEntityException(Exception e) {
         log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

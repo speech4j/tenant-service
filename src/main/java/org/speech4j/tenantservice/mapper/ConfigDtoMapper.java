@@ -1,5 +1,6 @@
 package org.speech4j.tenantservice.mapper;
 
+import org.json.JSONObject;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import org.speech4j.tenantservice.entity.tenant.Config;
@@ -11,8 +12,7 @@ public class ConfigDtoMapper implements AbstractEntityDtoMapper<ConfigDtoReq, Co
     public Config toEntity(ConfigDtoReq dto) {
         return Config.builder()
                 .apiName(dto.getApiName())
-                .username(dto.getUsername())
-                .password(dto.getPassword())
+                .credentials(new JSONObject(dto.getCredentials()))
                 .build();
     }
 
@@ -21,8 +21,7 @@ public class ConfigDtoMapper implements AbstractEntityDtoMapper<ConfigDtoReq, Co
         return ConfigDtoResp.builder()
                 .id(entity.getId())
                 .apiName(entity.getApiName())
-                .username(entity.getUsername())
-                .password(entity.getPassword())
+                .credentials(entity.getCredentials().toMap())
                 .build();
     }
 }

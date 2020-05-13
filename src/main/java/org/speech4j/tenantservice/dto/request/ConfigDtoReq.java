@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -19,9 +19,5 @@ import javax.validation.constraints.Pattern;
 public class ConfigDtoReq {
     @NotBlank(message = "{field.not.empty}")
     private String apiName;
-    @NotBlank(message = "{field.not.empty}")
-    private String username;
-    @NotBlank(message = "{field.not.empty}")
-    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$", message = "{password.validation}")
-    private String password;
+    private Map<String, Object> credentials;
 }

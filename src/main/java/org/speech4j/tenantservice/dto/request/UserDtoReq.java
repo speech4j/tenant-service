@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.speech4j.tenantservice.entity.tenant.Role;
 
 import javax.validation.constraints.Email;
@@ -18,6 +19,7 @@ import javax.validation.constraints.Pattern;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserDtoReq {
     @NotBlank( message = "{field.not.empty}")
     private String firstName;

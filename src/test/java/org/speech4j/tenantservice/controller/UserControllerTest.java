@@ -9,6 +9,7 @@ import org.speech4j.tenantservice.dto.response.UserDtoResp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.speech4j.tenantservice.entity.tenant.User;
 import org.speech4j.tenantservice.fixture.DataFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,7 +57,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
         testUser = new UserDtoReq();
         testUser.setFirstName("Mar");
         testUser.setLastName("Slob");
-        testUser.setEmail("email1@gmail.com");
+        testUser.setEmail("email@gmail.com");
         testUser.setPassword("strinG123");
 
         request = new HttpEntity<>(testUser, headers);
@@ -175,28 +176,45 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
+    public void createUserTestWithDuplicateEmail_unsuccessFlow() {
+        final String url = "/tenants/" + testTenantIds[0] + "/users/";
+
+        testUser.setEmail("email1@gmail.com");
+        request = new HttpEntity<>(testUser, headers);
+
+        ResponseEntity<ResponseMessageDto> response =
+                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
+
+        //Verify this exception because of validation wrong email
+        assertEquals(500, response.getStatusCodeValue());
+        assertEquals("User with a specified email already exists!", response.getBody().getMessage());
+    }
+
+    @Test
     public void updateUserTest_successFlow() {
         final String url = "/tenants/"+testTenantIds[0]+"/users/" + testUserIds[0];
 
-        testUser.setFirstName("NewName");
-        request = new HttpEntity<>(testUser, headers);
+        UserDtoReq user = usersList.get(0);
+        user.setFirstName("NewName");
+        request = new HttpEntity<>(user, headers);
 
         ResponseEntity<UserDtoResp> response =
                 this.template.exchange(url, HttpMethod.PUT, request, UserDtoResp.class);
 
+        System.out.println(response.getBody());
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
-        assertThat(testUser).isEqualToIgnoringGivenFields(response.getBody(),
-                "createdDate", "updatedDate", "password" , "role" );
-        assertThat(response.getBody()).isNotNull();
+        assertThat(user).isEqualToIgnoringGivenFields(response.getBody(),
+                "createdDate", "updatedDate", "password", "role");
     }
 
     @Test
-    public void updateUseerTest_unsuccessFlow() {
+    public void updateUserTest_unsuccessFlow() {
         final String url = "/tenants/"+testTenantIds[0]+"/users/" + 0;
 
-        testUser.setFirstName("NewName");
-        request = new HttpEntity<>(testUser, headers);
+        UserDtoReq user = usersList.get(0);
+        user.setFirstName("NewName");
+        request = new HttpEntity<>(user, headers);
 
         ResponseEntity<ResponseMessageDto> response =
                 this.template.exchange(url, HttpMethod.PUT, request, ResponseMessageDto.class);

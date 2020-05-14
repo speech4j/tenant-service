@@ -68,7 +68,7 @@ public class DataFixture {
         //entity2
         ConfigDtoReq config2 = new ConfigDtoReq();
         config2.setApiName(ApiName.AWS);
-        config1.setCredentials(credentials);
+        config2.setCredentials(credentials);
         list.add(config2);
 
         return list;

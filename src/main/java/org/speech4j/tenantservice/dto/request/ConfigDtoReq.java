@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.speech4j.tenantservice.entity.tenant.ApiName;
 
 import javax.validation.constraints.NotEmpty;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ConfigDtoReq {
     @NotNull(message = "{field.not.empty}")
     private ApiName apiName;

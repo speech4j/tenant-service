@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.speech4j.tenantservice.entity.tenant.ApiName;
 
 import java.util.Map;
 
@@ -15,6 +16,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class ConfigDtoResp {
     private String id;
-    private String apiName;
+    private ApiName apiName;
     private Map<String, Object> credentials;
 }

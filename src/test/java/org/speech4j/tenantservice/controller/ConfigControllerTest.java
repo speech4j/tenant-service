@@ -10,6 +10,7 @@ import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
+import org.speech4j.tenantservice.entity.tenant.ApiName;
 import org.speech4j.tenantservice.fixture.DataFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,7 +57,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
 
         //Initializing of test config
         testConfig = new ConfigDtoReq();
-        testConfig.setApiName("Azure Api");
+        testConfig.setApiName(ApiName.AZURE);
         Map<String,Object> credentials = new HashMap<>();
         credentials.put("username", "mslob");
         credentials.put("password", "qwerty123");
@@ -138,7 +139,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void updateConfigTest_successFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0];
 
-        testConfig.setApiName("newName");
+        testConfig.setApiName(ApiName.HEROKU);
         request = new HttpEntity<>(testConfig, headers);
 
         ResponseEntity<ConfigDtoReq> response =
@@ -154,7 +155,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     public void updateConfigTest_unsuccessFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0;
 
-        testConfig.setApiName("newName");
+        testConfig.setApiName(ApiName.HEROKU);
         request = new HttpEntity<>(testConfig, headers);
 
         ResponseEntity<ResponseMessageDto> response =

@@ -3,6 +3,7 @@ package org.speech4j.tenantservice.fixture;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
+import org.speech4j.tenantservice.entity.tenant.ApiName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,13 +61,13 @@ public class DataFixture {
 
         //entity1
         ConfigDtoReq config1 = new ConfigDtoReq();
-        config1.setApiName("Google Api");
+        config1.setApiName(ApiName.GOOGLE);
         config1.setCredentials(credentials);
         list.add(config1);
 
         //entity2
         ConfigDtoReq config2 = new ConfigDtoReq();
-        config2.setApiName("AWS Api");
+        config2.setApiName(ApiName.AWS);
         config1.setCredentials(credentials);
         list.add(config2);
 

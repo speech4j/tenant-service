@@ -52,12 +52,12 @@ public class Config implements Serializable {
     @NonNull
     @Column(columnDefinition = "TEXT")
     @Convert(converter=JSONObjectConverter.class)
-    private JSONObject credentials;
+    private transient JSONObject credentials;
 
     /**
      * https://ilhicas.com/2019/04/26/Persisting-JSONObject-Using-JPA.html
      */
-    public Map<String, Object> toMap(JSONObject object) throws JSONException {
+    public Map<String, Object> toMap(JSONObject object){
         Map<String, Object> map = new HashMap<>();
 
         Iterator<String> keysItr = object.keys();
@@ -75,7 +75,7 @@ public class Config implements Serializable {
         return map;
     }
 
-    public List<Object> toList(JSONArray array) throws JSONException {
+    public List<Object> toList(JSONArray array){
         List<Object> list = new ArrayList<>();
         for(int i = 0; i < array.length(); i++) {
             Object value = array.get(i);

@@ -1,7 +1,6 @@
 package org.speech4j.tenantservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.dialect.PostgreSQL9Dialect;
 import org.speech4j.tenantservice.entity.tenant.Role;
 import org.speech4j.tenantservice.entity.tenant.User;
 import org.speech4j.tenantservice.exception.DuplicateEntityException;
@@ -13,8 +12,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolationException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 

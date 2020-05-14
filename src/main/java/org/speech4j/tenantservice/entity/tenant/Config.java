@@ -9,7 +9,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.speech4j.tenantservice.mapper.json.JSONObjectConverter;
 
@@ -27,8 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static org.hibernate.internal.util.collections.ArrayHelper.toList;
 
 
 @Entity

@@ -1,7 +1,6 @@
 package org.speech4j.tenantservice.migration.service.impl;
 
 import org.speech4j.tenantservice.entity.metadata.Tenant;
-import org.speech4j.tenantservice.exception.DuplicateEntityException;
 import org.speech4j.tenantservice.migration.service.MetadataService;
 import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;

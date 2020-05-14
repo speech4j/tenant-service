@@ -49,7 +49,7 @@ public class Config implements Serializable {
     @NonNull
     @Column(columnDefinition = "TEXT")
     @Convert(converter=JSONObjectConverter.class)
-    private transient JSONObject credentials;
+    private JSONObject credentials;
 
     /**
      * https://ilhicas.com/2019/04/26/Persisting-JSONObject-Using-JPA.html

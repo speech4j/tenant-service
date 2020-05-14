@@ -1,17 +1,24 @@
 package org.speech4j.tenantservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.dialect.PostgreSQL9Dialect;
 import org.speech4j.tenantservice.entity.tenant.Role;
 import org.speech4j.tenantservice.entity.tenant.User;
+import org.speech4j.tenantservice.exception.DuplicateEntityException;
 import org.speech4j.tenantservice.exception.UserNotFoundException;
 import org.speech4j.tenantservice.repository.tenant.UserRepository;
 import org.speech4j.tenantservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Service
 @Slf4j
@@ -31,12 +38,17 @@ public class UserServiceImpl implements UserService {
         //Encoding password before saving
         entity.setPassword(encoder.encode(entity.getPassword()));
         //Checking if role is missed
-        if (entity.getRole() == null) {
+        if (isNull(entity.getRole())) {
             entity.setRole(Role.ADMIN);
         }
-         User user = repository.save(entity);
-         log.debug("USER-SERVICE: User with [ id: {}] was successfully created!", entity.getId());
-         return user;
+        User createdUser = null;
+        try {
+            createdUser = repository.save(entity);
+            log.debug("USER-SERVICE: User with [ email: {}] was successfully created!", entity.getEmail());
+        }catch (DataIntegrityViolationException e){
+            throw new DuplicateEntityException("User with a specified email already exists!");
+        }
+         return createdUser;
     }
 
     @Override

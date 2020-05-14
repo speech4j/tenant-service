@@ -9,7 +9,6 @@ import org.speech4j.tenantservice.dto.handler.ResponseMessageDto;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
-import org.speech4j.tenantservice.dto.response.TenantDtoResp;
 import org.speech4j.tenantservice.entity.tenant.ApiName;
 import org.speech4j.tenantservice.fixture.DataFixture;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,11 +80,12 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     @Test
     public void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
-        ResponseEntity<TenantDtoResp> response
-                = template.exchange("/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0], HttpMethod.GET, request, TenantDtoResp.class);
+        ResponseEntity<ConfigDtoResp> response
+                = template.exchange("/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0], HttpMethod.GET, request, ConfigDtoResp.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
+        assertThat(configsList.get(0)).isEqualToIgnoringGivenFields(response.getBody(), "id");
         assertThat(response.getBody()).isNotNull();
     }
 

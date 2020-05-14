@@ -16,6 +16,8 @@ import org.speech4j.tenantservice.mapper.json.JSONObjectConverter;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -42,8 +44,9 @@ public class Config implements Serializable {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String  id;
+    @Enumerated(EnumType.STRING)
     @Column(name = "apiname")
-    private String apiName;
+    private ApiName apiName;
     @Column(name = "tenantid")
     private String tenantId;
     @NonNull

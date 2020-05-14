@@ -6,8 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.speech4j.tenantservice.entity.tenant.ApiName;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Getter
@@ -17,7 +18,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConfigDtoReq {
-    @NotBlank(message = "{field.not.empty}")
-    private String apiName;
+    @NotNull(message = "{field.not.empty}")
+    private ApiName apiName;
     private Map<String, Object> credentials;
 }

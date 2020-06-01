@@ -42,10 +42,10 @@ public class UserServiceImpl implements UserService {
         try {
             createdUser = repository.save(entity);
             log.debug("USER-SERVICE: User with [ email: {}] was successfully created!", entity.getEmail());
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntityException("User with a specified email already exists!");
         }
-         return createdUser;
+        return createdUser;
     }
 
     @Override
@@ -70,21 +70,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(String id) {
-        User user = findByIdOrThrowException(id);
-        user.setActive(false);
-        repository.save(user);
+        repository.deactivate(id);
         log.debug("USER-SERVICE: User with [ id: {}] was successfully deleted!", id);
     }
 
     @Override
     public List<User> findAllById(String id) {
-        List<User> list = repository.findAllByTenantId(id).stream().filter(User::isActive).collect(Collectors.toList());
-        if (!list.isEmpty()){
-            log.debug("USER-SERVICE: Users with [ tenantId: {}] were successfully found!", id);
-            return list;
-        }else {
+        List<User> list = repository.findAllByTenantId(id).stream()
+                .filter(User::isActive).collect(Collectors.toList());
+        if (list.isEmpty()) {
             throw new UserNotFoundException("User not found!");
         }
+        log.debug("USER-SERVICE: Users with [ tenantId: {}] were successfully found!", id);
+        return list;
     }
 
     private User findByIdOrThrowException(String id) {

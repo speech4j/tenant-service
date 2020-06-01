@@ -1,4 +1,4 @@
-package org.speech4j.tenantservice.dto.handler;
+package org.speech4j.tenantservice.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

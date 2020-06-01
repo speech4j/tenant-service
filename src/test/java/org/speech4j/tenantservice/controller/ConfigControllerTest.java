@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.speech4j.tenantservice.AbstractContainerBaseTest;
 import org.speech4j.tenantservice.TenantServiceApplication;
-import org.speech4j.tenantservice.dto.handler.ResponseMessageDto;
+import org.speech4j.tenantservice.dto.response.ResponseMessageDto;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;

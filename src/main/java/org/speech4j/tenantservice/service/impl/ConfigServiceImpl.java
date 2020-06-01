@@ -22,9 +22,9 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Config create(Config entity) {
-            Config config = repository.save(entity);
-            log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully created!", entity.getId());
-            return config;
+        Config config = repository.save(entity);
+        log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully created!", entity.getId());
+        return config;
     }
 
     @Override
@@ -36,7 +36,6 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Config update(Config entity, String id) {
-        findByIdOrThrowException(id);
         Config config = repository.save(entity);
         log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully updated!", id);
         return config;
@@ -44,7 +43,6 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void deleteById(String id) {
-        findByIdOrThrowException(id);
         repository.deleteById(id);
         log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully deleted!", id);
     }
@@ -52,12 +50,11 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public List<Config> findAllById(String id) {
         List<Config> list = repository.findAllByTenantId(id);
-        if (!list.isEmpty()){
-            log.debug("CONFIG-SERVICE: Configs with [ tenantId: {}] were successfully found!", id);
-            return list;
-        }else {
+        if (list.isEmpty()){
             throw new ConfigNotFoundException("Config not found!");
         }
+        log.debug("CONFIG-SERVICE: Configs with [ tenantId: {}] were successfully found!", id);
+        return list;
     }
 
     private Config findByIdOrThrowException(String id) {

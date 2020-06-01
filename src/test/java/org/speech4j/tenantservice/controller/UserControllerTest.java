@@ -2,14 +2,13 @@ package org.speech4j.tenantservice.controller;
 
 import org.speech4j.tenantservice.AbstractContainerBaseTest;
 import org.speech4j.tenantservice.TenantServiceApplication;
-import org.speech4j.tenantservice.dto.handler.ResponseMessageDto;
+import org.speech4j.tenantservice.dto.response.ResponseMessageDto;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
 import org.speech4j.tenantservice.dto.response.UserDtoResp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.speech4j.tenantservice.entity.tenant.User;
 import org.speech4j.tenantservice.fixture.DataFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

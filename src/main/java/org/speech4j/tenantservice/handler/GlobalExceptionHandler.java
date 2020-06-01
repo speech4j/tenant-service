@@ -1,7 +1,7 @@
 package org.speech4j.tenantservice.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.speech4j.tenantservice.dto.handler.ResponseMessageDto;
+import org.speech4j.tenantservice.dto.response.ResponseMessageDto;
 import org.speech4j.tenantservice.exception.DuplicateEntityException;
 import org.speech4j.tenantservice.exception.EntityNotFoundException;
 import org.speech4j.tenantservice.exception.InternalServerException;

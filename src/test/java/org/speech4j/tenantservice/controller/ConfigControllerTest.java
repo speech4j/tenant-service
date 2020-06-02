@@ -78,7 +78,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findByIdTest_successFlow() {
+    void findByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ConfigDtoResp> response
                 = template.exchange("/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0], HttpMethod.GET, request, ConfigDtoResp.class);
@@ -90,7 +90,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findByIdTest__unsuccessFlow() {
+    void findByIdTest__unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
                 = template.exchange("/tenants/" + testTenantIds[0] + "/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
@@ -100,7 +100,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findByIdTestDifferentTenantId_unsuccessFlow() {
+    void findByIdTestDifferentTenantId_unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
                 = template.exchange("/tenants/" + testTenantIds[1] + "/configs/" + testConfigIds[0], HttpMethod.GET, request, ResponseMessageDto.class);
@@ -110,7 +110,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createConfigTest_successFlow() {
+    void createConfigTest_successFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/configs";
 
         ResponseEntity<ConfigDtoResp> response =
@@ -122,7 +122,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createConfigTest_unsuccessFlow() {
+    void createConfigTest_unsuccessFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/configs";
 
         //Make entity null
@@ -136,7 +136,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateConfigTest_successFlow() {
+    void updateConfigTest_successFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0];
 
         testConfig.setApiName(ApiName.HEROKU);
@@ -152,7 +152,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateConfigTest_unsuccessFlow() {
+    void updateConfigTest_unsuccessFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0;
 
         testConfig.setApiName(ApiName.HEROKU);
@@ -166,7 +166,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteConfig_successFlow() {
+    void deleteConfig_successFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0];
 
         request = new HttpEntity<>(headers);
@@ -179,7 +179,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteConfig_unsuccessFlow() {
+    void deleteConfig_unsuccessFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0;
 
         request = new HttpEntity<>(headers);
@@ -191,7 +191,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllConfigsTest_successFlow() {
+    void findAllConfigsTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<List<ConfigDtoResp>> response = template.exchange("/tenants/" + testTenantIds[0] + "/configs",
                 HttpMethod.GET, request, new ParameterizedTypeReference<List<ConfigDtoResp>>(){});
@@ -202,7 +202,7 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllConfigsTestByTenantId_unsuccessFlow() {
+    void findAllConfigsTestByTenantId_unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response = template.exchange("/tenants/" + 0 + "/configs", HttpMethod.GET, request, ResponseMessageDto.class);
         System.out.println(response);

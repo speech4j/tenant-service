@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(classes = TenantServiceApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerTest extends AbstractContainerBaseTest {
+class UserControllerTest extends AbstractContainerBaseTest {
     @Autowired
     private TestRestTemplate template;
     @Autowired
@@ -74,7 +74,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findUserByIdTest_successFlow() {
+    void findUserByIdTest_successFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<UserDtoResp> response
                 = template.exchange("/tenants/" + testTenantIds[0] + "/users/" + testUserIds[0], HttpMethod.GET, request, UserDtoResp.class);
@@ -85,7 +85,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findUserByIdTest_unsuccessFlow() {
+    void findUserByIdTest_unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
                 = template.exchange("/tenants/" + testTenantIds[0] + "/users/" + 0, HttpMethod.GET, request, ResponseMessageDto.class);
@@ -95,7 +95,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findUserByIdTestDifferentTenantId_unsuccessFlow() {
+    void findUserByIdTestDifferentTenantId_unsuccessFlow() {
         request = new HttpEntity<>(headers);
         ResponseEntity<ResponseMessageDto> response
                 = template.exchange("/tenants/" + testTenantIds[1] + "/users/" + testUserIds[0], HttpMethod.GET, request, ResponseMessageDto.class);
@@ -105,7 +105,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createUserTest_successFlow() {
+    void createUserTest_successFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         ResponseEntity<UserDtoResp> response =
@@ -117,7 +117,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createUserTestWithOptionalField_successFlow() {
+    void createUserTestWithOptionalField_successFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         testUser.setRole(null);
@@ -130,7 +130,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createUserTest_unsuccessFlow() {
+    void createUserTest_unsuccessFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         //Make entity null
@@ -144,7 +144,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createUserTestWithWrongEmail_unsuccessFlow() {
+    void createUserTestWithWrongEmail_unsuccessFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         testUser.setEmail("wrong-email");
@@ -159,7 +159,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createUserTestWithMissedRequiredField_unsuccessFlow() {
+    void createUserTestWithMissedRequiredField_unsuccessFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         testUser.setFirstName(null);
@@ -174,7 +174,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void createUserTestWithDuplicateEmail_unsuccessFlow() {
+    void createUserTestWithDuplicateEmail_unsuccessFlow() {
         final String url = "/tenants/" + testTenantIds[0] + "/users/";
 
         testUser.setEmail("email1@gmail.com");
@@ -189,7 +189,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateUserTest_successFlow() {
+    void updateUserTest_successFlow() {
         final String url = "/tenants/"+testTenantIds[0]+"/users/" + testUserIds[0];
 
         UserDtoReq user = usersList.get(0);
@@ -207,7 +207,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void updateUserTest_unsuccessFlow() {
+    void updateUserTest_unsuccessFlow() {
         final String url = "/tenants/"+testTenantIds[0]+"/users/" + 0;
 
         UserDtoReq user = usersList.get(0);
@@ -222,7 +222,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteUser_successFlow() {
+    void deleteUser_successFlow() {
         final String url = "/tenants/"+testTenantIds[0]+"/users/" + testUserIds[0];
 
         request = new HttpEntity<>(headers);
@@ -235,7 +235,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void deleteUser_unsuccessFlow() {
+    void deleteUser_unsuccessFlow() {
         final String url = "/tenants/"+testTenantIds[0]+"/users/" + 0;
 
         request = new HttpEntity<>(headers);
@@ -247,7 +247,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllUsersTestByTenantId_successFlow() {
+    void findAllUsersTestByTenantId_successFlow() {
         ResponseEntity<List<UserDtoResp>> response =
                 template.exchange("/tenants/" + testTenantIds[0] + "/users",
                         HttpMethod.GET, null , new ParameterizedTypeReference<List<UserDtoResp>>(){});
@@ -258,7 +258,7 @@ public class UserControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void findAllUsersTestByTenantId_unsuccessFlow() {
+    void findAllUsersTestByTenantId_unsuccessFlow() {
         ResponseEntity<ResponseMessageDto> response = template.exchange("/tenants/" + 0 + "/users", HttpMethod.GET, null, ResponseMessageDto.class);
 
         //Checking if status code is correct

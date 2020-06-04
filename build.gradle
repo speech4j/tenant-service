@@ -90,20 +90,17 @@ Properties properties = new Properties()
 Properties metadata = new Properties()
 metadata.load(new FileInputStream("src/main/resources/liquibase-metadata.properties"))
 properties = metadata
-
 Properties tenant = new Properties()
 tenant.load(new FileInputStream("src/main/resources/liquibase-tenant.properties"))
 
 if(project.hasProperty('schemaType')){
 	def requiredSchemaType = 'tenant'
 	def inputSchemaType = project.property('schemaType')
-
 	//Checking of an input schema type
 	properties = requiredSchemaType.equals(inputSchemaType) ? tenant : properties
 }
-
 def changeLogFilePath = properties.getProperty('changeLogFile')
-int fileCounter = new File(changeLogFilePath).list().length + 1
+def fileCounter = new File(changeLogFilePath).list().length + 1
 def getFileVersion = { number ->
 	def count = 0
 	while(number > 1){
@@ -119,11 +116,13 @@ liquibase {
 	activities {
 		main {
 			changeLogFile diffLog
-			referenceUrl properties.getProperty('referenceUrl')  //hibernate entities
-			url properties.getProperty('url')                    //current db schema
-			username properties.getProperty('username')
-			password properties.getProperty('password')
-			referenceDriver properties.getProperty('referenceDriver')
+			//hibernate entities
+			referenceUrl properties.getProperty('referenceUrl')
+			//current db schema
+			url 'jdbc:postgresql://' + System.getenv('DB_HOST') + ':' + System.getenv('DB_PORT') + '/' + System.getenv('DB_NAME') +'?currentSchema=' + properties.getProperty('schema')
+			username System.getenv('DB_USERNAME')
+			password System.getenv('DB_PASSWORD')
+			referenceDriver 'liquibase.ext.hibernate.database.connection.HibernateDriver'
 			excludeObjects 'table:content_contents,content_tags,content_content_tag'
 		}
 	}

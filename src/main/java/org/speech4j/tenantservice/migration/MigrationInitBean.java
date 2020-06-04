@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 @Slf4j
 public class MigrationInitBean {
-
     private InitService initService;
     private MetadataService metadataService;
     private SourceService sourceService;

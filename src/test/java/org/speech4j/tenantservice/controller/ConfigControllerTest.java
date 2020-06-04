@@ -1,16 +1,15 @@
 package org.speech4j.tenantservice.controller;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.speech4j.tenantservice.AbstractContainerBaseTest;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.speech4j.tenantservice.AbstractContainer;
 import org.speech4j.tenantservice.TenantServiceApplication;
-import org.speech4j.tenantservice.dto.response.ResponseMessageDto;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
-import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
+import org.speech4j.tenantservice.dto.response.ResponseMessageDto;
 import org.speech4j.tenantservice.entity.tenant.ApiName;
-import org.speech4j.tenantservice.fixture.DataFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,146 +17,124 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.speech4j.tenantservice.fixture.DataFixture.getListOfConfigs;
 
+@Slf4j
 @SpringBootTest(classes = TenantServiceApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ConfigControllerTest extends AbstractContainerBaseTest {
+class ConfigControllerTest extends AbstractContainer {
     @Autowired
     private TestRestTemplate template;
-    @Autowired
-    private CleanService cleanService;
-
-    private HttpHeaders headers;
+    private HttpHeaders headers = new HttpHeaders();
     private HttpEntity<ConfigDtoReq> request;
-    private ConfigDtoReq testConfig;
-
     private final String exceptionMessage = "Config not found!";
-    private String []testConfigIds = new String[2];
-    private String []testTenantIds;
-    private List<ConfigDtoReq> configsList;
-    private List<TenantDtoCreateReq> tenantsList;
 
-    @BeforeEach
-    void setUp() throws URISyntaxException {
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        //Initializing of test config
-        testConfig = new ConfigDtoReq();
-        testConfig.setApiName(ApiName.AZURE);
-        Map<String,Object> credentials = new HashMap<>();
-        credentials.put("username", "mslob");
-        credentials.put("password", "qwerty123");
-        testConfig.setCredentials(credentials);
-
-        request = new HttpEntity<>(testConfig, headers);
-
-        //Populating of db
-        tenantsList = DataFixture.getListOfTenants();
-        testTenantIds = new TenantControllerTest().populateDB(template, headers, tenantsList);
-        configsList = DataFixture.getListOfConfigs();
-        populateDB(configsList);
-    }
-
-    @AfterEach
-    void cleanUp() throws SQLException {
-        cleanService.cleanUp("metadata.tenants");
-        cleanService.cleanUp("name1.tenant_configs");
-    }
-
-    @Test
-    void findByIdTest_successFlow() {
-        request = new HttpEntity<>(headers);
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void findByIdTest_successFlow(
+            Map<String, Map<String, Object>> data
+    ){
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs/" + data.get("configIds").get("real-1");
         ResponseEntity<ConfigDtoResp> response
-                = template.exchange("/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0], HttpMethod.GET, request, ConfigDtoResp.class);
+                = template.exchange(url, HttpMethod.GET, null, ConfigDtoResp.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
-        assertThat(configsList.get(0)).isEqualToIgnoringGivenFields(response.getBody(), "id");
-        assertThat(response.getBody()).isNotNull();
+        assertThat(data.get("dtos").get("response")).isEqualToIgnoringGivenFields(response.getBody(), "tenantId", "credentials");
     }
 
-    @Test
-    void findByIdTest__unsuccessFlow() {
-        request = new HttpEntity<>(headers);
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void findByIdTest_unsuccessFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs/" + data.get("configIds").get("fake");
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange("/tenants/" + testTenantIds[0] + "/configs/0", HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange(url, HttpMethod.GET, null, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
-    @Test
-    void findByIdTestDifferentTenantId_unsuccessFlow() {
-        request = new HttpEntity<>(headers);
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void findByIdTestDifferentTenantId_unsuccessFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-2") + "/configs/" + data.get("configIds").get("real-1");
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange("/tenants/" + testTenantIds[1] + "/configs/" + testConfigIds[0], HttpMethod.GET, request, ResponseMessageDto.class);
+                = template.exchange(url, HttpMethod.GET, null, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
-    @Test
-    void createConfigTest_successFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs";
-
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void createConfigTest_successFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs";
+        ConfigDtoReq requestDto = (ConfigDtoReq) data.get("dtos").get("request");
+        request = new HttpEntity(requestDto, headers);
         ResponseEntity<ConfigDtoResp> response =
                 this.template.exchange(url, HttpMethod.POST, request, ConfigDtoResp.class);
 
         //Verify request succeed
         assertEquals(201, response.getStatusCodeValue());
-        assertThat(response.getBody()).isNotNull();
+        assertThat(requestDto).isEqualToIgnoringGivenFields(response.getBody(), "id", "credentials");
     }
 
-    @Test
-    void createConfigTest_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs";
-
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void createConfigTest_unsuccessFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs";
         //Make entity null
         request = new HttpEntity<>(null, headers);
-
         ResponseEntity<ResponseMessageDto> response =
                 this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
 
         //Verify this exception because of validation null entity can't be accepted by controller
-        assertEquals(400, response.getStatusCodeValue());
+        assertEquals(415, response.getStatusCodeValue());
     }
 
-    @Test
-    void updateConfigTest_successFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0];
-
-        testConfig.setApiName(ApiName.HEROKU);
-        request = new HttpEntity<>(testConfig, headers);
-
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void updateConfigTest_successFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs/" + data.get("configIds").get("real-1");
+        ConfigDtoReq requestDto = (ConfigDtoReq) data.get("dtos").get("request");
+        requestDto.setApiName(ApiName.HEROKU);
+        request = new HttpEntity(requestDto, headers);
         ResponseEntity<ConfigDtoReq> response =
                 this.template.exchange(url, HttpMethod.PUT, request, ConfigDtoReq.class);
 
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(testConfig, response.getBody());
-        assertThat(response.getBody()).isNotNull();
+        assertEquals(requestDto, response.getBody());
     }
 
-    @Test
-    void updateConfigTest_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0;
-
-        testConfig.setApiName(ApiName.HEROKU);
-        request = new HttpEntity<>(testConfig, headers);
-
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void updateConfigTest_unsuccessFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs/" + data.get("configIds").get("fake");
+        ConfigDtoReq requestDto = (ConfigDtoReq) data.get("dtos").get("request");
+        requestDto.setApiName(ApiName.HEROKU);
+        request = new HttpEntity(requestDto, headers);
         ResponseEntity<ResponseMessageDto> response =
                 this.template.exchange(url, HttpMethod.PUT, request, ResponseMessageDto.class);
 
@@ -165,35 +142,39 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         checkEntityNotFoundException(response);
     }
 
-    @Test
-    void deleteConfig_successFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + testConfigIds[0];
-
-        request = new HttpEntity<>(headers);
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void deleteConfig_successFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs/" + data.get("configIds").get("real-2");
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
+                = template.exchange(url, HttpMethod.DELETE, null, ResponseMessageDto.class);
 
         //Checking if entity was deleted
         assertEquals(204, response.getStatusCodeValue());
-
     }
 
-    @Test
-    void deleteConfig_unsuccessFlow() {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs/" + 0;
-
-        request = new HttpEntity<>(headers);
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void deleteConfig_unsuccessFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs/" + data.get("configIds").get("fake");
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
+                = template.exchange(url, HttpMethod.DELETE, null, ResponseMessageDto.class);
 
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
-    @Test
-    void findAllConfigsTest_successFlow() {
-        request = new HttpEntity<>(headers);
-        ResponseEntity<List<ConfigDtoResp>> response = template.exchange("/tenants/" + testTenantIds[0] + "/configs",
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void findAllConfigsTest_successFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/configs";
+        ResponseEntity<List<ConfigDtoResp>> response = template.exchange(url,
                 HttpMethod.GET, request, new ParameterizedTypeReference<List<ConfigDtoResp>>(){});
 
         //Checking if status code is correct
@@ -201,11 +182,13 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         assertEquals(2, response.getBody().size());
     }
 
-    @Test
-    void findAllConfigsTestByTenantId_unsuccessFlow() {
-        request = new HttpEntity<>(headers);
-        ResponseEntity<ResponseMessageDto> response = template.exchange("/tenants/" + 0 + "/configs", HttpMethod.GET, request, ResponseMessageDto.class);
-        System.out.println(response);
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void findAllConfigsTestByTenantId_unsuccessFlow(
+            Map<String, Map<String, Object>> data
+    ) {
+        final String url = "/tenants/" + data.get("tenantIds").get("fake") + "/configs";
+        ResponseEntity<ResponseMessageDto> response = template.exchange(url, HttpMethod.GET, request, ResponseMessageDto.class);
 
         //Checking if status code is correct
         assertEquals(404, response.getStatusCodeValue());
@@ -217,14 +200,34 @@ class ConfigControllerTest extends AbstractContainerBaseTest {
         assertEquals(exceptionMessage, response.getBody().getMessage());
     }
 
-    private void populateDB(List<ConfigDtoReq> list) throws URISyntaxException {
-        final String url = "/tenants/" + testTenantIds[0] + "/configs/";
-        URI uri = new URI(url);
+    private static Stream<Arguments> provideTestData() {
+        Map<String,Object> credentials = new HashMap<>();
+        credentials.put("username", "mslob");
+        credentials.put("password", "qwerty123");
+        //entity1
+        ConfigDtoReq request = new ConfigDtoReq();
+        request.setApiName(ApiName.GOOGLE);
+        request.setCredentials(credentials);
 
-        ResponseEntity<ConfigDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(list.get(0), headers), ConfigDtoResp.class);
-        ResponseEntity<ConfigDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(list.get(1), headers), ConfigDtoResp.class);
+        Map<String, Object> dtos = new HashMap<>();
+        dtos.put("request", request);
+        dtos.put("response",getListOfConfigs().get(0));
+        dtos.put("null", null);
+        Map<String, Object> tenantIds = new HashMap();
+        tenantIds.put("real-1", "test_tenant_1");
+        tenantIds.put("real-2", "test_tenant_2");
+        tenantIds.put("fake", "0");
+        Map<String, Object> configIds = new HashMap();
+        configIds.put("real-1", "1");
+        configIds.put("real-2", "2");
+        configIds.put("fake", "0");
 
-        testConfigIds[0] = response1.getBody().getId();
-        testConfigIds[1] = response2.getBody().getId();
+        Map<String, Map<String, Object>> data = new HashMap<>();
+        data.put("tenantIds", tenantIds);
+        data.put("configIds", configIds);
+        data.put("dtos", dtos);
+        return Stream.of(
+                Arguments.of(data)
+        );
     }
 }

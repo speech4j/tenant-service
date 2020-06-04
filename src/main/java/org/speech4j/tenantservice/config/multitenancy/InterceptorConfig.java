@@ -9,12 +9,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
     private HandlerInterceptor tenantInterceptor;
-
     @Autowired
     public InterceptorConfig(HandlerInterceptor tenantInterceptor) {
         this.tenantInterceptor = tenantInterceptor;
     }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tenantInterceptor)

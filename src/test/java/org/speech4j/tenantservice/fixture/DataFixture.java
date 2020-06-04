@@ -1,11 +1,13 @@
 package org.speech4j.tenantservice.fixture;
 
-import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
+import org.json.JSONObject;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.request.UserDtoReq;
 import org.speech4j.tenantservice.entity.tenant.ApiName;
+import org.speech4j.tenantservice.entity.tenant.Config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,65 +15,53 @@ import java.util.Map;
 public class DataFixture {
 
     public static List<TenantDtoCreateReq> getListOfTenants(){
-        List<TenantDtoCreateReq> list = new ArrayList<>();
-
         //entity1
         TenantDtoCreateReq tenant1 = new TenantDtoCreateReq();
-        tenant1.setName("name1");
-        tenant1.setDescription("Company1");
-        list.add(tenant1);
-
+        tenant1.setName("test_tenant_1");
+        tenant1.setDescription("Company-1");
         //entity2
         TenantDtoCreateReq tenant2 = new TenantDtoCreateReq();
-        tenant2.setName("name2");
-        tenant2.setDescription("Company2");
-        list.add(tenant2);
-
-        return list;
+        tenant2.setName("test_tenant_2");
+        tenant2.setDescription("Company-2");
+        return Arrays.asList(tenant1, tenant2);
     }
 
     public static List<UserDtoReq> getListOfUsers(){
-        List<UserDtoReq> list = new ArrayList<>();
-
         //entity1
         UserDtoReq user1 = new UserDtoReq();
         user1.setFirstName("Name1");
         user1.setLastName("Surname1");
         user1.setEmail("email1@gmail.com");
-        user1.setPassword("qwertY123");
-        list.add(user1);
-
+        user1.setPassword("Qwerty123");
         //entity2
         UserDtoReq user2 = new UserDtoReq();
         user2.setFirstName("Name2");
         user2.setLastName("Surname2");
         user2.setEmail("email2@gmail.com");
-        user2.setPassword("qwertY123");
-        list.add(user2);
-
-        return list;
+        user2.setPassword("Qwerty123");
+        return Arrays.asList(user1, user2);
     }
 
 
-    public static List<ConfigDtoReq> getListOfConfigs(){
-        List<ConfigDtoReq> list = new ArrayList<>();
+    public static List<Config> getListOfConfigs(){
         Map<String,Object> credentials = new HashMap<>();
         credentials.put("username", "mslob");
         credentials.put("password", "qwerty123");
 
         //entity1
-        ConfigDtoReq config1 = new ConfigDtoReq();
+        Config config1 = new Config();
+        config1.setId("1");
+        config1.setTenantId("test_tenant_1");
         config1.setApiName(ApiName.GOOGLE);
-        config1.setCredentials(credentials);
-        list.add(config1);
-
+        config1.setCredentials(new JSONObject(credentials));
         //entity2
-        ConfigDtoReq config2 = new ConfigDtoReq();
+        Config config2 = new Config();
+        config2.setId("2");
+        config2.setTenantId("test_tenant_2");
         config2.setApiName(ApiName.AWS);
-        config2.setCredentials(credentials);
-        list.add(config2);
+        config2.setCredentials(new JSONObject(credentials));
 
-        return list;
+        return Arrays.asList(config1,config2);
     }
 
 }

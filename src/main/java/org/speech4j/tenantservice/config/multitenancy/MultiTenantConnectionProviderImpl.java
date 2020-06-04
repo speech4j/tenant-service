@@ -41,11 +41,8 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         final Connection connection = getAnyConnection();
         try {
-            if (
-                    tenantIdentifier != null
-                            //Checking if specified tenant is in database even if this tenant will be created at runtime
-                            && metadataService.getAllTenantIdentifiers().contains(tenantIdentifier)
-            ) {
+            //Checking if specified tenant is in database even if this tenant will be created at runtime
+            if (metadataService.getAllTenantIdentifiers().contains(tenantIdentifier)) {
                 connection.setSchema(tenantIdentifier);
                 log.debug("DATABASE: Schema with id [{}] was successfully set as default!", tenantIdentifier);
             } else {
@@ -54,7 +51,6 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
         } catch (SQLException e) {
             throw new InternalServerException("Error during the switching to schema: [ " + tenantIdentifier + "]");
         }
-
         return connection;
     }
 

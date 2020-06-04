@@ -47,7 +47,7 @@ public class ConfigController{
             summary = "Create config",
             responses = {
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
-    public ConfigDtoResp save(
+    public ConfigDtoResp create(
             @Parameter(description = "Config object that needs to be added to db", required = true)
             @Validated @RequestBody ConfigDtoReq dto,
             @Parameter(description = "Tenant id for saving", required = true)

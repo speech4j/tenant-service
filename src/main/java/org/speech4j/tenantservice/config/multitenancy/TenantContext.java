@@ -1,18 +1,14 @@
 package org.speech4j.tenantservice.config.multitenancy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TenantContext {
-
     private TenantContext(){}
-
-    private static Logger logger = LoggerFactory.getLogger(TenantContext.class.getName());
-
     private static ThreadLocal<String> currentTenant = new ThreadLocal<>();
 
     public static void setCurrentTenant(String tenant) {
-        logger.debug("Setting tenant to {}", tenant);
+        log.debug("Setting tenant to {}", tenant);
         currentTenant.set(tenant);
     }
 

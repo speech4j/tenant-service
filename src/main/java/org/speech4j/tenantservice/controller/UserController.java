@@ -48,7 +48,7 @@ public class UserController{
             summary = "Create user",
             responses = {
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
-    public UserDtoResp save(
+    public UserDtoResp create(
             @Parameter(description = "User object that needs to be added to db", required = true)
             @Validated @RequestBody UserDtoReq dto,
             @Parameter(description = "Tenant id for saving", required = true)

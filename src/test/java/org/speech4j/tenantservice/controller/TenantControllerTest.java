@@ -1,14 +1,14 @@
 package org.speech4j.tenantservice.controller;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.speech4j.tenantservice.AbstractContainerBaseTest;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.speech4j.tenantservice.AbstractContainer;
 import org.speech4j.tenantservice.TenantServiceApplication;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.response.ResponseMessageDto;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
-import org.speech4j.tenantservice.fixture.DataFixture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -16,178 +16,159 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.speech4j.tenantservice.fixture.DataFixture.getListOfTenants;
 
 @SpringBootTest(classes = TenantServiceApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class TenantControllerTest extends AbstractContainerBaseTest {
+class TenantControllerTest extends AbstractContainer {
     @Autowired
     private TestRestTemplate template;
-    @Autowired
-    private CleanService cleanService;
-
-    private HttpHeaders headers;
+    private static HttpHeaders headers = new HttpHeaders();
     private HttpEntity<TenantDtoCreateReq> request;
-    private TenantDtoCreateReq testTenant;
-
     private final String exceptionMessage = "Tenant not found!";
-    private String testId;
-    private List<TenantDtoCreateReq> tenantsList;
 
-    @BeforeEach
-    void setUp() throws URISyntaxException {
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        //Initializing of test tenant
-        testTenant = new TenantDtoCreateReq();
-        testTenant.setName("soft_serve");
-        testTenant.setDescription("Company");
-
-        request = new HttpEntity<>(testTenant, headers);
-
-        //Populating of db
-        tenantsList = DataFixture.getListOfTenants();
-        testId = populateDB(template, headers, tenantsList)[0];
-    }
-
-    @AfterEach
-    void cleanUp() throws SQLException {
-        cleanService.cleanUp("metadata.tenants");
-    }
-
-    @Test
-    void findTenantByIdTest_successFlow() {
-        request = new HttpEntity<>(headers);
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void findTenantByIdTest_successFlow(
+            Map<String, Object> dtos,
+            Map<String, String> tenantIds
+    ) {
+        final String url = "/tenants/" + tenantIds.get("real-1");
         ResponseEntity<TenantDtoResp> response
-                = template.exchange("/tenants/" + testId, HttpMethod.GET, request, TenantDtoResp.class);
-
+                = template.exchange(url, HttpMethod.GET, null, TenantDtoResp.class);
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
+        assertThat(dtos.get("response")).isEqualToIgnoringGivenFields(response.getBody(),
+                "id", "createdDate", "modifiedDate", "name");
         assertThat(response.getBody()).isNotNull();
     }
 
-    @Test
-    void findTenantByIdTest__unsuccessFlow() {
-        request = new HttpEntity<>(headers);
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void findTenantByIdTest_unsuccessFlow(
+            Map<String, String> tenantIds
+    ) {
+        final String url = "/tenants/" + tenantIds.get("fake");
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange("/tenants/0", HttpMethod.GET, request, ResponseMessageDto.class);
-
+                = template.exchange(url, HttpMethod.GET, null, ResponseMessageDto.class);
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
-    @Test
-    void createTenantTest_successFlow() {
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void createTenantTest_successFlow(
+            Map<String, Object> dtos
+    ) {
         final String url = "/tenants";
-
+        TenantDtoCreateReq requestDto = (TenantDtoCreateReq) dtos.get("request");
+        requestDto.setName("new_name");
+        request = new HttpEntity(requestDto, headers);
         ResponseEntity<TenantDtoResp> response =
                 this.template.exchange(url, HttpMethod.POST, request, TenantDtoResp.class);
-
         //Verify request succeed
         assertEquals(201, response.getStatusCodeValue());
-        assertThat(response.getBody()).isNotNull();
+        assertThat(requestDto).isEqualToIgnoringGivenFields(response.getBody(),
+                "id", "createdDate", "modifiedDate", "name");
     }
 
-    @Test
-    void createTenantTest_unsuccessFlow() {
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void createTenantTest_unsuccessFlow(
+            Map<String, Object> dtos
+    ) {
         final String url = "/tenants";
-
-        //Make entity null
-        request = new HttpEntity<>(null, headers);
-
+        request = new HttpEntity(dtos.get("null"), headers);
         ResponseEntity<ResponseMessageDto> response =
                 this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
-
         //Verify this exception because of validation null entity can't be accepted by controller
-        assertEquals(400, response.getStatusCodeValue());
+        assertEquals(415, response.getStatusCodeValue());
     }
 
-    @Test
-    void createTenantTestWithMissedRequiredField_unsuccessFlow() {
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void createTenantTestWithMissedRequiredField_unsuccessFlow(
+            Map<String, Object> dtos
+    ) {
         final String url = "/tenants";
-
-        testTenant.setName(null);
-        request = new HttpEntity<>(testTenant, headers);
+        TenantDtoCreateReq requestDto = (TenantDtoCreateReq) dtos.get("request");
+        requestDto.setDescription(null);
+        request = new HttpEntity<>(requestDto, headers);
 
         ResponseEntity<ResponseMessageDto> response =
                 this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
-
         //Verify this exception because of validation missed field
         assertEquals(400, response.getStatusCodeValue());
         assertEquals("Validation failed for object='tenantDtoCreateReq'. Error count: 1", response.getBody().getMessage());
     }
 
-    @Test
-    void updateTenantTest_successFlow() {
-        final String url = "/tenants/" + testId;
-
-        testTenant.setDescription("New Company");
-        request = new HttpEntity<>(testTenant, headers);
-
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void updateTenantTest_successFlow(
+            Map<String, Object> dtos,
+            Map<String, String> tenantIds
+    ) {
+        final String url = "/tenants/" + tenantIds.get("real-2");
+        TenantDtoCreateReq requestDto = (TenantDtoCreateReq) dtos.get("request");
+        requestDto.setDescription("New Company");
+        request = new HttpEntity<>(requestDto, headers);
         ResponseEntity<TenantDtoResp> response =
                 this.template.exchange(url, HttpMethod.PUT, request, TenantDtoResp.class);
-
         //Verify request succeed
         assertEquals(200, response.getStatusCodeValue());
-        assertThat(testTenant).isEqualToIgnoringGivenFields(response.getBody(), "createdDate", "modifiedDate", "name");
+        assertThat(requestDto).isEqualToIgnoringGivenFields(response.getBody(), "createdDate", "modifiedDate", "name");
         assertThat(response.getBody()).isNotNull();
     }
 
-    @Test
-    void updateTenantTest_unsuccessFlow() {
-        final String url = "/tenants/" + 0;
-
-        testTenant.setName("New Company");
-        request = new HttpEntity<>(testTenant, headers);
-
+    @ParameterizedTest
+    @MethodSource("provideTestData")
+    void updateTenantTest_unsuccessFlow(
+            Map<String, Object> dtos,
+            Map<String, String> tenantIds
+    ) {
+        final String url = "/tenants/" + tenantIds.get("fake");
+        TenantDtoCreateReq requestDto = (TenantDtoCreateReq) dtos.get("request");
+        requestDto.setDescription("New Company");
+        request = new HttpEntity<>(requestDto, headers);
         ResponseEntity<ResponseMessageDto> response =
                 this.template.exchange(url, HttpMethod.PUT, request, ResponseMessageDto.class);
-
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
     @Test
     void deleteTenant_successFlow() {
-        final String url = "/tenants/" + testId;
-
-        request = new HttpEntity<>(headers);
+        final String url = "/tenants/test_tenant_3";
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
-
+                = template.exchange(url, HttpMethod.DELETE, null, ResponseMessageDto.class);
         //Checking if entity was deleted
         assertEquals(204, response.getStatusCodeValue());
     }
 
     @Test
     void deleteTenant_unsuccessFlow() {
-        final String url = "/tenants/" + 0;
-
-        request = new HttpEntity<>(headers);
+        final String url = "/tenants/0";
         ResponseEntity<ResponseMessageDto> response
-                = template.exchange(url, HttpMethod.DELETE, request, ResponseMessageDto.class);
-
+                = template.exchange(url, HttpMethod.DELETE, null, ResponseMessageDto.class);
         //Verify request not succeed
         checkEntityNotFoundException(response);
     }
 
     @Test
     void findAllTenantsTest() {
-        request = new HttpEntity<>(headers);
+        final String url = "/tenants";
         ResponseEntity<List<TenantDtoResp>> response =
-                template.exchange("/tenants", HttpMethod.GET, request, new ParameterizedTypeReference<List<TenantDtoResp>>() {
-                });
-
+                template.exchange(url, HttpMethod.GET,
+                        null, new ParameterizedTypeReference<List<TenantDtoResp>>(){});
         //Checking if status code is correct
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -197,16 +178,22 @@ class TenantControllerTest extends AbstractContainerBaseTest {
         assertEquals(exceptionMessage, response.getBody().getMessage());
     }
 
-    public String[] populateDB(TestRestTemplate template, HttpHeaders headers, List<TenantDtoCreateReq> list) throws URISyntaxException {
-        final String url = "/tenants";
-        URI uri = new URI(url);
-        String[] idList = new String[2];
+    private static Stream<Arguments> provideTestData(){
+        TenantDtoResp response = new TenantDtoResp();
+        response.setId("test_tenant_1");
+        response.setActive(true);
+        response.setDescription("Company-1");
 
-        ResponseEntity<TenantDtoResp> response1 = template.postForEntity(uri, new HttpEntity<>(list.get(0), headers), TenantDtoResp.class);
-        ResponseEntity<TenantDtoResp> response2 = template.postForEntity(uri, new HttpEntity<>(list.get(1), headers), TenantDtoResp.class);
-        idList[0] = response1.getBody().getId();
-        idList[1] = response2.getBody().getId();
-
-        return idList;
+        Map<String, Object> dtos = new HashMap<>();
+        dtos.put("request", getListOfTenants().get(0));
+        dtos.put("null", null);
+        dtos.put("response", response);
+        Map<String, String> tenantIds = new HashMap();
+        tenantIds.put("real-1", "test_tenant_1");
+        tenantIds.put("real-2", "test_tenant_2");
+        tenantIds.put("fake", "0");
+        return Stream.of(
+                Arguments.of(dtos, tenantIds)
+        );
     }
 }

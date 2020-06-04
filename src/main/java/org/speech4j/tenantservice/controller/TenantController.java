@@ -42,7 +42,7 @@ public class TenantController{
             summary = "Create tenant",
             responses = {
                     @ApiResponse(responseCode = "400", description = "Validation exception")})
-    public TenantDtoResp save(
+    public TenantDtoResp create(
             @Parameter(description = "Tenant object that needs to be added to db", required = true)
             @Validated @RequestBody TenantDtoCreateReq dto) {
         return mapper.toDto(service.create(mapper.toEntity(dto)));

@@ -52,11 +52,9 @@ public class DataSourceConfig {
         dataSourceConfig.setUsername(username);
         dataSourceConfig.setPassword(password);
         dataSourceConfig.setMaximumPoolSize(5);
-
         DataSource dataSource = new HikariDataSource(dataSourceConfig);
         //Initializing of metadata schema
         init(dataSource);
-
         return dataSource;
     }
 }

@@ -5,6 +5,7 @@ plugins {
 	id 'org.springframework.boot' version '2.2.6.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id "org.liquibase.gradle" version "2.0.2"
+	id 'com.google.cloud.tools.jib' version '2.3.0'
 }
 
 group = 'com.speech4j'
@@ -81,11 +82,31 @@ jacocoTestReport {
 		csv.enabled false
 	}
 }
-
 project.tasks["sonarqube"].dependsOn "jacocoTestReport"
 
 
-//===Liquibase configurations===
+jib {
+	from {
+		image = 'openjdk:11'
+	}
+	to {
+		image = "speech4j/${name}"
+		auth {
+			username = System.getenv('DOCKER_ID')
+			password = System.getenv('DOCKER_PASSWORD')
+		}
+	}
+	container {
+		ports = ['8082']
+		volumes = ["/tmp"]
+	}
+}
+tasks.build.dependsOn tasks.jib
+
+
+/*
+*===Liquibase configurations===
+*/
 Properties properties = new Properties()
 Properties metadata = new Properties()
 metadata.load(new FileInputStream("src/main/resources/liquibase-metadata.properties"))

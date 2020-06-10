@@ -99,7 +99,7 @@ jib {
 		}
 	}
 	container {
-		jvmFlags = ['--enable-preview', '-jar']
+		jvmFlags = ['--enable-preview']
 		ports = ['8082']
 		volumes = ["/tmp"]
 	}

@@ -100,7 +100,6 @@ jib {
 	}
 	container {
 		jvmFlags = ['--enable-preview']
-		ports = ['8082']
 		volumes = ["/tmp"]
 	}
 }
@@ -152,10 +151,10 @@ liquibase {
 	}
 }
 
-//tasks.withType(JavaCompile).each {
-//	it.options.compilerArgs.add('--enable-preview')
-//}
-//
-//test {
-//	jvmArgs(['--enable-preview'])
-//}
+tasks.withType(JavaCompile).each {
+	it.options.compilerArgs.add('--enable-preview')
+}
+
+test {
+	jvmArgs(['--enable-preview'])
+}

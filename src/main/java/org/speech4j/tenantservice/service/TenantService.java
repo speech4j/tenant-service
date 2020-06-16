@@ -1,9 +1,9 @@
 package org.speech4j.tenantservice.service;
 
+import org.speech4j.tenantservice.dto.response.TenantDtoResp;
 import org.speech4j.tenantservice.entity.metadata.Tenant;
+import reactor.core.publisher.Flux;
 
-import java.util.List;
-
-public interface TenantService extends EntityService<Tenant>{
-    List<Tenant> findAll();
+public interface TenantService extends EntityService<Tenant, TenantDtoResp>{
+    Flux<TenantDtoResp> getTenants();
 }

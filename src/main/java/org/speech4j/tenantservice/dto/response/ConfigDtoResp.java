@@ -22,4 +22,5 @@ public class ConfigDtoResp {
     private String id;
     private ApiName apiName;
     private Map<String, Object> credentials;
+    private String tenantId;
 }

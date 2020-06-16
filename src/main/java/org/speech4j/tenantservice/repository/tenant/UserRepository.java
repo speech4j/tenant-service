@@ -1,17 +1,13 @@
 package org.speech4j.tenantservice.repository.tenant;
 
 import org.speech4j.tenantservice.entity.tenant.User;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-
-public interface UserRepository extends CrudRepository<User, String> {
-    List<User> findAllByTenantId(String tenantId);
-    @Modifying
-    @Transactional
+public interface UserRepository extends ReactiveCrudRepository<User, String> {
     @Query(value = "update User u set u.active = 'false' where u.id = :id")
-    void deactivate(String id);
+    Mono<Void> deactivate(String id);
+    Flux<User> getAllByTenantId(String tenantId);
 }

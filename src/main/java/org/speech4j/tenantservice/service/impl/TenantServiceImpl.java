@@ -1,79 +1,80 @@
 package org.speech4j.tenantservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.speech4j.tenantservice.dto.response.TenantDtoResp;
 import org.speech4j.tenantservice.entity.metadata.Tenant;
-import org.speech4j.tenantservice.exception.DuplicateEntityException;
 import org.speech4j.tenantservice.exception.TenantNotFoundException;
-import org.speech4j.tenantservice.migration.service.InitService;
+import org.speech4j.tenantservice.mapper.TenantDtoMapper;
 import org.speech4j.tenantservice.repository.metadata.TenantRepository;
 import org.speech4j.tenantservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
 public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
-    private InitService initService;
+    private TenantDtoMapper mapper;
 
     @Autowired
     public TenantServiceImpl(TenantRepository repository,
-                             InitService initService) {
+                             TenantDtoMapper mapper) {
         this.repository = repository;
-        this.initService = initService;
+        this.mapper = mapper;
     }
 
     @Override
-    public Tenant create(Tenant entity) {
-        try {
-            findByIdOrThrowException(entity.getId());
-            throw new DuplicateEntityException("Tenant with a specified id already exists!");
-        }catch (TenantNotFoundException e) {
-            Tenant tenant = repository.save(entity);
-            initService.initSchema(Arrays.asList(tenant.getId()));
-            log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully created!", entity.getId());
-            return tenant;
-        }
+    public Flux<TenantDtoResp> getTenants() {
+        return repository.findAll()
+                .doOnNext(tenant -> log.debug("TENANT-SERVICE: Tenants were successfully found!"))
+                .map(mapper::toDto);
     }
 
     @Override
-    public Tenant findById(String id) {
-        Tenant tenant = findByIdOrThrowException(id);
-        log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully found!", id);
-        return tenant;
+    public Mono<TenantDtoResp> create(Tenant entity, String... ids) {
+        return repository.save(entity)
+                .doOnSuccess(createdTenant -> log.debug("TENANT-SERVICE: Tenant with id:[{}] was successfully created!", createdTenant.getId()))
+                .map(mapper::toDto);
     }
 
     @Override
-    public Tenant update(Tenant entity, String id) {
-        Tenant tenant = findByIdOrThrowException(id);
-        tenant.setDescription(entity.getDescription());
-
-        Tenant updatedTenant =  repository.save(tenant);
-        log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully updated!", id);
-        return updatedTenant;
+    public Mono<TenantDtoResp> getById(String... ids) {
+        return checkIfTenantExistsWithSpecifiedId(ids[0]).map(mapper::toDto);
     }
 
     @Override
-    public void deleteById(String id) {
-        Tenant tenant = findByIdOrThrowException(id);
-        tenant.setActive(false);
-        repository.save(tenant);
-        log.debug("TENANT-SERVICE: Tenant with [ id: {}] was successfully deleted!", id);
+    public Mono<TenantDtoResp> update(Tenant entity, String... ids) {
+        return checkIfTenantExistsWithSpecifiedId(ids[0])
+                .flatMap(existingTenant -> {
+                    existingTenant.setDescription(entity.getDescription());
+                    return repository.save(existingTenant).map(mapper::toDto)
+                            .doOnSuccess(success -> log.debug("TENANT-SERVICE: Tenant with id:[{}] was successfully updated!", ids[0]));
+                });
     }
 
     @Override
-    public List<Tenant> findAll() {
-        List<Tenant> tenats = (List<Tenant>) repository.findAll();
-        log.debug("TENANT-SERVICE: Tenants with was successfully found!");
-        return tenats;
+    public Mono<Void> deleteById(String... ids) {
+        return checkIfTenantExistsWithSpecifiedId(ids[0])
+                .flatMap(existingCoffee ->
+                        repository.delete(existingCoffee).doOnSuccess(existingTenant ->
+                                log.debug("TENANT-SERVICE: Tenant with id:[{}] was successfully deleted!", ids[0]))
+                );
     }
 
-    private Tenant findByIdOrThrowException(String id) {
-        //Checking if tenant is found
-        return repository.findById(id).filter(Tenant::isActive)
-                .orElseThrow(() -> new TenantNotFoundException("Tenant not found!"));
+    private Mono<Tenant> checkIfTenantExistsWithSpecifiedId(String tenantId) {
+        return repository.findById(tenantId)
+                .switchIfEmpty(
+                        Mono.error(new TenantNotFoundException("Tenant by id: [" + tenantId + "] not found!"))
+                )
+                .onErrorResume(err -> {
+                    log.error("TENANT-SERVICE: Tenant by id: [{}] not found!", tenantId);
+                    return Mono.error(err);
+                })
+                .flatMap(existingTenant -> {
+                    log.debug("TENANT-SERVICE: Tenant by id: [{}] was successfully found!", tenantId);
+                    return Mono.just(existingTenant);
+                });
     }
 }

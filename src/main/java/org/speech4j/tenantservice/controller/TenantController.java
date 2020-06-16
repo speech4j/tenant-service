@@ -1,8 +1,5 @@
 package org.speech4j.tenantservice.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.speech4j.tenantservice.dto.request.TenantDtoCreateReq;
 import org.speech4j.tenantservice.dto.request.TenantDtoUpdateReq;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
@@ -21,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/tenants")
@@ -38,66 +35,35 @@ public class TenantController{
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(
-            summary = "Create tenant",
-            responses = {
-                    @ApiResponse(responseCode = "400", description = "Validation exception")})
-    public TenantDtoResp create(
-            @Parameter(description = "Tenant object that needs to be added to db", required = true)
-            @Validated @RequestBody TenantDtoCreateReq dto) {
-        return mapper.toDto(service.create(mapper.toEntity(dto)));
+    public Mono<TenantDtoResp> create(@Validated @RequestBody TenantDtoCreateReq dto) {
+        return service.create(mapper.toEntity(dto));
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(
-            summary = "Get entity by ID",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Tenant is found"),
-                    @ApiResponse(responseCode = "404", description = "Tenant not found")})
-    public TenantDtoResp findById(
-            @Parameter(description = "Tenant id for get", required = true)
-            @PathVariable("id") String id) {
-        return mapper.toDto(service.findById(id));
+    public Mono<TenantDtoResp> findById(@PathVariable String id) {
+        return service.getById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(
-            summary = "Update tenant by ID",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Tenant is updated"),
-                    @ApiResponse(responseCode = "404", description = "Tenant not found"),
-                    @ApiResponse(responseCode = "400", description = "Validation exception")})
-    public TenantDtoResp update(
-            @Parameter(description = "Tenant object that needs to be updated", required = true)
-            @Validated @RequestBody TenantDtoUpdateReq dto,
-            @Parameter(description = "Tenant id for update", required = true)
-            @PathVariable String id) {
+    public Mono<TenantDtoResp> updateTenant(@Validated @RequestBody TenantDtoUpdateReq dto,
+                                            @PathVariable String id) {
         Tenant tenant = Tenant.builder().description(dto.getDescription()).build();
-        return mapper.toDto(service.update(tenant, id));
+        return service.update(tenant, id);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(
-            summary = "Delete tenant by ID",
-            responses = {
-                    @ApiResponse(responseCode = "404", description = "Tenant not found")})
-    public void delete(
-            @Parameter(description = "Tenant id for delete", required = true)
-            @PathVariable("id") String id) {
-        service.deleteById(id);
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Void> deleteTenant(@PathVariable String id) {
+        return service.deleteById(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Operation(
-            summary = "Get all tenants",
-            description = "Get list of tenants",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK")})
-    public List<TenantDtoResp> findAll() {
-        return mapper.toDtoList(service.findAll());
+    public Flux<TenantDtoResp> getAllTenants() {
+       return service.getTenants();
     }
+
+
 }

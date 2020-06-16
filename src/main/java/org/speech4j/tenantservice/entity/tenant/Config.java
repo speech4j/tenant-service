@@ -7,41 +7,30 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 import org.json.JSONObject;
-import org.speech4j.tenantservice.mapper.json.JSONObjectConverter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 
-@Entity
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tenant_configs")
+@Table("configs")
 @ToString
 public class Config implements Serializable {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String  id;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "apiname")
+    private String id;
+  //  @Enumerated(EnumType.STRING)
+    @Column("apiname")
     private ApiName apiName;
-    @Column(name = "tenantid")
+    @Column("tenantid")
     private String tenantId;
     @NonNull
-    @Column(columnDefinition = "TEXT")
-    @Convert(converter=JSONObjectConverter.class)
+   // @Convert(converter=JSONObjectConverter.class)
     private JSONObject credentials;
 }

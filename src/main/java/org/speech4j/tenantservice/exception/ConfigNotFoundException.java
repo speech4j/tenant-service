@@ -4,4 +4,8 @@ public class ConfigNotFoundException extends EntityNotFoundException {
     public ConfigNotFoundException(String message) {
         super(message);
     }
+
+    public ConfigNotFoundException() {
+        
+    }
 }

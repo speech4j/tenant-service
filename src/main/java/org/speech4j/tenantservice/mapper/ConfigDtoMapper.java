@@ -22,6 +22,7 @@ public class ConfigDtoMapper implements AbstractEntityDtoMapper<ConfigDtoReq, Co
                 .id(entity.getId())
                 .apiName(entity.getApiName())
                 .credentials(entity.getCredentials().toMap())
+                .tenantId(entity.getTenantId())
                 .build();
     }
 }

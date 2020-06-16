@@ -1,11 +1,13 @@
 package org.speech4j.tenantservice.service;
 
-public interface EntityService<E> {
-    E create(E entity);
+import reactor.core.publisher.Mono;
 
-    E findById(String id);
+public interface EntityService<E, D> {
+    Mono<D> create(E entity, String... ids);
 
-    E update(E entity, String id);
+    Mono<D> getById(String... ids);
 
-    void deleteById(String id);
+    Mono<D> update(E entity, String... ids);
+
+    Mono<Void> deleteById(String... ids);
 }

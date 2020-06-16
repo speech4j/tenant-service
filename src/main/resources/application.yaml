@@ -4,15 +4,6 @@ spring:
     allow-bean-definition-overriding: true
 ---
 # ===============================
-# Default connection pool
-# ===============================
-spring:
-  datasource:
-    hikari:
-      connectionTimeout: 2000
-      maximumPoolSize: 5
----
-# ===============================
 # DATABASE
 # ===============================
 db:
@@ -21,34 +12,19 @@ db:
   name: ${DB_NAME:tenant_db}
 spring:
   datasource:
-    driver: org.postgresql.Driver
+    driver: io.r2dbc:r2dbc-postgresql
     url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    password: ${DB_PASSWORD:qwerty123}
   liquibase:
     default-schema: metadata
 ---
 # ===============================
-# JPA / HIBERNATE
-# ===============================
-spring.jpa:show-sql: true
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: none
-      generate-ddl : false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL82Dialect
-        format_sql: true
-        generate_statistics: false
----
-# ===============================
 # SWAGGER
 # ===============================
-springdoc:
-  api-docs.ath: /api-docs
-  swagger-ui.path: /swagger-ui.html
+#springdoc:
+#  api-docs.ath: /api-docs
+#  swagger-ui.path: /swagger-ui.html
 
 # ===============================
 # JPA/ SCHEMA_TYPE
@@ -74,3 +50,14 @@ speech4j:
     secretKey: ${AWS_SECRET_KEY:ElIwuD+eUa0UXbkE9NZJlcbdBIWlwqNa8X+dHLJpM}
     bucketName: ${AWS_BUCKET_NAME:speech4j-content-bucket}
     endpointUrl: ${AWS_ENDPOINT_URL:https://speech4j-content-bucket.s3.us-east-2.amazonaws.com}
+
+# ===============================
+# LOGGER
+# ===============================
+logging:
+  level:
+    root: INFO
+    org.springframework.data.r2dbc: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.speech4j.tenantservice: DEBUG

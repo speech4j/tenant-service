@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 public class ConfigServiceImpl implements ConfigService {
@@ -34,18 +36,21 @@ public class ConfigServiceImpl implements ConfigService {
         return tenantService.getById(ids[0])
                 .flatMap(existingTenant -> {
                     config.setTenantId(existingTenant.getId());
-                    return repository.save(config)
-                            .doOnSuccess(createdConfig ->
-                                    log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully created!", createdConfig.getId())
-                            )
-                            .map(mapper::toDto);
+                    config.setId(UUID.randomUUID().toString());
+                    return repository.create(
+                            config.getId(), config.getApiName(), config.getCredentials(), config.getTenantId()
+                    )
+                            .thenReturn(config).map(createdConfig -> {
+                                log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully created!", createdConfig.getId());
+
+                                return mapper.toDto(createdConfig);
+                            });
                 });
     }
 
     @Override
     public Mono<ConfigDtoResp> getById(String... ids) {
-        return repository.findById(ids[1]).map(mapper::toDto);
-        // return checkIfExistConfigWithSpecifiedTenantId(ids[0], ids[1]).map(mapper::toDto);
+        return checkIfExistConfigWithSpecifiedTenantId(ids[0], ids[1]).map(mapper::toDto);
     }
 
     @Override
@@ -57,7 +62,7 @@ public class ConfigServiceImpl implements ConfigService {
                     return repository.save(existingConfig).map(mapper::toDto)
                             .doOnSuccess(updatedConfig ->
                                     log.debug(
-                                            "CONFIG-SERVICE: Config with id:[{}] successfully updated!",
+                                            "CONFIG-SERVICE: Config by a specified id:[{}] successfully updated!",
                                             ids[1]
                                     ));
                 });
@@ -65,10 +70,10 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Mono<Void> deleteById(String... ids) {
-        return checkIfExistConfigWithSpecifiedTenantId(ids[0], ids[1])
-                .flatMap(existingCoffee ->
-                        repository.delete(existingCoffee).doOnSuccess(success ->
-                                log.debug("CONFIG-SERVICE: Config with id:[{}] successfully deleted!", ids[1]))
+        return repository.findById(ids[1])
+                .flatMap(existingConfig ->
+                        repository.delete(existingConfig).doOnSuccess(success ->
+                                log.debug("CONFIG-SERVICE: Config by a specified id:[{}] successfully deleted!", ids[1]))
                 );
     }
 
@@ -89,18 +94,18 @@ public class ConfigServiceImpl implements ConfigService {
     private Mono<Config> checkIfExistConfigWithSpecifiedTenantId(String tenantId, String configId) {
         return repository.findById(configId)
                 .switchIfEmpty(
-                        Mono.error(new ConfigNotFoundException("Config by id: [" + configId + "] not found!"))
+                        Mono.error(new ConfigNotFoundException("Config by a specified id: [" + configId + "] not found!"))
                 )
                 .onErrorResume(err -> {
-                    log.error("CONFIG-SERVICE: Config by id: [{}] not found!", configId);
+                    log.error("CONFIG-SERVICE: Config by a specified id: [{}] not found!", configId);
                     return Mono.error(err);
                 })
                 .flatMap(existingConfig -> {
                     if (!existingConfig.getTenantId().equals(tenantId)) {
-                        log.error("CONFIG-SERVICE: Config by id: [{}] not found!", configId);
-                        return Mono.error(new ConfigNotFoundException("Config with a specified id: [" + configId + "] not found"));
+                        log.error("CONFIG-SERVICE: Config by a specified id: [{}] doesn't relate to a tenant id: [{}]!", configId, tenantId);
+                        return Mono.error(new ConfigNotFoundException("Config by a specified id: [" + configId + "] doesn't relate to a tenant id: [" + tenantId + "]!"));
                     }
-                    log.debug("CONFIG-SERVICE: Config with [ tenantId: {}] successfully found!", configId);
+                    log.debug("CONFIG-SERVICE: Config by a specified id: [{}] and a tenant id: [{}] successfully found!", configId, tenantId);
                     return Mono.just(existingConfig);
                 });
     }

@@ -21,8 +21,8 @@ import java.util.Map;
 @AllArgsConstructor
 @ToString
 public class ConfigDtoReq {
-    @NotNull(message = "{field.not.empty}")
+    @NotNull
     private ApiName apiName;
-    @NotEmpty(message = "{field.not.empty}")
+    @NotEmpty
     private Map<String, Object> credentials;
 }

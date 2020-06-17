@@ -32,7 +32,6 @@ public class User implements Serializable {
     //@Column(unique = true)
     private String email;
     private String password;
-    //@Enumerated(EnumType.STRING)
     private Role role;
     @Column("createddate")
     @CreatedDate

@@ -21,16 +21,18 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @ToString
 public class UserDtoReq {
-    @NotBlank( message = "{field.not.empty}")
+    @NotBlank
     private String firstName;
-    @NotBlank(message = "{field.not.empty}")
+    @NotBlank
     private String lastName;
-    @NotBlank(message = "{field.not.empty}")
-    @Email( message = "{email.not.valid}")
+    @NotBlank
+    @Email
     private String email;
-    @NotBlank(message = "{field.not.empty}")
+    @NotBlank
     @Pattern( regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$",
-            message = "{password.validation}")
+            message = "must be at least 4 characters, no more than 8 characters, " +
+                    "and must include at least one upper case letter," +
+                    " one lower case letter, and one numeric digit")
     private String password;
     private Role role;
 }

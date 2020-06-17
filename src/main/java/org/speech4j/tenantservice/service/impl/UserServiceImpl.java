@@ -13,10 +13,14 @@ import org.speech4j.tenantservice.service.TenantService;
 import org.speech4j.tenantservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
 
@@ -31,12 +35,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public UserServiceImpl(UserRepository repository,
                            TenantService tenantService,
-                           PasswordEncoder encoder,
                            UserDtoMapper mapper) {
         this.repository = repository;
         this.tenantService = tenantService;
-        this.encoder = encoder;
         this.mapper = mapper;
+        this.encoder = new BCryptPasswordEncoder();
     }
 
     @Override
@@ -45,31 +48,39 @@ public class UserServiceImpl implements UserService {
                 .flatMap(existingTenant -> {
                     //Encoding password before saving
                     user.setPassword(encoder.encode(user.getPassword()));
+                    user.setId(UUID.randomUUID().toString());
+                    user.setCreatedDate(LocalDateTime.now().toLocalDate());
+                    user.setModifiedDate(LocalDateTime.now().toLocalDate());
+                    user.setTenantId(ids[0]);
                     //Checking if role is missed
                     if (isNull(user.getRole())) {
                         user.setRole(Role.ADMIN);
                     }
 
-                    return repository.save(user)
+                    return repository.create(
+                            user.getId(), user.isActive(), user.getCreatedDate(), user.getModifiedDate(), user.getEmail(),
+                            user.getFirstName(), user.getLastName(), user.getPassword(), user.getRole(), user.getTenantId()
+                    )
                             .onErrorResume(err -> {
                                 if (err instanceof DataIntegrityViolationException) {
                                     log.error("USER-SERVICE: User with a specified email: [{}] already exists!", user.getEmail());
                                     return Mono.error(new DuplicateEntityException("User with a specified email already exists!"));
                                 } else {
-                                    log.error("USER-SERVICE: User update failed {}", err.getLocalizedMessage());
-                                    return Mono.error(new SqlOperationException("User update failed with email: " + user.getEmail()));
+                                    log.error("USER-SERVICE: User create failed {}", err.getLocalizedMessage());
+                                    return Mono.error(new SqlOperationException("User create failed with email: " + user.getEmail()));
                                 }
                             })
-                            .flatMap(createdUser -> {
+                            .thenReturn(user).map(createdUser -> {
                                 log.debug("USER-SERVICE: User with [ id: {}] was successfully created!", createdUser.getId());
-                                return Mono.just(user).map(mapper::toDto);
+                                return mapper.toDto(createdUser);
                             });
                 });
     }
 
     @Override
     public Mono<UserDtoResp> getById(String... ids) {
-        return checkIfExistUserWithSpecifiedTenantId(ids[0], ids[1]).map(mapper::toDto);
+        return checkIfExistUserWithSpecifiedTenantId(ids[0], ids[1])
+                .filter(User::isActive).map(mapper::toDto);
     }
 
     @Override
@@ -80,6 +91,7 @@ public class UserServiceImpl implements UserService {
                     existingUser.setLastName(user.getLastName());
                     //Encoding password before updating
                     existingUser.setPassword(encoder.encode(user.getPassword()));
+                    existingUser.setModifiedDate(LocalDateTime.now().toLocalDate());
 
                     return repository.save(existingUser).map(mapper::toDto)
                             .doOnSuccess(updatedConfig ->
@@ -106,11 +118,11 @@ public class UserServiceImpl implements UserService {
                         Mono.error(new UserNotFoundException("Users by the tenant id: [" + tenantId + "] were not found!"))
                 )
                 .onErrorResume(err -> {
-                    log.error("USER-SERVICE: User the tenant id: [{}] were  not found!", tenantId);
+                    log.error("USER-SERVICE: User by  the tenant id: [{}] were  not found!", tenantId);
                     return Mono.error(err);
                 })
                 .doOnNext(existingUser ->
-                        log.debug("CONFIG-SERVICE: Users the tenant id: [{}] were successfully found!", tenantId))
+                        log.debug("CONFIG-SERVICE: Users by the tenant id: [{}] were successfully found!", tenantId))
                 .filter(User::isActive)
                 .map(mapper::toDto);
     }
@@ -118,18 +130,18 @@ public class UserServiceImpl implements UserService {
     private Mono<User> checkIfExistUserWithSpecifiedTenantId(String tenantId, String userId) {
         return repository.findById(userId)
                 .switchIfEmpty(
-                        Mono.error(new UserNotFoundException("User by id: [" + userId + "] not found!"))
+                        Mono.error(new UserNotFoundException("User by a specified id: [" + userId + "] not found!"))
                 )
                 .onErrorResume(err -> {
-                    log.error("USER-SERVICE: User by id: [{}] not found!", userId);
+                    log.error("USER-SERVICE: User by a specified id: [{}] not found!", userId);
                     return Mono.error(err);
                 })
                 .flatMap(existingUser -> {
                     if (!existingUser.getTenantId().equals(tenantId)) {
-                        log.error("USER-SERVICE: User by id: [{}] not found!", userId);
-                        return Mono.error(new UserNotFoundException("User with a specified id: [" + userId + "] not found"));
+                        log.error("USER-SERVICE: User by a specified id: [{}] doesn't relate to a tenant id: [{}]!", userId, tenantId);
+                        return Mono.error(new UserNotFoundException("User by a specified id: [" + userId + "] doesn't relate to a tenant id: [" + tenantId + "]!"));
                     }
-                    log.debug("USER-SERVICE: User with [ tenant id: {}] successfully found!", tenantId);
+                    log.debug("USER-SERVICE: User by a specified id: [{}] and a tenant id: [{}] successfully found!", userId, tenantId);
                     return Mono.just(existingUser);
                 });
     }

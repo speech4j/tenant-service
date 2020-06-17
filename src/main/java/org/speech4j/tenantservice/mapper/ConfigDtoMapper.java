@@ -12,7 +12,7 @@ public class ConfigDtoMapper implements AbstractEntityDtoMapper<ConfigDtoReq, Co
     public Config toEntity(ConfigDtoReq dto) {
         return Config.builder()
                 .apiName(dto.getApiName())
-                .credentials(new JSONObject(dto.getCredentials()))
+                .credentials(new JSONObject(dto.getCredentials()).toString())
                 .build();
     }
 
@@ -21,7 +21,7 @@ public class ConfigDtoMapper implements AbstractEntityDtoMapper<ConfigDtoReq, Co
         return ConfigDtoResp.builder()
                 .id(entity.getId())
                 .apiName(entity.getApiName())
-                .credentials(entity.getCredentials().toMap())
+                .credentials(new JSONObject(entity.getCredentials()).toMap())
                 .tenantId(entity.getTenantId())
                 .build();
     }

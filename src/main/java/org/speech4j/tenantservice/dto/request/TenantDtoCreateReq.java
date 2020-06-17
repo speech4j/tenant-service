@@ -18,8 +18,8 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @ToString
 public class TenantDtoCreateReq {
-    @NotBlank(message = "{field.not.empty}")
+    @NotBlank
     private String name;
-    @NotBlank(message = "{field.not.empty}")
+    @NotBlank
     private String description;
 }

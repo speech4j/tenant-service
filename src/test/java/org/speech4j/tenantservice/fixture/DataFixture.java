@@ -53,13 +53,13 @@ public class DataFixture {
         config1.setId("1");
         config1.setTenantId("test_tenant_1");
         config1.setApiName(ApiName.GOOGLE);
-        config1.setCredentials(new JSONObject(credentials));
+        config1.setCredentials(new JSONObject(credentials).toString());
         //entity2
         Config config2 = new Config();
         config2.setId("2");
         config2.setTenantId("test_tenant_2");
         config2.setApiName(ApiName.AWS);
-        config2.setCredentials(new JSONObject(credentials));
+        config2.setCredentials(new JSONObject(credentials).toString());
 
         return Arrays.asList(config1,config2);
     }

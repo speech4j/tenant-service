@@ -1,30 +1,30 @@
-#dist: trusty
-#
-#jdk:
-#  - openjdk11
-#
-#addons:
-#  sonarcloud:
-#    organization: "speech4j"
-#    token:
-#      secure: "i2NZAf/6Vddh1LTBbctLsk7wRmxCu2SIbyzhiNWKieNJhzn2+gcYWGurY3vbefDS2YXftMVytkBKeAE5M/Vt1c4QSvB+xhcG0o/pgTjy8BA1mGINxEAjbK3Na/fyo86l0GADtCILISlL98m9jvlPTDU+24iubr4VsQ326REvT943dIzXl7AOkUIzq1aaBCnmca5BQDPka/LsBGe62EXXYoeqq4pUL1fSvAbPGyvQuS19YfXbvq7jbVbukDuhnJ+DoWJgQaVi46rn+2aPe4INLCr4M4KdPPIGPBXeRtFA5L0c4X/n7P4WAG4E1pFWPEBtVuS7c+Do/Dv6jBhQmEy2MtbW818PnAdTNQzukxTUcBT6xBgqHQHcjUNjO6drwyHLgzlpBek1yL5RVicidnSLQo8q7Sdx8GoCSuk1kHXvSLDnklNGhuFekLxr+UEgany2UtrvuLpezkcIux3INh+SgAe1JarH8/5/Zeoe9i1YlI9GsFP7JGolm699bmYEH1iis58Q4epCea4RzbyIdEDojbP15ndxrN2+tnYcyQg1wKDTAhCSHQFermfMy1oXR+ch9t+17wgB3Bjjm0tSmj7HrTO0iBhM+9UM9TPQuHAzzk9xqqJGsJP3ijw61U9KETLY8InDgHaYgiD//6fXRwdFWtNTx1l1BHUQV4wQuinoIlM="
-#
-#before_install:
-#  - chmod +x gradlew
-#
-#script:
-#  - git fetch --unshallow
-#  - ./gradlew build --stacktrace
-#  - ./gradlew sonarqube --stacktrace
-#
+dist: trusty
+
+jdk:
+  - openjdk11
+
+addons:
+  sonarcloud:
+    organization: "speech4j"
+    token:
+      secure: "i2NZAf/6Vddh1LTBbctLsk7wRmxCu2SIbyzhiNWKieNJhzn2+gcYWGurY3vbefDS2YXftMVytkBKeAE5M/Vt1c4QSvB+xhcG0o/pgTjy8BA1mGINxEAjbK3Na/fyo86l0GADtCILISlL98m9jvlPTDU+24iubr4VsQ326REvT943dIzXl7AOkUIzq1aaBCnmca5BQDPka/LsBGe62EXXYoeqq4pUL1fSvAbPGyvQuS19YfXbvq7jbVbukDuhnJ+DoWJgQaVi46rn+2aPe4INLCr4M4KdPPIGPBXeRtFA5L0c4X/n7P4WAG4E1pFWPEBtVuS7c+Do/Dv6jBhQmEy2MtbW818PnAdTNQzukxTUcBT6xBgqHQHcjUNjO6drwyHLgzlpBek1yL5RVicidnSLQo8q7Sdx8GoCSuk1kHXvSLDnklNGhuFekLxr+UEgany2UtrvuLpezkcIux3INh+SgAe1JarH8/5/Zeoe9i1YlI9GsFP7JGolm699bmYEH1iis58Q4epCea4RzbyIdEDojbP15ndxrN2+tnYcyQg1wKDTAhCSHQFermfMy1oXR+ch9t+17wgB3Bjjm0tSmj7HrTO0iBhM+9UM9TPQuHAzzk9xqqJGsJP3ijw61U9KETLY8InDgHaYgiD//6fXRwdFWtNTx1l1BHUQV4wQuinoIlM="
+
+before_install:
+  - chmod +x gradlew
+
+script:
+  - git fetch --unshallow
+  - ./gradlew build --stacktrace
+  - ./gradlew sonarqube --stacktrace
+
 #after_success:
 #  - docker build -t speech4j/tenant-service -f Dockerfile .
 #  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 #  - docker push speech4j/tenant-service
-#
-#cache:
-#  directories:
-#    - '$HOME/.m2/repository'
-#    - '$HOME/.sonar/cache'
-#    - '$HOME/.gradle'
-#    - '.gradle'
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+    - '$HOME/.gradle'
+    - '.gradle'

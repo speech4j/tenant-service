@@ -36,20 +36,18 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Mono<ConfigDtoResp> create(Config config, String... ids) {
-        return tenantService.getById(ids[0])
-                .flatMap(existingTenant -> {
-                    config.setTenantId(existingTenant.getId());
-                    config.setId(UUID.randomUUID().toString());
-                    return repository.create(
-                            config.getId(), config.getApiName(), config.getCredentials(), config.getTenantId()
-                    ).subscriberContext(Context.of(TENANT_KEY, ids[0]))
+        config.setTenantId(ids[0]);
+        config.setId(UUID.randomUUID().toString());
+        return repository.create(
+                config.getId(), config.getApiName(), config.getCredentials(), config.getTenantId()
+        ).subscriberContext(Context.of(TENANT_KEY, ids[0]))
 
-                            .thenReturn(config).map(createdConfig -> {
-                                log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully created!", createdConfig.getId());
+                .thenReturn(config).map(createdConfig -> {
+                    log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully created!", createdConfig.getId());
 
-                                return mapper.toDto(createdConfig);
-                            });
+                    return mapper.toDto(createdConfig);
                 });
+
     }
 
     @Override

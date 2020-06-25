@@ -47,37 +47,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<UserDtoResp> create(User user, String... ids) {
-        return tenantService.getById(ids[0])
-                .flatMap(existingTenant -> {
-                    //Encoding password before saving
-                    user.setPassword(encoder.encode(user.getPassword()));
-                    user.setId(UUID.randomUUID().toString());
-                    user.setCreatedDate(LocalDateTime.now().toLocalDate());
-                    user.setModifiedDate(LocalDateTime.now().toLocalDate());
-                    user.setTenantId(ids[0]);
-                    //Checking if role is missed
-                    if (isNull(user.getRole())) {
-                        user.setRole(Role.ADMIN);
-                    }
+        //Encoding password before saving
+        user.setPassword(encoder.encode(user.getPassword()));
+        user.setId(UUID.randomUUID().toString());
+        user.setCreatedDate(LocalDateTime.now().toLocalDate());
+        user.setModifiedDate(LocalDateTime.now().toLocalDate());
+        user.setTenantId(ids[0]);
+        //Checking if role is missed
+        if (isNull(user.getRole())) {
+            user.setRole(Role.ADMIN);
+        }
 
-                    return repository.create(
-                            user.getId(), user.isActive(), user.getCreatedDate(), user.getModifiedDate(), user.getEmail(),
-                            user.getFirstName(), user.getLastName(), user.getPassword(), user.getRole(), user.getTenantId()
-                    ).subscriberContext(Context.of(TENANT_KEY,ids[0]))
-                            .onErrorResume(err -> {
-                                if (err instanceof DataIntegrityViolationException) {
-                                    log.error("USER-SERVICE: User with a specified email: [{}] already exists!", user.getEmail());
-                                    return Mono.error(new DuplicateEntityException("User with a specified email already exists!"));
-                                } else {
-                                    log.error("USER-SERVICE: User create failed {}", err.getLocalizedMessage());
-                                    return Mono.error(new SqlOperationException("User create failed with email: " + user.getEmail()));
-                                }
-                            })
-                            .thenReturn(user).map(createdUser -> {
-                                log.debug("USER-SERVICE: User with [ id: {}] was successfully created!", createdUser.getId());
-                                return mapper.toDto(createdUser);
-                            });
+        return repository.create(
+                user.getId(), user.isActive(), user.getCreatedDate(), user.getModifiedDate(), user.getEmail(),
+                user.getFirstName(), user.getLastName(), user.getPassword(), user.getRole(), user.getTenantId()
+        ).subscriberContext(Context.of(TENANT_KEY, ids[0]))
+                .onErrorResume(err -> {
+                    if (err instanceof DataIntegrityViolationException) {
+                        log.error("USER-SERVICE: User with a specified email: [{}] already exists!", user.getEmail());
+                        return Mono.error(new DuplicateEntityException("User with a specified email already exists!"));
+                    } else {
+                        log.error("USER-SERVICE: User create failed {}", err.getLocalizedMessage());
+                        return Mono.error(new SqlOperationException("User create failed with email: " + user.getEmail()));
+                    }
+                })
+                .thenReturn(user).map(createdUser -> {
+                    log.debug("USER-SERVICE: User with [ id: {}] was successfully created!", createdUser.getId());
+                    return mapper.toDto(createdUser);
                 });
+
     }
 
     @Override

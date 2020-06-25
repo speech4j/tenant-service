@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 @Slf4j
 public class TenantServiceImpl implements TenantService {
     private TenantRepository repository;
+
     private TenantDtoMapper mapper;
 
     @Autowired
@@ -51,7 +52,7 @@ public class TenantServiceImpl implements TenantService {
             log.error("TENANT-SERVICE: Tenant with a specified email: [{}] already exists!", tenant.getId());
             return Mono.error(
                     new DuplicateEntityException("Tenant with a specified id:[" + tenant.getId() + "] already exists!"));
-        }).thenReturn(tenant).map(createdTenant->{
+        }).thenReturn(tenant).map(createdTenant -> {
             log.debug("TENANT-SERVICE: Tenant with a specified id: [{}] was successfully created!", tenant.getId());
             return mapper.toDto(createdTenant);
         });

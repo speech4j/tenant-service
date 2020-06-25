@@ -1,6 +1,6 @@
 spring:
   main:
-    lazy-initialization: false
+    lazy-initialization: true
     allow-bean-definition-overriding: true
 ---
 # ===============================
@@ -12,10 +12,10 @@ db:
   name: ${DB_NAME:tenant_db}
 spring:
   datasource:
-    driver: io.r2dbc:r2dbc-postgresql
+    driver: org.postgresql.Driver
     url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:qwerty123}
+    password: ${DB_PASSWORD:postgres}
   liquibase:
     default-schema: metadata
 ---
@@ -27,12 +27,8 @@ spring:
 #  swagger-ui.path: /swagger-ui.html
 
 # ===============================
-# JPA/ SCHEMA_TYPE
+# LIQUIBASE/CHANGELOG_TYPE
 # ===============================
-jpa:
-  general_default_schema: speech4j
-  metadata_default_schema: metadata
-
 liquibase:
   general_changelog: db/changelog/db.changelog-tenant.yaml
   metadata_changelog: db/changelog/db.changelog-master.yaml

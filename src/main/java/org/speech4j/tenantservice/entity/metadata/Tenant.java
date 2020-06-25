@@ -1,10 +1,8 @@
 package org.speech4j.tenantservice.entity.metadata;
 
 
-import liquibase.sqlgenerator.core.AddAutoIncrementGeneratorDB2;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

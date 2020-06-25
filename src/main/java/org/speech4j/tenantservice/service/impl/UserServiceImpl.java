@@ -18,11 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.context.Context;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
+import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.TENANT_KEY;
 
 @Service
 @Slf4j
@@ -31,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private TenantService tenantService;
     private PasswordEncoder encoder;
     private UserDtoMapper mapper;
+
 
     @Autowired
     public UserServiceImpl(UserRepository repository,
@@ -60,7 +63,7 @@ public class UserServiceImpl implements UserService {
                     return repository.create(
                             user.getId(), user.isActive(), user.getCreatedDate(), user.getModifiedDate(), user.getEmail(),
                             user.getFirstName(), user.getLastName(), user.getPassword(), user.getRole(), user.getTenantId()
-                    )
+                    ).subscriberContext(Context.of(TENANT_KEY,ids[0]))
                             .onErrorResume(err -> {
                                 if (err instanceof DataIntegrityViolationException) {
                                     log.error("USER-SERVICE: User with a specified email: [{}] already exists!", user.getEmail());
@@ -113,7 +116,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Flux<UserDtoResp> getAllById(String tenantId) {
+
+//1
+//        DatabaseClient client = DatabaseClient.create(connectionFactory);
+//
+//        Context routingContext = Context.of("tenant-key", "key");
+//
+//        Flux<User> users = client.execute("select * from users ")
+//                .as(User.class)
+//                .fetch()
+//                .all()
+//                .subscriberContext(routingContext);
+//        return users.map(mapper::toDto);
+
+
+//2
+//         PostgresqlConnectionFactory cf = new PostgresqlConnectionFactory(builder.schema(TenantContext.get()).build());
+//         DatabaseClient cli = DatabaseClient.create(cf);
+//         return cli
+//                .execute("select * from users ").as(User.class).fetch().all().map(mapper::toDto);
+
+//3
         return repository.getAllByTenantId(tenantId)
+                .subscriberContext(Context.of(TENANT_KEY, tenantId))
                 .switchIfEmpty(
                         Mono.error(new UserNotFoundException("Users by the tenant id: [" + tenantId + "] were not found!"))
                 )
@@ -129,6 +154,7 @@ public class UserServiceImpl implements UserService {
 
     private Mono<User> checkIfExistUserWithSpecifiedTenantId(String tenantId, String userId) {
         return repository.findById(userId)
+                .subscriberContext(Context.of(TENANT_KEY, tenantId))
                 .switchIfEmpty(
                         Mono.error(new UserNotFoundException("User by a specified id: [" + userId + "] not found!"))
                 )

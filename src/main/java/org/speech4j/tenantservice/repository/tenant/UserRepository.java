@@ -12,7 +12,9 @@ import java.time.LocalDate;
 public interface UserRepository extends ReactiveCrudRepository<User, String> {
 
     @Query("INSERT INTO users (id, active, createddate, modifieddate, email, firstname, lastname, password, role, tenantid) " +
-            "VALUES (:id, :active, :createdDate, :modifiedDate, :email, :firstName, :lastName, :password, :role, :tenantId)")
+            "VALUES (:id, :active, :createdDate, :modifiedDate, :email, :firstName, :lastName, :password, :role, :tenantId)"
+          //  "WHERE (SELECT * FROM users WHERE email = :email) = 0"
+    )
     Mono<User> create(String id, Boolean active, LocalDate createdDate, LocalDate modifiedDate, String email,
                       String firstName, String lastName, String password, Role role, String tenantId);
 

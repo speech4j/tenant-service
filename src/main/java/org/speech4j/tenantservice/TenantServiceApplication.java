@@ -9,6 +9,8 @@ public class TenantServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TenantServiceApplication.class);
+
+
 	}
 
 //	@Bean
@@ -23,5 +25,7 @@ public class TenantServiceApplication {
 //					.subscribe(System.out::println);
 //		};
 //	}
+
+
 
 }

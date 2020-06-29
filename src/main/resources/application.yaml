@@ -20,6 +20,21 @@ spring:
     default-schema: metadata
 ---
 # ===============================
+# JPA / HIBERNATE
+# ===============================
+spring.jpa:show-sql: true
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+      generate-ddl : false
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL82Dialect
+        format_sql: true
+        generate_statistics: false
+# ===============================
 # SWAGGER
 # ===============================
 #springdoc:

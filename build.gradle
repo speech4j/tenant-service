@@ -51,11 +51,18 @@ dependencies {
 	implementation 'org.json:json:20190722'
 // Lombok dependencies
 	implementation 'org.projectlombok:lombok'
-	annotationProcessor "org.projectlombok:lombok"
-// Liquibase dependencies
+	annotationProcessor 'org.projectlombok:lombok'
+// Liquibase dependencies(configurations)
 	implementation 'org.liquibase:liquibase-core:3.8.9'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.postgresql:postgresql:42.2.9'
+
+	liquibaseRuntime 'org.postgresql:postgresql:42.2.9'
+	liquibaseRuntime 'org.springframework.data:spring-data-jpa:2.2.1.RELEASE'
 	liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:3.8'
-	liquibaseRuntime sourceSets.main.runtimeClasspath
+	liquibaseRuntime 'ch.qos.logback:logback-core:1.2.3'
+	liquibaseRuntime 'ch.qos.logback:logback-classic:1.2.3'
+	liquibaseRuntime sourceSets.main.output
 
 //Testing dependencies
 	testImplementation 'org.junit.jupiter:junit-jupiter-api'
@@ -134,6 +141,7 @@ liquibase {
 			referenceDriver 'liquibase.ext.hibernate.database.connection.HibernateDriver'
 			excludeObjects 'table:content_contents,content_tags,content_content_tag'
 		}
+
 	}
 }
 

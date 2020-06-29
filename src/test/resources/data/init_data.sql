@@ -6,9 +6,9 @@ CREATE TABLE metadata.tenants
 (
     id VARCHAR(255) NOT NULL,
     active BOOLEAN NOT NULL,
-    createddate TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    createdDate TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     description VARCHAR(255),
-    modifieddate TIMESTAMP WITHOUT TIME ZONE,
+    modifiedDate TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT "tenantsPK" PRIMARY KEY (id)
 );
 CREATE TABLE test_tenant_1.tenant_configs (

@@ -7,10 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -21,14 +20,15 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @ToString
 @Builder
-@Table("tenants")
+@Entity
+@javax.persistence.Table(name = "tenants")
+@org.springframework.data.relational.core.mapping.Table("tenants")
 public class Tenant implements Serializable {
     @Id
+    @org.springframework.data.annotation.Id
     private String id;
     private String description;
-    @Column("createddate")
     private Timestamp createdDate;
-    @Column("modifieddate")
     private Timestamp modifiedDate;
     private boolean active;
 }

@@ -10,9 +10,9 @@
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="tenant_configsPK"/>
             </column>
-            <column name="apiname" type="VARCHAR(255)"/>
+            <column name="apiName" type="VARCHAR(255)"/>
             <column name="credentials" type="TEXT"/>
-            <column name="tenantid" type="VARCHAR(255)"/>
+            <column name="tenantId" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="mslob (generated)" id="1589479865920-2">
@@ -28,16 +28,16 @@
             <column name="active" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="createddate" type="date">
+            <column name="createdDate" type="date">
                 <constraints nullable="false"/>
             </column>
             <column name="email" type="VARCHAR(255)"/>
-            <column name="firstname" type="VARCHAR(255)"/>
-            <column name="lastname" type="VARCHAR(255)"/>
-            <column name="modifieddate" type="date"/>
+            <column name="firstName" type="VARCHAR(255)"/>
+            <column name="lastName" type="VARCHAR(255)"/>
+            <column name="modifiedDate" type="date"/>
             <column name="password" type="VARCHAR(255)"/>
             <column name="role" type="VARCHAR(255)"/>
-            <column name="tenantid" type="VARCHAR(255)"/>
+            <column name="tenantId" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="mslob (generated)" id="1589479865920-3">

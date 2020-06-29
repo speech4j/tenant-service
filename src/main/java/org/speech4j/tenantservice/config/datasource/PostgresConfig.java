@@ -49,7 +49,28 @@ public class PostgresConfig {
         connectionFactory.setConnectionFactoryLookup(new MapConnectionFactoryLookup());
         connectionFactory.afterPropertiesSet();
 
+
         return connectionFactory;
     }
+
+//    @Override
+//    @Bean
+//    public ConnectionFactory connectionFactory() {
+//        ConnectionFactory connectionFactory = ConnectionFactories.get(ConnectionFactoryOptions.builder()
+//                .option(DRIVER, "pool")
+//                .option(PROTOCOL, "postgresql")
+//                .option(HOST, host)
+//                .option(USER, user)
+//                .option(PASSWORD, password)
+//                .option(DATABASE, database)
+//                .build());
+//        ConnectionPoolConfiguration configuration = ConnectionPoolConfiguration.builder(connectionFactory)
+//                .maxIdleTime(Duration.ofMinutes(30))
+//                .initialSize(initialSize)
+//                .maxSize(maxSize)
+//                .maxCreateConnectionTime(Duration.ofSeconds(1))
+//                .build();
+//        return new ConnectionPool(configuration);
+//    }
 }
 

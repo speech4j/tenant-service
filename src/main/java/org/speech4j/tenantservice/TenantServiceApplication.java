@@ -7,11 +7,11 @@ import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAut
 @SpringBootApplication(exclude = ErrorWebFluxAutoConfiguration.class)
 public class TenantServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TenantServiceApplication.class);
+    public static void main(String[] args) {
+        SpringApplication.run(TenantServiceApplication.class);
+        System.out.println("Runtime processors: " + Runtime.getRuntime().availableProcessors());
 
-
-	}
+    }
 
 //	@Bean
 //	CommandLineRunner init(TenantRepository repository){
@@ -25,7 +25,6 @@ public class TenantServiceApplication {
 //					.subscribe(System.out::println);
 //		};
 //	}
-
 
 
 }

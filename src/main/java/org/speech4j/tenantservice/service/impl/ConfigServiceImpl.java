@@ -38,13 +38,12 @@ public class ConfigServiceImpl implements ConfigService {
     public Mono<ConfigDtoResp> create(Config config, String... ids) {
         config.setTenantId(ids[0]);
         config.setId(UUID.randomUUID().toString());
+
         return repository.create(
                 config.getId(), config.getApiName(), config.getCredentials(), config.getTenantId()
         ).subscriberContext(Context.of(TENANT_KEY, ids[0]))
-
                 .thenReturn(config).map(createdConfig -> {
                     log.debug("CONFIG-SERVICE: Config with [ id: {}] was successfully created!", createdConfig.getId());
-
                     return mapper.toDto(createdConfig);
                 });
 

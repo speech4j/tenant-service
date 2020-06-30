@@ -13,23 +13,23 @@ CREATE TABLE metadata.tenants
 );
 CREATE TABLE test_tenant_1.tenant_configs (
     id VARCHAR(255) NOT NULL,
-    apiname VARCHAR(255),
+    apiName VARCHAR(255),
     credentials TEXT,
-    tenantid VARCHAR(255),
+    tenantId VARCHAR(255),
     CONSTRAINT "tenant_configsPK"
     PRIMARY KEY (id)
 );
 CREATE TABLE test_tenant_1.tenant_users (
     id VARCHAR(255) NOT NULL,
     active BOOLEAN NOT NULL,
-    createddate date NOT NULL,
+    createdDate date NOT NULL,
     email VARCHAR(255),
-    firstname VARCHAR(255),
-    lastname VARCHAR(255),
-    modifieddate date,
+    firstName VARCHAR(255),
+    lastName VARCHAR(255),
+    modifiedDate date,
     password VARCHAR(255),
     role VARCHAR(255),
-    tenantid VARCHAR(255),
+    tenantId VARCHAR(255),
     CONSTRAINT "tenant_usersPK" PRIMARY KEY (id)
 );
 

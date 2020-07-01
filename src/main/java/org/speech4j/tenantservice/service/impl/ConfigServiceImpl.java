@@ -60,22 +60,26 @@ public class ConfigServiceImpl implements ConfigService {
                 .flatMap(existingConfig -> {
                     existingConfig.setCredentials(entity.getCredentials());
                     existingConfig.setApiName(entity.getApiName());
-                    return repository.save(existingConfig).map(mapper::toDto)
+
+                    return repository.save(existingConfig)
+                            .subscriberContext(Context.of(TENANT_KEY, ids[0]))
+                            .map(mapper::toDto)
                             .doOnSuccess(updatedConfig ->
                                     log.debug(
-                                            "CONFIG-SERVICE: Config by a specified id:[{}] successfully updated!",
-                                            ids[1]
+                                            "CONFIG-SERVICE: Config by a specified id:[{}] successfully updated!", ids[1]
                                     ));
                 });
     }
 
     @Override
     public Mono<Void> deleteById(String... ids) {
-        return repository.findById(ids[1])
-                .subscriberContext(Context.of(TENANT_KEY, ids[0]))
+        return checkIfExistConfigWithSpecifiedTenantId(ids[0], ids[1])
                 .flatMap(existingConfig ->
-                        repository.delete(existingConfig).doOnSuccess(success ->
-                                log.debug("CONFIG-SERVICE: Config by a specified id:[{}] successfully deleted!", ids[1]))
+                        repository.delete(existingConfig)
+                                .subscriberContext(Context.of(TENANT_KEY, ids[0]))
+                                .doOnSuccess(success ->
+                                        log.debug("CONFIG-SERVICE: Config by a specified id:[{}] successfully deleted!", ids[1])
+                                )
                 );
     }
 

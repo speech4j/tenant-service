@@ -15,7 +15,7 @@ spring:
     driver: org.postgresql.Driver
     url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    password: ${DB_PASSWORD:qwerty123}
   liquibase:
     default-schema: metadata
 ---

@@ -64,16 +64,22 @@ dependencies {
 	liquibaseRuntime 'ch.qos.logback:logback-classic:1.2.3'
 	liquibaseRuntime sourceSets.main.output
 
+	// https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
+	//implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+
 //Testing dependencies
 	testImplementation 'org.junit.jupiter:junit-jupiter-api'
 	testImplementation 'org.junit.jupiter:junit-jupiter-params'
 	testImplementation 'org.testcontainers:testcontainers'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'junit', module: 'junit'
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	testCompile ('org.junit.jupiter:junit-jupiter-engine')
+	testImplementation 'io.projectreactor:reactor-test'
 
 }
 

@@ -26,6 +26,6 @@ public class InitMetadataSchemaBean {
         );
         DatabaseClient client = DatabaseClient.create(connectionFactory);
         client.execute(String.format(SQL_CREATE_SCHEMA, DEFAULT_METADATA)).then().block();
-        log.debug("INITMETADATASHEMA: Schema metadata was created successfully!");
+        log.debug("INIT-METADATA-SCHEMA: Schema metadata was created successfully!");
     }
 }

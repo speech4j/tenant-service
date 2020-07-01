@@ -1,309 +1,189 @@
-//package org.speech4j.tenantservice.controller;
-//
-//import org.junit.jupiter.params.ParameterizedTest;
-//import org.junit.jupiter.params.provider.Arguments;
-//import org.junit.jupiter.params.provider.MethodSource;
-//import org.speech4j.tenantservice.AbstractContainer;
-//import org.speech4j.tenantservice.TenantServiceApplication;
-//import org.speech4j.tenantservice.dto.request.UserDtoReq;
-//import org.speech4j.tenantservice.dto.response.ResponseMessageDto;
-//import org.speech4j.tenantservice.dto.response.UserDtoResp;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.boot.test.web.client.TestRestTemplate;
-//import org.springframework.core.ParameterizedTypeReference;
-//import org.springframework.http.HttpEntity;
-//import org.springframework.http.HttpHeaders;
-//import org.springframework.http.HttpMethod;
-//import org.springframework.http.ResponseEntity;
-//
-//import java.net.URISyntaxException;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.stream.Stream;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.junit.Assert.assertEquals;
-//import static org.speech4j.tenantservice.fixture.DataFixture.getListOfUsers;
-//
-//@SpringBootTest(classes = TenantServiceApplication.class,
-//        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//class UserControllerTest extends AbstractContainer {
-//    @Autowired
-//    private TestRestTemplate template;
-//    private HttpHeaders headers = new HttpHeaders();
-//    private HttpEntity<UserDtoReq> request;
-//    private final String exceptionMessage = "User not found!";
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void findUserByIdTest_successFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users/" + data.get("userIds").get("real-1");
-//        ResponseEntity<UserDtoResp> response
-//                = template.exchange(url, HttpMethod.GET, null, UserDtoResp.class);
-//
-//        //Verify request succeed
-//        assertEquals(200, response.getStatusCodeValue());
-//        assertThat(data.get("dtos").get("response")).isEqualToIgnoringGivenFields(response.getBody(),
-//                "createdDate", "modifiedDate", "role", "active");
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void findUserByIdTest_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users/" + data.get("userIds").get("fake");
-//        ResponseEntity<ResponseMessageDto> response
-//                = template.exchange(url, HttpMethod.GET, null, ResponseMessageDto.class);
-//
-//        //Verify request not succeed
-//        checkEntityNotFoundException(response);
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void findUserByIdTestDifferentTenantId_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-2") + "/users/" + data.get("userIds").get("real-1");
-//        ResponseEntity<ResponseMessageDto> response
-//                = template.exchange(url, HttpMethod.GET, request, ResponseMessageDto.class);
-//
-//        //Verify request not succeed
-//        checkEntityNotFoundException(response);
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void createUserTest_successFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users";
-//        UserDtoReq requestDto = (UserDtoReq) data.get("dtos").get("request");
-//        requestDto.setEmail("email@gmail.com");
-//        request = new HttpEntity(requestDto, headers);
-//        ResponseEntity<UserDtoResp> response =
-//                this.template.exchange(url, HttpMethod.POST, request, UserDtoResp.class);
-//
-//        //Verify request succeed
-//        assertEquals(201, response.getStatusCodeValue());
-//        assertThat(requestDto).isEqualToIgnoringGivenFields(response.getBody(),
-//                "id", "createdDate", "modifiedDate", "password", "role");
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void createUserTestWithOptionalField_successFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users";
-//        UserDtoReq requestDto = (UserDtoReq) data.get("dtos").get("request");
-//        requestDto.setRole(null);
-//        requestDto.setEmail("emaill@gmail.com");
-//        request = new HttpEntity(requestDto, headers);
-//        ResponseEntity<UserDtoResp> response =
-//                this.template.exchange(url, HttpMethod.POST, request, UserDtoResp.class);
-//
-//        //Verify request succeed
-//        assertEquals(201, response.getStatusCodeValue());
-//        assertThat(requestDto).isEqualToIgnoringGivenFields(response.getBody(),
-//                "id", "createdDate", "modifiedDate", "password", "role");
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void createUserTest_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users";
-//        request = new HttpEntity(data.get("dtos").get("null"), headers);
-//        ResponseEntity<ResponseMessageDto> response =
-//                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
-//
-//        //Verify this exception because of validation null entity can't be accepted by controller
-//        assertEquals(415, response.getStatusCodeValue());
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void createUserTestWithWrongEmail_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users";
-//
-//        UserDtoReq requestDto = (UserDtoReq) data.get("dtos").get("request");
-//        requestDto.setEmail("wrong-email");
-//        request = new HttpEntity(requestDto, headers);
-//        ResponseEntity<ResponseMessageDto> response =
-//                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
-//
-//        //Verify this exception because of validation wrong email
-//        assertEquals(400, response.getStatusCodeValue());
-//        assertEquals("Validation failed for object='userDtoReq'. Error count: 1", response.getBody().getMessage());
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void createUserTestWithMissedRequiredField_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users";
-//        UserDtoReq requestDto = (UserDtoReq) data.get("dtos").get("request");
-//        requestDto.setFirstName(null);
-//        requestDto.setEmail("email@gmail.com");
-//        request = new HttpEntity(requestDto, headers);
-//        ResponseEntity<ResponseMessageDto> response =
-//                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
-//
-//        //Verify this exception because of validation missed field
-//        assertEquals(400, response.getStatusCodeValue());
-//        assertEquals("Validation failed for object='userDtoReq'. Error count: 1", response.getBody().getMessage());
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void createUserTestWithDuplicateEmail_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users";
-//        UserDtoReq requestDto = (UserDtoReq) data.get("dtos").get("request");
-//        request = new HttpEntity(requestDto, headers);
-//        ResponseEntity<ResponseMessageDto> response =
-//                this.template.exchange(url, HttpMethod.POST, request, ResponseMessageDto.class);
-//
-//        //Verify this exception because of validation wrong email
-//        assertEquals(500, response.getStatusCodeValue());
-//        assertEquals("User with a specified email already exists!",
-//                response.getBody().getMessage());
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void updateUserTest_successFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users/" + data.get("userIds").get("real-1");
-//        UserDtoReq requestDto = (UserDtoReq) data.get("dtos").get("request");
-//        requestDto.setFirstName("New Name");
-//        request = new HttpEntity(requestDto, headers);
-//        ResponseEntity<UserDtoResp> response =
-//                this.template.exchange(url, HttpMethod.PUT, request, UserDtoResp.class);
-//
-//        //Verify request succeed
-//        assertEquals(200, response.getStatusCodeValue());
-//        assertThat(requestDto).isEqualToIgnoringGivenFields(response.getBody(),
-//                "createdDate", "updatedDate", "password", "role");
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void updateUserTest_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users/" + data.get("userIds").get("fake");
-//        UserDtoReq requestDto = (UserDtoReq) data.get("dtos").get("request");
-//        requestDto.setFirstName("New Name");
-//        request = new HttpEntity(requestDto, headers);
-//        ResponseEntity<ResponseMessageDto> response =
-//                this.template.exchange(url, HttpMethod.PUT, request, ResponseMessageDto.class);
-//
-//        //Verify request not succeed
-//        checkEntityNotFoundException(response);
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void deleteUser_successFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users/" + data.get("userIds").get("real-2");
-//        ResponseEntity<ResponseMessageDto> response
-//                = template.exchange(url, HttpMethod.DELETE, null, ResponseMessageDto.class);
-//
-//        //Checking if entity was deleted
-//        assertEquals(204, response.getStatusCodeValue());
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void deleteUser_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users/" + data.get("userIds").get("fake");
-//        ResponseEntity<ResponseMessageDto> response
-//                = template.exchange(url, HttpMethod.DELETE, null, ResponseMessageDto.class);
-//
-//        //Verify request not succeed
-//        checkEntityNotFoundException(response);
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void findAllUsersTestByTenantId_successFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("real-1") + "/users";
-//        ResponseEntity<List<UserDtoResp>> response =
-//                template.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<UserDtoResp>>() {
-//                });
-//
-//        //Checking if status code is correct
-//        assertEquals(200, response.getStatusCodeValue());
-//        assertEquals(2, response.getBody().size());
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideTestData")
-//    void findAllUsersTestByTenantId_unsuccessFlow(
-//            Map<String, Map<String, Object>> data
-//    ) {
-//        final String url = "/tenants/" + data.get("tenantIds").get("fake") + "/users";
-//        ResponseEntity<ResponseMessageDto> response =
-//                template.exchange(url, HttpMethod.GET, null, ResponseMessageDto.class);
-//
-//        //Checking if status code is correct
-//        assertEquals(404, response.getStatusCodeValue());
-//        assertEquals("Tenant with specified identifier [" + data.get("tenantIds").get("fake") + "] not found!",
-//                response.getBody().getMessage());
-//    }
-//
-//    private void checkEntityNotFoundException(ResponseEntity<ResponseMessageDto> response) {
-//        assertEquals(404, response.getStatusCodeValue());
-//        assertEquals(exceptionMessage, response.getBody().getMessage());
-//    }
-//
-//
-//    private static Stream<Arguments> provideTestData() throws URISyntaxException {
-//        UserDtoResp response = new UserDtoResp();
-//        response.setId("1");
-//        response.setFirstName("Name1");
-//        response.setLastName("Surname1");
-//        response.setEmail("email1@gmail.com");
-//
-//        Map<String, Object> dtos = new HashMap<>();
-//        dtos.put("request", getListOfUsers().get(0));
-//        dtos.put("response", response);
-//        dtos.put("null", null);
-//        Map<String, Object> tenantIds = new HashMap();
-//        tenantIds.put("real-1", "test_tenant_1");
-//        tenantIds.put("real-2", "test_tenant_2");
-//        tenantIds.put("fake", "0");
-//        Map<String, Object> userIds = new HashMap();
-//        userIds.put("real-1", "1");
-//        userIds.put("real-2", "2");
-//        userIds.put("fake", "0");
-//        Map<String, Map<String, Object>> data = new HashMap<>();
-//        data.put("tenantIds", tenantIds);
-//        data.put("userIds", userIds);
-//        data.put("dtos", dtos);
-//
-//        return Stream.of(
-//                Arguments.of(data)
-//        );
-//    }
-//}
+package org.speech4j.tenantservice.controller;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.speech4j.tenantservice.TenantServiceApplication;
+import org.speech4j.tenantservice.dto.request.UserDtoReq;
+import org.speech4j.tenantservice.dto.response.UserDtoResp;
+import org.speech4j.tenantservice.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.speech4j.tenantservice.fixture.DataFixture.getListOfTenants;
+
+@SpringBootTest(classes = TenantServiceApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class UserControllerTest
+        //extends AbstractContainer
+{
+    private WebTestClient testClient;
+
+    private List<UserDtoResp> expectedUsers;
+
+    private String expectedTenantId;
+
+    @Autowired
+    private UserService userService;
+
+    @LocalServerPort
+    private int port;
+
+    @BeforeEach
+    void beforeEach() {
+        this.testClient =
+                WebTestClient.bindToServer()
+                        .baseUrl("http://localhost:" + port + "/tenants")
+                        .build();
+
+        this.expectedTenantId = getListOfTenants().get(0).getName();
+        this.expectedUsers = userService.getAllById(expectedTenantId).collectList().block();
+    }
+
+    @Test
+    void testGetAllUsers_successFlow() {
+        List<UserDtoResp> actual = testClient.get()
+                .uri("/{tenantId}/users", expectedTenantId).exchange()
+                .expectStatus().isOk()
+                .expectBodyList(UserDtoResp.class)
+                .returnResult().getResponseBody();
+        Assertions.assertEquals(expectedUsers.toString(), actual.toString());
+    }
+
+    @Test
+    void testGetAllUsers_unSuccessFlow() {
+        testClient.get().uri("/{tenantId}/users", "fake")
+                .exchange().expectStatus().isNotFound();
+    }
+
+    @Test
+    void testGetUserById_successFlow() {
+        UserDtoResp expectedUser = expectedUsers.get(0);
+        UserDtoResp config = testClient.get()
+                .uri("/{tenantId}/users/{userId}", expectedTenantId, expectedUser.getId())
+                .exchange().expectStatus().isOk()
+                .expectBody(UserDtoResp.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertEquals(config.toString(), expectedUser.toString());
+    }
+
+    @Test
+    void testGetUserById_unSuccessFlow() {
+        testClient.get().uri("/{tenantId}/users/{userId}", expectedTenantId, "fake")
+                .exchange().expectStatus().isNotFound();
+    }
+
+    @Test
+    void testGetUserByIdWithWrongTenantId_unSuccessFlow() {
+        UserDtoResp expectedUser = expectedUsers.get(0);
+        testClient.get().uri("/{tenantId}/users/{userId}", getListOfTenants().get(1).getName(), expectedUser.getId())
+                .exchange().expectStatus().isNotFound();
+    }
+
+
+    @Test
+    void testDeleteUserById_successFlow() {
+        UserDtoResp expectedUser = expectedUsers.get(1);
+        testClient.delete()
+                .uri("/{tenantId}/users/{userId}", expectedTenantId, expectedUser.getId())
+                .exchange().expectStatus().isOk();
+    }
+
+    @Test
+    void testDeleteUserById_unSuccessFlow() {
+        testClient.delete()
+                .uri("/{tenantId}/users/{userId}", expectedTenantId, "fake")
+                .exchange().expectStatus().isNotFound();
+    }
+
+    @Test
+    public void testCreateUser_successFlow() {
+        UserDtoResp expectedUser = expectedUsers.get(0);
+        UserDtoReq userDtoReq = new UserDtoReq();
+        userDtoReq.setFirstName(expectedUser.getFirstName());
+        userDtoReq.setLastName(expectedUser.getLastName());
+        userDtoReq.setEmail(expectedUser.getEmail());
+        userDtoReq.setPassword("Qwerty123");
+
+        UserDtoResp actual = testClient.post()
+                .uri("/{tenantId}/users", expectedTenantId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(userDtoReq), UserDtoReq.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(UserDtoResp.class)
+                .returnResult().getResponseBody();
+
+        assertThat(userDtoReq).isEqualToIgnoringGivenFields(actual,
+                "id", "createdDate", "modifiedDate", "active", "password", "role");
+    }
+
+    @Test
+    public void testCreateUser_unSuccessFlow() {
+        UserDtoResp expectedUser = expectedUsers.get(0);
+        UserDtoReq userDtoReq = new UserDtoReq();
+        userDtoReq.setFirstName(expectedUser.getFirstName());
+        userDtoReq.setLastName(expectedUser.getLastName());
+        userDtoReq.setEmail(expectedUser.getEmail());
+        userDtoReq.setPassword("Qwerty123");
+
+        testClient.post()
+                .uri("/{tenantId}/users", "fake")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(userDtoReq), UserDtoReq.class)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    public void tesUpdateUser_successFlow() {
+        UserDtoResp expectedUser = expectedUsers.get(0);
+        UserDtoReq userDtoReq = new UserDtoReq();
+        userDtoReq.setFirstName("New name");
+        userDtoReq.setLastName(expectedUser.getLastName());
+        userDtoReq.setEmail(expectedUser.getEmail());
+        userDtoReq.setPassword("Qwerty123");
+        userDtoReq.setRole(expectedUser.getRole());
+
+        UserDtoResp actual = testClient.put()
+                .uri("/{tenantId}/users/{userId}", expectedTenantId, expectedUser.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(userDtoReq), UserDtoReq.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserDtoResp.class)
+                .returnResult().getResponseBody();
+
+        assertThat(userDtoReq).isEqualToIgnoringGivenFields(actual,
+                "id", "createdDate", "modifiedDate", "active", "password");
+    }
+
+    @Test
+    public void testUpdateUser_unSuccessFlow() {
+        UserDtoResp expectedUser = expectedUsers.get(0);
+        UserDtoReq userDtoReq = new UserDtoReq();
+        userDtoReq.setFirstName("New name");
+        userDtoReq.setLastName(expectedUser.getLastName());
+        userDtoReq.setEmail(expectedUser.getEmail());
+        userDtoReq.setPassword("Qwerty123");
+
+        testClient.put()
+                .uri("/{tenantId}/users/{userId}", expectedTenantId, "fake")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(userDtoReq), UserDtoReq.class)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+}

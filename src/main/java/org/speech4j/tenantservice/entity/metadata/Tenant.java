@@ -11,7 +11,7 @@ import lombok.ToString;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 
 @Getter
@@ -30,9 +30,9 @@ public class Tenant implements Serializable {
     private String description;
     @javax.persistence.Column(name = "createddate")
     @org.springframework.data.relational.core.mapping.Column("createddate")
-    private Timestamp createdDate;
+    private LocalDate createdDate;
     @javax.persistence.Column(name = "modifieddate")
     @org.springframework.data.relational.core.mapping.Column("modifieddate")
-    private Timestamp modifiedDate;
+    private LocalDate modifiedDate;
     private boolean active;
 }

@@ -3,6 +3,7 @@ package org.speech4j.tenantservice.controller;
 import org.speech4j.tenantservice.dto.request.ConfigDtoReq;
 import org.speech4j.tenantservice.dto.response.ConfigDtoResp;
 import org.speech4j.tenantservice.mapper.ConfigDtoMapper;
+import org.speech4j.tenantservice.repository.tenant.ConfigRepository;
 import org.speech4j.tenantservice.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ import static org.speech4j.tenantservice.util.MessageValidationUtil.validate;
 public class ConfigController {
     private ConfigService configService;
     private ConfigDtoMapper mapper;
+
+    @Autowired
+    private ConfigRepository repository;
 
     @Autowired
     public ConfigController(ConfigService configService,
@@ -64,11 +68,11 @@ public class ConfigController {
     }
 
     @DeleteMapping("/{configId}")
-    public void delete(
+    public Mono<Void> delete(
             @PathVariable String tenantId,
             @PathVariable String configId
     ) {
-        configService.deleteById(tenantId, configId);
+        return configService.deleteById(tenantId, configId);
     }
 
     @GetMapping

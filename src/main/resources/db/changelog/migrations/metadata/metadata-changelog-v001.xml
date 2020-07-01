@@ -13,11 +13,11 @@
             <column name="active" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="createdDate" type="TIMESTAMP WITHOUT TIME ZONE">
+            <column name="createddate" type="TIMESTAMP WITHOUT TIME ZONE">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(255)"/>
-            <column name="modifiedDate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifieddate" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

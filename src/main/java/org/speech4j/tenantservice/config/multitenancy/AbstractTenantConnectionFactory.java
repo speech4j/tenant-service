@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
 
+import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstants.DEFAULT_METADATA;
+
 public abstract class AbstractTenantConnectionFactory<T, R> implements ConnectionFactory, InitializingBean {
 
     private static final Object FALLBACK_MARKER = new Object();
@@ -81,13 +83,13 @@ public abstract class AbstractTenantConnectionFactory<T, R> implements Connectio
 
         Assert.state(this.resolvedDefaultConnectionFactory != null, "ConnectionFactory default router not initialized");
 
-        Mono<Object> lookupKey = determineCurrentLookupKey().defaultIfEmpty(FALLBACK_MARKER);
+        Mono<Object> lookupKey = determineCurrentLookupKey().defaultIfEmpty(DEFAULT_METADATA);
 
         return lookupKey.handle((key, sink) -> {
 
             ConnectionFactory connectionFactory = null;
 
-            if (key == FALLBACK_MARKER) {
+            if (key == DEFAULT_METADATA) {
                 connectionFactory = this.resolvedDefaultConnectionFactory;
             }else {
                 connectionFactory = (ConnectionFactory) targetConnectionFactoriesFunction.apply((T) key);

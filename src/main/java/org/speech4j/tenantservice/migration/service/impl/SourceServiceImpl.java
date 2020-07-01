@@ -1,7 +1,6 @@
 package org.speech4j.tenantservice.migration.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.speech4j.tenantservice.entity.tenant.ApiName;
 import org.speech4j.tenantservice.entity.tenant.Config;
 import org.speech4j.tenantservice.entity.tenant.User;
@@ -56,12 +55,11 @@ public class SourceServiceImpl implements SourceService {
         credentials.put("access_key", accessKey);
         credentials.put("secret_key", secretKey);
         credentials.put("endpoint_url", endpointUrl);
-        JSONObject jsonCredentials = new JSONObject(credentials);
 
         Config config = new Config();
         config.setApiName(ApiName.AWS);
         config.setTenantId("speech4j");
-        config.setCredentials(jsonCredentials.toString());
+        config.setCredentials(credentials.toString());
         configService.create(config);
         log.debug("SOURCE-SERVICE: Default config was successfully set!");
     }

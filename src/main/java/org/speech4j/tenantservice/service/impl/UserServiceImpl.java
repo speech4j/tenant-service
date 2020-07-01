@@ -9,7 +9,6 @@ import org.speech4j.tenantservice.exception.SqlOperationException;
 import org.speech4j.tenantservice.exception.UserNotFoundException;
 import org.speech4j.tenantservice.mapper.UserDtoMapper;
 import org.speech4j.tenantservice.repository.tenant.UserRepository;
-import org.speech4j.tenantservice.service.TenantService;
 import org.speech4j.tenantservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,17 +29,14 @@ import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstant
 @Slf4j
 public class UserServiceImpl implements UserService {
     private UserRepository repository;
-    private TenantService tenantService;
     private PasswordEncoder encoder;
     private UserDtoMapper mapper;
 
 
     @Autowired
     public UserServiceImpl(UserRepository repository,
-                           TenantService tenantService,
                            UserDtoMapper mapper) {
         this.repository = repository;
-        this.tenantService = tenantService;
         this.mapper = mapper;
         this.encoder = new BCryptPasswordEncoder();
     }
@@ -80,8 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<UserDtoResp> getById(String... ids) {
-        return checkIfExistUserWithSpecifiedTenantId(ids[0], ids[1])
-                .filter(User::isActive).map(mapper::toDto);
+        return checkIfExistUserWithSpecifiedTenantId(ids[0], ids[1]).map(mapper::toDto);
     }
 
     @Override
@@ -94,11 +89,12 @@ public class UserServiceImpl implements UserService {
                     existingUser.setPassword(encoder.encode(user.getPassword()));
                     existingUser.setModifiedDate(LocalDateTime.now().toLocalDate());
 
-                    return repository.save(existingUser).map(mapper::toDto)
+                    return repository.save(existingUser)
+                            .subscriberContext(Context.of(TENANT_KEY, ids[0]))
+                            .map(mapper::toDto)
                             .doOnSuccess(updatedConfig ->
                                     log.debug(
-                                            "USER-SERVICE: User with [ id: {}] was successfully updated!",
-                                            ids[1]
+                                            "USER-SERVICE: User with [ id: {}] was successfully updated!", ids[1]
                                     ));
                 });
     }
@@ -107,8 +103,10 @@ public class UserServiceImpl implements UserService {
     public Mono<Void> deleteById(String... ids) {
         return checkIfExistUserWithSpecifiedTenantId(ids[0], ids[1])
                 .flatMap(existingUser ->
-                        repository.deactivate(ids[1]).doOnSuccess(success ->
-                                log.debug("USER-SERVICE: User with [ id: {}] was successfully deactivated!", ids[1]))
+                        repository.deactivate(existingUser.getId())
+                                .subscriberContext(Context.of(TENANT_KEY, ids[0]))
+                                .doOnSuccess(success ->
+                                        log.debug("USER-SERVICE: User with [ id: {}] was successfully deactivated!", ids[1]))
                 );
     }
 
@@ -151,7 +149,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Mono<User> checkIfExistUserWithSpecifiedTenantId(String tenantId, String userId) {
-        return repository.findById(userId)
+        return repository.findById(userId).filter(User::isActive)
                 .subscriberContext(Context.of(TENANT_KEY, tenantId))
                 .switchIfEmpty(
                         Mono.error(new UserNotFoundException("User by a specified id: [" + userId + "] not found!"))

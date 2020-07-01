@@ -14,6 +14,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -38,7 +40,7 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Mono<TenantDtoResp> create(Tenant tenant, String... ids) {
-        Timestamp createdDate = new Timestamp(System.currentTimeMillis());
+        LocalDate createdDate = LocalDateTime.now().toLocalDate();
         tenant.setCreatedDate(createdDate);
         tenant.setModifiedDate(createdDate);
 
@@ -68,7 +70,7 @@ public class TenantServiceImpl implements TenantService {
         return checkIfTenantExistsWithSpecifiedId(ids[0])
                 .flatMap(existingTenant -> {
                     existingTenant.setDescription(tenant.getDescription());
-                    existingTenant.setModifiedDate(new Timestamp(System.currentTimeMillis()));
+                    existingTenant.setModifiedDate(LocalDateTime.now().toLocalDate());
                     return repository.save(existingTenant).map(mapper::toDto)
                             .doOnSuccess(success -> log.debug("TENANT-SERVICE: Tenant by a specified id:[{}] was successfully updated!", ids[0]));
                 });
@@ -78,13 +80,13 @@ public class TenantServiceImpl implements TenantService {
     public Mono<Void> deleteById(String... ids) {
         return checkIfTenantExistsWithSpecifiedId(ids[0])
                 .flatMap(existingTenant ->
-                        repository.delete(existingTenant).doOnSuccess(response ->
+                        repository.deactivate(existingTenant.getId()).doOnSuccess(response ->
                                 log.debug("TENANT-SERVICE: Tenant by a specified id:[{}] was successfully deleted!", ids[0]))
                 );
     }
 
     private Mono<Tenant> checkIfTenantExistsWithSpecifiedId(String tenantId) {
-        return repository.findById(tenantId)
+        return repository.findById(tenantId).filter(Tenant::isActive)
                 .switchIfEmpty(
                         Mono.error(new TenantNotFoundException("Tenant by a specified id: [" + tenantId + "] not found!"))
                 )
@@ -94,7 +96,7 @@ public class TenantServiceImpl implements TenantService {
                 })
                 .flatMap(existingTenant -> {
                     log.debug("TENANT-SERVICE: Tenant by a specified id: [{}] was successfully found!", tenantId);
-                    return Mono.just(existingTenant);
+                    return Mono.defer(()->Mono.just(existingTenant));
                 });
     }
 }

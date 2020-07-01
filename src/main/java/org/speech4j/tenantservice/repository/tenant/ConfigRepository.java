@@ -4,11 +4,9 @@ import org.speech4j.tenantservice.entity.tenant.ApiName;
 import org.speech4j.tenantservice.entity.tenant.Config;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Repository
 public interface ConfigRepository extends ReactiveCrudRepository<Config, String> {
 
     @Query("INSERT INTO configs (id, apiname, credentials, tenantid) " +

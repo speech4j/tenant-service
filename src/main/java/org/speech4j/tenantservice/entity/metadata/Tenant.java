@@ -28,7 +28,11 @@ public class Tenant implements Serializable {
     @org.springframework.data.annotation.Id
     private String id;
     private String description;
+    @javax.persistence.Column(name = "createddate")
+    @org.springframework.data.relational.core.mapping.Column("createddate")
     private Timestamp createdDate;
+    @javax.persistence.Column(name = "modifieddate")
+    @org.springframework.data.relational.core.mapping.Column("modifieddate")
     private Timestamp modifiedDate;
     private boolean active;
 }

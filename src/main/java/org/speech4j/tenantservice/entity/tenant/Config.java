@@ -24,7 +24,11 @@ public class Config implements Serializable {
     @javax.persistence.Id
     @org.springframework.data.annotation.Id
     private String id;
+    @javax.persistence.Column(name = "apiname")
+    @org.springframework.data.relational.core.mapping.Column("apiname")
     private ApiName apiName;
+    @javax.persistence.Column(name = "tenantid")
+    @org.springframework.data.relational.core.mapping.Column("tenantid")
     private String tenantId;
     private String credentials;
 }

@@ -15,9 +15,7 @@ public class AbstractContainer {
                 .withInitScript("data/init_data.sql");
         postgreSQLContainer.start();
 
-      //  System.setProperty("db.port", (String) postgreSQLContainer.getPortBindings().get(0));
-      //  System.out.println(postgreSQLContainer.getPortBindings());
-      //  System.out.println(postgreSQLContainer.getJdbcUrl());
+        System.setProperty("db.port", String.valueOf(postgreSQLContainer.getFirstMappedPort()));
     }
 
 }

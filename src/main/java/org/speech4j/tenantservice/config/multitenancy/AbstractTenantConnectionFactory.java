@@ -16,8 +16,6 @@ import static org.speech4j.tenantservice.config.multitenancy.MultiTenantConstant
 
 public abstract class AbstractTenantConnectionFactory<T, R> implements ConnectionFactory, InitializingBean {
 
-    private static final Object FALLBACK_MARKER = new Object();
-
     private @Nullable Function<T, R> targetConnectionFactoriesFunction;
 
     private @Nullable Object defaultTargetConnectionFactory;
@@ -31,9 +29,14 @@ public abstract class AbstractTenantConnectionFactory<T, R> implements Connectio
         this.defaultTargetConnectionFactory = defaultTargetConnectionFactory;
     }
 
-    public void setTargetConnectionFactoriesBiFunction(@Nullable Function<T, R> targetConnectionFactoriesFunction) {
+    public void setTargetConnectionFactoriesFunction(@Nullable Function<T, R> targetConnectionFactoriesFunction) {
         Assert.notNull(targetConnectionFactoriesFunction, "targetConnectionFactoriesBiFunction must not be null!");
         this.targetConnectionFactoriesFunction = targetConnectionFactoriesFunction;
+    }
+
+    @Nullable
+    public Object getDefaultTargetConnectionFactory() {
+        return defaultTargetConnectionFactory;
     }
 
     public void setConnectionFactoryLookup(ConnectionFactoryLookup connectionFactoryLookup) {
@@ -86,21 +89,12 @@ public abstract class AbstractTenantConnectionFactory<T, R> implements Connectio
         Mono<Object> lookupKey = determineCurrentLookupKey().defaultIfEmpty(DEFAULT_METADATA);
 
         return lookupKey.handle((key, sink) -> {
-
             ConnectionFactory connectionFactory = null;
-
             if (key == DEFAULT_METADATA) {
                 connectionFactory = this.resolvedDefaultConnectionFactory;
             }else {
                 connectionFactory = (ConnectionFactory) targetConnectionFactoriesFunction.apply((T) key);
             }
-
-            if (connectionFactory == null) {
-                sink.error(new IllegalStateException(String.format(
-                        "Cannot determine target ConnectionFactory for lookup key '%s'", key == FALLBACK_MARKER ? null : key)));
-                return;
-            }
-
             sink.next(connectionFactory);
         });
     }

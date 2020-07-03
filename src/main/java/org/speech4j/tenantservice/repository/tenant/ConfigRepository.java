@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 public interface ConfigRepository extends ReactiveCrudRepository<Config, String> {
 
-    @Query("INSERT INTO configs (id, apiname, credentials, tenantid) " +
+    @Query("INSERT INTO tenant_configs (id, apiname, credentials, tenantid) " +
             "VALUES (:id, :apiName, :credentials, :tenantId)")
     Mono<Config> create(String id, ApiName apiName, String credentials, String tenantId);
 

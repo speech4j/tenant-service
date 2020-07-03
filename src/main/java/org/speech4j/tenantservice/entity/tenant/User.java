@@ -17,8 +17,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@javax.persistence.Table(name = "users")
-@org.springframework.data.relational.core.mapping.Table("users")
+@javax.persistence.Table(name = "tenant_users")
+@org.springframework.data.relational.core.mapping.Table("tenant_users")
 public class User implements Serializable {
     @javax.persistence.Id
     @org.springframework.data.annotation.Id

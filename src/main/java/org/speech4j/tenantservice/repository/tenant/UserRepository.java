@@ -13,13 +13,13 @@ import java.time.LocalDate;
 
 public interface UserRepository extends ReactiveCrudRepository<User, String> {
 
-    @Query("INSERT INTO users (id, active, createddate, modifieddate, email, firstname, lastname, password, role, tenantid) " +
+    @Query("INSERT INTO tenant_users (id, active, createddate, modifieddate, email, firstname, lastname, password, role, tenantid) " +
             "VALUES (:id, :active, :createdDate, :modifiedDate, :email, :firstName, :lastName, :password, :role, :tenantId)"
     )
     Mono<User> create(String id, Boolean active, LocalDate createdDate, LocalDate modifiedDate, String email,
                       String firstName, String lastName, String password, Role role, String tenantId);
 
-    @Query(value = "UPDATE users SET active = 'false' WHERE id = :id")
+    @Query(value = "UPDATE tenant_users SET active = 'false' WHERE id = :id")
     Mono<Void> deactivate(String id);
 
     Flux<User> getAllByTenantId(String tenantId);

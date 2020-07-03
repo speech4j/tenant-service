@@ -18,8 +18,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@javax.persistence.Table(name = "configs")
-@org.springframework.data.relational.core.mapping.Table("configs")
+@javax.persistence.Table(name = "tenant_configs")
+@org.springframework.data.relational.core.mapping.Table("tenant_configs")
 public class Config implements Serializable {
     @javax.persistence.Id
     @org.springframework.data.annotation.Id

@@ -5,19 +5,18 @@ import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.speech4j.tenantservice.dto.response.TenantDtoResp;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class TenantConnectionFactoryHolder {
-    private static Map<String, PostgresqlConnectionFactory> factories = new HashMap<>();
+    private static ConcurrentHashMap<String, PostgresqlConnectionFactory> factories = new ConcurrentHashMap();
 
     public static PostgresqlConnectionFactory getFactory(String tenantId) {
         return factories.get(tenantId);
     }
 
-    public static Map<String, PostgresqlConnectionFactory> getFactories() {
+    public static ConcurrentHashMap<String, PostgresqlConnectionFactory> getFactories() {
         return factories;
     }
 

@@ -11,3 +11,14 @@ Configuration:
       level: error
       AppenderRef:
         ref: Console
+
+# ===============================
+# LOGGER
+# ===============================
+logging:
+  level:
+    root: INFO
+    org.springframework.data.r2dbc: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.speech4j.tenantservice: DEBUG

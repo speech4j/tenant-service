@@ -11,7 +11,6 @@ The tenant-service for getting a config file to APIs.
 
 
 ## Requirements
-
 * Java 11
 * Docker
 
@@ -37,3 +36,18 @@ docker run --name postgres-docker \
 (Metadata is a default schema type. To generate a default one - execute command without an additional argument)
  * `./gradlew diffChangeLog -PschemaType=tenant` -- generate a migration script for tenant schema
  * `./gradlew diffChangeLog` -- generate a migration script for metadata schema
+ 
+## Description of functionality 
+* DONE
+--API(tenantApi, configApi, userApi)
+--API tests
+--Multi-tenancy using ConcurrentHashMap
+--Liquibase configuration
+--Exception handler
+--Dto message validation
+--TestContainer configuration
+* TO DO
+--Add swagger
+--Add pagination
+--Add migration of schema for a newly created tenant
+--Make migration at the start of the application for all tenants

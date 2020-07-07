@@ -39,15 +39,16 @@ docker run --name postgres-docker \
  
 ## Description of functionality 
 * DONE
---API(tenantApi, configApi, userApi)
---API tests
---Multi-tenancy using ConcurrentHashMap
---Liquibase configuration
---Exception handler
---Dto message validation
---TestContainer configuration
+   * API(tenantApi, configApi, userApi)
+   * API tests
+   * Multi-tenancy using ConcurrentHashMap
+   * Liquibase configuration
+   * Exception handler
+   * Dto message validation
+   * TestContainer configuration
+   * Logger configuration
 * TO DO
---Add swagger
---Add pagination
---Add migration of schema for a newly created tenant
---Make migration at the start of the application for all tenants
+   * Add swagger
+   * Add pagination
+   * Add migration of schema for a newly created tenant
+   * Make migration at the start of the application for all tenants programmatically

@@ -30,7 +30,7 @@ docker run --name postgres-docker \
                 -e POSTGRES_PASSWORD=postgres \
                 -e POSTGRES_USERNAME=postgres \
                 -e POSTGRES_DB=tenant_db \
-                -p 5432:5432 -d postgres
+                -p 5432:5432 -d tenant_db
 ```
 
 ## Running DB Migration
